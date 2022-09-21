@@ -1,6 +1,6 @@
 package com.mikront.fillics.ics;
 
-import com.mikront.fillics.util.U;
+import com.mikront.util.Concat;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -24,40 +24,36 @@ public class CalendarData {
         ZonedDateTime now = ZonedDateTime.now();
         String createdAt = FORMATTER.format(now);
 
+        return Concat.me()
+                .lines("BEGIN:VCALENDAR",
+                        "PRODID:-//Google Inc//Google Calendar 70.9054//EN",
+                        "VERSION:2.0",
+                        "CALSCALE:GREGORIAN",
+                        "METHOD:PUBLISH",
 
-        StringBuilder builder = new StringBuilder();
-        U.NL(builder).append("BEGIN:VCALENDAR");
-        U.NL(builder).append("PRODID:-//Google Inc//Google Calendar 70.9054//EN");
-        U.NL(builder).append("VERSION:2.0");
-        U.NL(builder).append("CALSCALE:GREGORIAN");
-        U.NL(builder).append("METHOD:PUBLISH");
+                        "BEGIN:VTIMEZONE",
+                        "TZID:Europe/Kiev",
+                        "X-LIC-LOCATION:Europe/Kiev",
 
-        U.NL(builder).append("BEGIN:VTIMEZONE");
-        U.NL(builder).append("TZID:Europe/Kiev");
-        U.NL(builder).append("X-LIC-LOCATION:Europe/Kiev");
+                        "BEGIN:STANDARD",
+                        "TZOFFSETFROM:+0300",
+                        "TZOFFSETTO:+0200",
+                        "TZNAME:EET",
+                        "DTSTART:19701030T010000",
+                        "RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1FR",
+                        "END:STANDARD",
 
-        U.NL(builder).append("BEGIN:STANDARD");
-        U.NL(builder).append("TZOFFSETFROM:+0300");
-        U.NL(builder).append("TZOFFSETTO:+0200");
-        U.NL(builder).append("TZNAME:EET");
-        U.NL(builder).append("DTSTART:19701030T010000");
-        U.NL(builder).append("RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1FR");
-        U.NL(builder).append("END:STANDARD");
+                        "BEGIN:DAYLIGHT",
+                        "TZOFFSETFROM:+0300",
+                        "TZOFFSETTO:+0300",
+                        "TZNAME:EEST",
+                        "DTSTART:19700226T235959",
+                        "RRULE:FREQ=YEARLY;BYMONTH=2;BYDAY=-1TH",
+                        "END:DAYLIGHT",
 
-        U.NL(builder).append("BEGIN:DAYLIGHT");
-        U.NL(builder).append("TZOFFSETFROM:+0300");
-        U.NL(builder).append("TZOFFSETTO:+0300");
-        U.NL(builder).append("TZNAME:EEST");
-        U.NL(builder).append("DTSTART:19700226T235959");
-        U.NL(builder).append("RRULE:FREQ=YEARLY;BYMONTH=2;BYDAY=-1TH");
-        U.NL(builder).append("END:DAYLIGHT");
-
-        U.NL(builder).append("END:VTIMEZONE");
-
-        for (Event e : events)
-            U.NL(builder).append(e.compile(createdAt));
-
-        U.NL(builder).append("END:VCALENDAR");
-        return builder.toString();
+                        "END:VTIMEZONE")
+                .lines(events, item -> item.compile(createdAt))
+                .line("END:VCALENDAR")
+                .enate();
     }
 }

@@ -1,6 +1,6 @@
 package com.mikront.fillics.schedule;
 
-import com.mikront.fillics.util.U;
+import com.mikront.util.Concat;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalDate;
@@ -47,13 +47,10 @@ public class Day implements Iterable<Cell> {
         if (isEmpty())
             return "";
 
-        StringBuilder builder = new StringBuilder()
-                .append(date);
-
-        for (Cell c : cells)
-            U.NL(builder).append(c.toString().indent(2));
-
-        return builder.toString();
+        return Concat.me()
+                .word(date)
+                .lines(cells, item -> item.toString().indent(2))
+                .enate();
     }
 
 

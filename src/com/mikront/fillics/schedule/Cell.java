@@ -1,6 +1,6 @@
 package com.mikront.fillics.schedule;
 
-import com.mikront.fillics.util.U;
+import com.mikront.util.Concat;
 import org.jetbrains.annotations.NotNull;
 
 import java.time.LocalTime;
@@ -56,14 +56,12 @@ public class Cell implements Iterable<Session> {
             return "";
 
         LocalTime time = getTime();
-        StringBuilder builder = new StringBuilder()
-                .append(number).append(DELIM)
-                .append(time).append('-').append(time.plusMinutes(DURATION_DEFAULT_MINUTES));
 
-        for (Session session : sessions)
-            U.NL(builder).append(session.toString().indent(2));
-
-        return builder.toString();
+        return Concat.me()
+                .word(number).word(DELIM)
+                .word(time).word('-').word(time.plusMinutes(DURATION_DEFAULT_MINUTES))
+                .lines(sessions, item -> item.toString().indent(2))
+                .enate();
     }
 
 

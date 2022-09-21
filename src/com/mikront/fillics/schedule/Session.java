@@ -2,6 +2,7 @@ package com.mikront.fillics.schedule;
 
 import com.mikront.fillics.ics.Event;
 import com.mikront.fillics.util.U;
+import com.mikront.util.Concat;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -58,33 +59,32 @@ public class Session {
 
 
     private String getTitle() {
-        StringBuilder builder = new StringBuilder()
-                .append(subject);
-
-        if (U.notEmpty(type))
-            builder.append(" (").append(type).append(")");
-
-        return builder.toString();
+        return Concat.me()
+                .word(subject)
+                .when(Utils.notEmpty(type))
+                .words(" (", type, ")")
+                .enate();
     }
 
     private String getDescription() {
-        StringBuilder builder = new StringBuilder();
+        return Concat.me()
+                .when(Utils.notEmpty(group))
+                .line(group)
+                .then()
 
-        if (U.notEmpty(group))
-            builder.append(group);
+                .when(Utils.notEmpty(teacher2))
+                .line(teacher2).words(" замість ", teacher)
+                .otherwise(Utils.notEmpty(teacher))
+                .line(teacher).words(" (", teacher_position, ")")
+                .then()
 
-        if (U.notEmpty(teacher2))
-            U.NL(builder).append(teacher2).append(" замість ").append(teacher);
-        else if (U.notEmpty(teacher))
-            U.NL(builder).append(teacher).append(" (").append(teacher_position).append(")");
+                .when(Utils.notEmpty(auditory))
+                .line("Аудиторія ").word(auditory)
+                .then()
 
-        if (U.notEmpty(auditory))
-            U.NL(builder).append("Аудиторія ").append(auditory);
-
-        if (U.notEmpty(link))
-            U.NL(builder).append(link);
-
-        return builder.toString();
+                .when(Utils.notEmpty(link))
+                .line(link)
+                .enate();
     }
 
     public boolean isOptional() {
@@ -109,6 +109,6 @@ public class Session {
         if (U.isEmpty(subject))
             return "";
 
-        return getTitle() + U.NL + getDescription();
+        return Concat.me().lines(getTitle(), getDescription()).enate();
     }
 }

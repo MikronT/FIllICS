@@ -6,16 +6,6 @@ import java.time.ZonedDateTime;
 
 
 public class U {
-    public static final String NL = System.lineSeparator();
-
-
-    public static StringBuilder NL(StringBuilder builder) {
-        if (!builder.isEmpty())
-            builder.append(NL);
-        return builder;
-    }
-
-
     public static ZonedDateTime toGMT(LocalDateTime localDateTime) {
         return localDateTime.atZone(ZoneId.systemDefault())
                 .withZoneSameInstant(ZoneId.of("GMT")); //Greenwich Mean Time

@@ -1,6 +1,7 @@
 package com.mikront.fillics.ics;
 
 import com.mikront.fillics.util.U;
+import com.mikront.util.Concat;
 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -41,16 +42,15 @@ public class Event {
 
     @SuppressWarnings("SpellCheckingInspection")
     protected String compile(String createdAt) {
-        StringBuilder builder = new StringBuilder()
-                .append("BEGIN:VEVENT");
-        U.NL(builder).append("DTSTART:").append(CalendarData.FORMATTER.format(from));
-        U.NL(builder).append("DTEND:").append(CalendarData.FORMATTER.format(to));
-        U.NL(builder).append("CREATED:").append(createdAt);
-        U.NL(builder).append("DESCRIPTION:").append(description.replace(U.NL, "\\n"));
-        U.NL(builder).append("LAST-MODIFIED:").append(createdAt);
-        U.NL(builder).append("SUMMARY:").append(title);
-        U.NL(builder).append("END:VEVENT");
-
-        return builder.toString();
+        return Concat.me()
+                .line("BEGIN:VEVENT")
+                .line("DTSTART:").word(CalendarData.FORMATTER.format(from))
+                .line("DTEND:").word(CalendarData.FORMATTER.format(to))
+                .line("CREATED:").word(createdAt)
+                .line("DESCRIPTION:").word(description.replace(Concat.LINE_SEPARATOR, "\\n"))
+                .line("LAST-MODIFIED:").word(createdAt)
+                .line("SUMMARY:").word(title)
+                .line("END:VEVENT")
+                .enate();
     }
 }
