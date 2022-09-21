@@ -5,7 +5,6 @@ import com.mikront.fillics.schedule.Cell;
 import com.mikront.fillics.schedule.Day;
 import com.mikront.fillics.schedule.Parser;
 import com.mikront.fillics.schedule.Session;
-import com.mikront.util.Utils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 

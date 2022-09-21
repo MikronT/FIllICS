@@ -1,5 +1,6 @@
 package com.mikront.util;
 
+@SuppressWarnings("unused UnusedReturnValue")
 public class Concat {
     public static final String LINE_SEPARATOR = System.lineSeparator();
 
@@ -36,7 +37,6 @@ public class Concat {
         return this;
     }
 
-    @SuppressWarnings("UnusedReturnValue")
     public Concat line() {
         if (!builder.isEmpty())
             builder.append(LINE_SEPARATOR);
