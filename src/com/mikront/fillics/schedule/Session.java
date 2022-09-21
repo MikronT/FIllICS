@@ -1,8 +1,8 @@
 package com.mikront.fillics.schedule;
 
 import com.mikront.fillics.ics.Event;
-import com.mikront.fillics.util.U;
 import com.mikront.util.Concat;
+import com.mikront.util.Utils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -106,7 +106,7 @@ public class Session {
 
     @Override
     public String toString() {
-        if (U.isEmpty(subject))
+        if (Utils.isEmpty(subject))
             return "";
 
         return Concat.me().lines(getTitle(), getDescription()).enate();

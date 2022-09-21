@@ -1,11 +1,11 @@
-package com.mikront.fillics.util;
+package com.mikront.util;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
 
-public class U {
+public class Utils {
     public static ZonedDateTime toGMT(LocalDateTime localDateTime) {
         return localDateTime.atZone(ZoneId.systemDefault())
                 .withZoneSameInstant(ZoneId.of("GMT")); //Greenwich Mean Time

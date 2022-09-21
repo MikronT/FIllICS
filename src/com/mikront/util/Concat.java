@@ -125,7 +125,7 @@ public class Concat {
         @Override
         public ConcatWhen lines(Object... objects) {
             if (expression)
-                    concat.lines(objects);
+                concat.lines(objects);
             return this;
         }
 

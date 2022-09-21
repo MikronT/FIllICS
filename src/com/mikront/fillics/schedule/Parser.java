@@ -1,8 +1,5 @@
-package com.mikront.fillics.util;
+package com.mikront.fillics.schedule;
 
-import com.mikront.fillics.schedule.Cell;
-import com.mikront.fillics.schedule.Day;
-import com.mikront.fillics.schedule.Session;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.nodes.Document;

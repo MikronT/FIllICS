@@ -3,8 +3,9 @@ package com.mikront.fillics;
 import com.mikront.fillics.ics.CalendarData;
 import com.mikront.fillics.schedule.Cell;
 import com.mikront.fillics.schedule.Day;
+import com.mikront.fillics.schedule.Parser;
 import com.mikront.fillics.schedule.Session;
-import com.mikront.fillics.util.Parser;
+import com.mikront.util.Utils;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 

@@ -1,7 +1,7 @@
 package com.mikront.fillics.ics;
 
-import com.mikront.fillics.util.U;
 import com.mikront.util.Concat;
+import com.mikront.util.Utils;
 
 import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
@@ -21,12 +21,12 @@ public class Event {
 
 
     public Event setTimeFrom(LocalDateTime from) {
-        this.from = U.toGMT(from);
+        this.from = Utils.toGMT(from);
         return this;
     }
 
     public Event setTimeTo(LocalDateTime to) {
-        this.to = U.toGMT(to);
+        this.to = Utils.toGMT(to);
         return this;
     }
 
