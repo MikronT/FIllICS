@@ -2,6 +2,7 @@ package com.mikront.fillics;
 
 import com.mikront.fillics.schedule.Day;
 import com.mikront.fillics.schedule.Parser;
+import com.mikront.util.Log;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -22,6 +23,6 @@ public class Test {
                 .parse();
 
         for (Day day : days)
-            System.out.println(day);
+            Log.d(day);
     }
 }

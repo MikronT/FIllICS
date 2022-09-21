@@ -1,5 +1,6 @@
 package com.mikront.fillics.schedule;
 
+import com.mikront.util.Log;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.nodes.Document;
@@ -17,7 +18,7 @@ public class Parser {
             REGEX_AUDITORY = Pattern.compile(".*(\\d+\\.\\d+)\\.ауд\\."),
             REGEX_LINK = Pattern.compile(".*(http\\S+).*"),
             REGEX_NEWLINE = Pattern.compile("[\r\n]+"),
-            REGEX_TEACHER = Pattern.compile("^ (\\S+) (\\S+ \\S+ \\S+).*"), //\\s+(.*)
+            REGEX_TEACHER = Pattern.compile("^ (\\S+) (\\S+ \\S+ \\S+).*"),
             REGEX_TEACHER2_TEACHER_TITLE_TYPE = Pattern.compile("^Увага! Заміна! (.+) замість: (\\S+) (\\S+ \\S+ \\S+) (.+) \\((.+)\\)$"),
             REGEX_TITLE = Pattern.compile("^([^h\\s].+)$"),
             REGEX_TITLE_TYPE = Pattern.compile("^([^h\\s].+) \\((.+)\\)$"),
@@ -116,8 +117,9 @@ public class Parser {
             lines.add(s);
         }
 
-        /*lines.forEach(s -> System.out.println(s + "\""));
-        System.out.println("===");*/
+        Log.v("///");
+        lines.forEach(s -> Log.v("\"" + s + "\""));
+        Log.v("\\\\\\");
 
 
         Cell cell = new Cell(number);
@@ -142,7 +144,7 @@ public class Parser {
             }
             if (trySearchingTeacher(current, s)) continue;
 
-            System.out.println("Passed all the checks: " + s);
+            Log.w("Passed all the checks: " + s);
         }
 
         return cell;
@@ -152,7 +154,7 @@ public class Parser {
         //Get teachers, title, and type first
         Matcher matcher = REGEX_TEACHER2_TEACHER_TITLE_TYPE.matcher(s);
         if (matcher.matches()) {
-            //System.out.println("Pattern: teachers    [:::]  " + s);
+            Log.v("Pattern: teachers    [:::]  " + s);
             Session current = new Session();
             current.setSubject(matcher.replaceAll("$4"));
             current.setType(matcher.replaceAll("$5"));
@@ -165,7 +167,7 @@ public class Parser {
         //Get title and type first
         matcher = REGEX_TITLE_TYPE.matcher(s);
         if (matcher.matches()) {
-            //System.out.println("Pattern: title-type  [:::]  " + s);
+            Log.v("Pattern: title-type  [:::]  " + s);
             Session current = new Session();
             current.setSubject(matcher.replaceAll("$1"));
             current.setType(matcher.replaceAll("$2"));
@@ -175,7 +177,7 @@ public class Parser {
         //Get title first
         matcher = REGEX_TITLE.matcher(s);
         if (matcher.matches()) {
-            //System.out.println("Pattern: title       [:::]  " + s);
+            Log.v("Pattern: title       [:::]  " + s);
             Session current = new Session();
             current.setSubject(matcher.replaceAll("$1"));
             return current;
@@ -198,7 +200,7 @@ public class Parser {
         for (Pattern p : List.of(REGEX_STREAM1, REGEX_STREAM2, REGEX_STREAM3)) {
             Matcher matcher = p.matcher(s);
             if (matcher.matches()) {
-                //System.out.println("Pattern: stream      [:::]  " + s);
+                Log.v("Pattern: stream      [:::]  " + s);
                 current.setGroup(matcher.replaceAll("$1"));
                 return true;
             }
@@ -211,7 +213,7 @@ public class Parser {
         for (Pattern p : List.of(REGEX_SUBGROUP1, regex_subgroup2)) {
             Matcher matcher = p.matcher(s);
             if (matcher.matches()) {
-                //System.out.println("Pattern: subgroup    [:::]  " + s);
+                Log.v("Pattern: subgroup    [:::]  " + s);
                 current.setGroup(defaultGroup + "." + matcher.replaceAll("$1"));
                 return true;
             }
@@ -223,7 +225,7 @@ public class Parser {
         //Get auditory
         Matcher matcher = REGEX_AUDITORY.matcher(s);
         if (matcher.matches()) {
-            //System.out.println("Pattern: auditory    [:::]  " + s);
+            Log.v("Pattern: auditory    [:::]  " + s);
             current.setAuditory(matcher.replaceAll("$1"));
             return true;
         }
@@ -234,10 +236,9 @@ public class Parser {
         //Get teacher
         Matcher matcher = REGEX_TEACHER.matcher(s);
         if (matcher.matches()) {
-            //System.out.println("Pattern: teacher     [:::]  " + s);
+            Log.v("Pattern: teacher     [:::]  " + s);
             current.setTeacherPosition(matcher.replaceAll("$1"));
             current.setTeacher(matcher.replaceAll("$2"));
-            //current.setAuditory(matcher.replaceAll("$3"));
             return true;
         }
         return false;

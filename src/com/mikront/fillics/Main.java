@@ -5,6 +5,7 @@ import com.mikront.fillics.schedule.Cell;
 import com.mikront.fillics.schedule.Day;
 import com.mikront.fillics.schedule.Parser;
 import com.mikront.fillics.schedule.Session;
+import com.mikront.util.Log;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -42,7 +43,15 @@ public class Main {
     ));
 
 
-    public static void main(String[] args) throws IOException {
+    public static void main(String[] args) {
+        try {
+            getSchedule();
+        } catch (IOException e) {
+            Log.e("Catching exception: ", e);
+        }
+    }
+
+    private static void getSchedule() throws IOException {
         ChronoLocalDateTime<?> currentTime = ChronoLocalDateTime.from(LocalDateTime.now());
         ChronoLocalDate daysAhead = ChronoLocalDate.from(currentTime).plus(2, ChronoUnit.DAYS);
 
@@ -56,7 +65,7 @@ public class Main {
             LocalDate date = day.getDate();
             if (date.isAfter(daysAhead)) break;
 
-            System.out.println(day);
+            Log.d(day);
 
             for (Cell cell : day) {
                 LocalDateTime time = LocalDateTime.of(date, cell.getTime());
