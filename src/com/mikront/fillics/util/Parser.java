@@ -136,8 +136,8 @@ public class Parser {
             assert current != null;
 
             if (trySearchingLink(current, s)) continue;
-            if (trySearchingStreamGroup(current, s)) continue;
             if (trySearchingSubgroup(current, s)) continue;
+            if (trySearchingStreamGroup(current, s)) continue;
             if (trySearchingAuditory(current, s)) {
                 //If there's an auditory specified, try looking for a teacher
                 trySearchingTeacher(current, s); //Result doesn't really matter; the line is processed otherwise
