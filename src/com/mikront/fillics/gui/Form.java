@@ -30,7 +30,16 @@ public class Form implements Dimens, Strings {
     }
 
     protected void onCreate() {
+        try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
+                 UnsupportedLookAndFeelException e) {
+            Log.e("Form::onCreate: unable to set system default look and feel");
+            Log.e("Form::onCreate:   = exception: ", e);
+        }
+
         frame.setTitle(APP_NAME);
+        frame.setLocationByPlatform(true); //Let the system decide
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         frame.setContentPane(container);
