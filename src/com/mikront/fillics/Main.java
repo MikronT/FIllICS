@@ -1,10 +1,7 @@
 package com.mikront.fillics;
 
 import com.mikront.fillics.ics.CalendarData;
-import com.mikront.fillics.schedule.Cell;
-import com.mikront.fillics.schedule.Day;
-import com.mikront.fillics.schedule.Parser;
-import com.mikront.fillics.schedule.Session;
+import com.mikront.fillics.schedule.*;
 import com.mikront.util.Log;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -25,7 +22,6 @@ import java.util.Map;
 
 public class Main {
     private static final File FILE_ICS = new File("import.ics");
-    private static final String DEFAULT_URL = "https://dekanat.nung.edu.ua/cgi-bin/timetable.cgi?n=700&group=4175";
     public static final String DEFAULT_GROUP = "ІП-20-3";
     private static final Map<String, String> REMAP_SUBJECTS = new HashMap<>(Map.of(
             "Менеджмент проєктів програмного забезпечення", "Pj Mgmt",
@@ -47,7 +43,8 @@ public class Main {
         try {
             getSchedule();
         } catch (IOException e) {
-            Log.e("Main::main: catching exception: ", e);
+            Log.e("Main::main: unable to get schedule");
+            Log.e("Main::main:   = catching: ", e);
         }
     }
 
@@ -55,7 +52,7 @@ public class Main {
         ChronoLocalDateTime<?> currentTime = ChronoLocalDateTime.from(LocalDateTime.now());
         ChronoLocalDate daysAhead = ChronoLocalDate.from(currentTime).plus(2, ChronoUnit.DAYS);
 
-        Document document = Jsoup.connect(DEFAULT_URL).get();
+        Document document = Request.schedule("", "ІП-20-3", null, null);
         List<Day> days = Parser.of(document)
                 .setDefaultGroup(DEFAULT_GROUP)
                 .parse();

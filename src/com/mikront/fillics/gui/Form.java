@@ -21,7 +21,9 @@ public class Form implements Dimens, Strings {
             form = formClass.getConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                  NoSuchMethodException e) {
-            Log.e("Components::load: catching exception: ", e);
+            Log.e("Components::load: unable to create form instance");
+            Log.e("Components::load:   - formClass = " + formClass);
+            Log.e("Components::load:   = catching: ", e);
             return;
         }
 
@@ -35,7 +37,7 @@ public class Form implements Dimens, Strings {
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
                  UnsupportedLookAndFeelException e) {
             Log.e("Form::onCreate: unable to set system default look and feel");
-            Log.e("Form::onCreate:   = exception: ", e);
+            Log.e("Form::onCreate:   = catching: ", e);
         }
 
         frame.setTitle(APP_NAME);
