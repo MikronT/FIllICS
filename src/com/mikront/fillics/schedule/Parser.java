@@ -117,9 +117,9 @@ public class Parser {
             lines.add(s);
         }
 
-        Log.v("///");
-        lines.forEach(s -> Log.v("\"" + s + "\""));
-        Log.v("\\\\\\");
+        Log.v("Parser::parseCell: lines = [");
+        lines.forEach(s -> Log.v("Parser::parseCell:     '" + s + "'"));
+        Log.v("Parser::parseCell: ]");
 
 
         Cell cell = new Cell(number);
@@ -144,7 +144,7 @@ public class Parser {
             }
             if (trySearchingTeacher(current, s)) continue;
 
-            Log.w("Passed all the checks: " + s);
+            Log.w("Parser::parseCell: passed checks = " + s);
         }
 
         return cell;
@@ -154,7 +154,7 @@ public class Parser {
         //Get teachers, title, and type first
         Matcher matcher = REGEX_TEACHER2_TEACHER_TITLE_TYPE.matcher(s);
         if (matcher.matches()) {
-            Log.v("Pattern: teachers    [:::]  " + s);
+            Log.v("Parser::trySearchingTitleToInitClass: teachers = " + s);
             Session current = new Session();
             current.setSubject(matcher.replaceAll("$4"));
             current.setType(matcher.replaceAll("$5"));
@@ -167,7 +167,7 @@ public class Parser {
         //Get title and type first
         matcher = REGEX_TITLE_TYPE.matcher(s);
         if (matcher.matches()) {
-            Log.v("Pattern: title-type  [:::]  " + s);
+            Log.v("Parser::trySearchingTitleToInitClass: title-type = " + s);
             Session current = new Session();
             current.setSubject(matcher.replaceAll("$1"));
             current.setType(matcher.replaceAll("$2"));
@@ -177,7 +177,7 @@ public class Parser {
         //Get title first
         matcher = REGEX_TITLE.matcher(s);
         if (matcher.matches()) {
-            Log.v("Pattern: title       [:::]  " + s);
+            Log.v("Parser::trySearchingTitleToInitClass: title = " + s);
             Session current = new Session();
             current.setSubject(matcher.replaceAll("$1"));
             return current;
@@ -200,7 +200,7 @@ public class Parser {
         for (Pattern p : List.of(REGEX_STREAM1, REGEX_STREAM2, REGEX_STREAM3)) {
             Matcher matcher = p.matcher(s);
             if (matcher.matches()) {
-                Log.v("Pattern: stream      [:::]  " + s);
+                Log.v("Parser::trySearchingStreamGroup: stream = " + s);
                 current.setGroup(matcher.replaceAll("$1"));
                 return true;
             }
@@ -213,7 +213,7 @@ public class Parser {
         for (Pattern p : List.of(REGEX_SUBGROUP1, regex_subgroup2)) {
             Matcher matcher = p.matcher(s);
             if (matcher.matches()) {
-                Log.v("Pattern: subgroup    [:::]  " + s);
+                Log.v("Parser::trySearchingSubgroup: subgroup = " + s);
                 current.setGroup(defaultGroup + "." + matcher.replaceAll("$1"));
                 return true;
             }
@@ -225,7 +225,7 @@ public class Parser {
         //Get auditory
         Matcher matcher = REGEX_AUDITORY.matcher(s);
         if (matcher.matches()) {
-            Log.v("Pattern: auditory    [:::]  " + s);
+            Log.v("Parser::trySearchingAuditory: auditory = " + s);
             current.setAuditory(matcher.replaceAll("$1"));
             return true;
         }
@@ -236,7 +236,7 @@ public class Parser {
         //Get teacher
         Matcher matcher = REGEX_TEACHER.matcher(s);
         if (matcher.matches()) {
-            Log.v("Pattern: teacher     [:::]  " + s);
+            Log.v("Parser::trySearchingTeacher: teacher = " + s);
             current.setTeacherPosition(matcher.replaceAll("$1"));
             current.setTeacher(matcher.replaceAll("$2"));
             return true;

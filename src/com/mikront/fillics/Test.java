@@ -8,7 +8,6 @@ import org.jsoup.nodes.Document;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 
@@ -17,12 +16,24 @@ public class Test {
 
 
     public static void main(String[] args) throws IOException {
-        Document document = Jsoup.parse(FILE_SCHEDULE, StandardCharsets.UTF_8.name());
+        Log.ging(true);
+        Log.level(Log.LEVEL_VERBOSE);
+
+        //Document document = Jsoup.parse(FILE_SCHEDULE, StandardCharsets.UTF_8.name());
+        Document document = Jsoup.connect("https://dekanat.nung.edu.ua/cgi-bin/timetable.cgi?n=700")
+                //.data("teacher", "")
+                .data("group", "ІП-20-3")
+                //.data("sdate", "01.08.2022")
+                //.data("edate", "01.08.2023")
+                .postDataCharset("windows-1251")
+                .post();
         List<Day> days = Parser.of(document)
                 .setDefaultGroup(Main.DEFAULT_GROUP)
                 .parse();
 
+        Log.d("Test::main: days = [");
         for (Day day : days)
-            Log.d(day);
+            Log.d("Test::main:     " + day);
+        Log.d("Test::main: ]");
     }
 }

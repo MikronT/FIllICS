@@ -47,7 +47,7 @@ public class Main {
         try {
             getSchedule();
         } catch (IOException e) {
-            Log.e("Catching exception: ", e);
+            Log.e("Main::main: catching exception: ", e);
         }
     }
 
@@ -60,12 +60,13 @@ public class Main {
                 .setDefaultGroup(DEFAULT_GROUP)
                 .parse();
 
+        Log.d("Main::getSchedule: days = [");
         CalendarData calendar = new CalendarData();
         for (Day day : days) {
             LocalDate date = day.getDate();
             if (date.isAfter(daysAhead)) break;
 
-            Log.d(day);
+            Log.d("Main::getSchedule:     " + day);
 
             for (Cell cell : day) {
                 LocalDateTime time = LocalDateTime.of(date, cell.getTime());
@@ -86,6 +87,7 @@ public class Main {
                 }
             }
         }
+        Log.d("Main::getSchedule: ]");
 
         try (var stream = new FileOutputStream(FILE_ICS)) {
             stream.write(calendar.compile().getBytes(StandardCharsets.UTF_8));
