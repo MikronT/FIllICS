@@ -82,6 +82,47 @@ public class MainForm extends Form {
         var button_request = new JButton(BUTTON_REQUEST);
 
 
+        /*
+         * Layout sketch
+         *
+         * V\H   ||||||          |||||
+         *
+         * |     ---
+         * |     000000000000000000000000000
+         * |     ---
+         * |     000000000000000000000000000
+         * ||    ---             ---
+         * ||    00000000000     00000000000
+         * |                          000000
+         */
+        layout.setHorizontalGroup(layout.createParallelGroup()
+                .addComponent(label_teacher)
+                .addComponent(comboBox_teachers)
+                .addComponent(label_group)
+                .addComponent(comboBox_groups)
+                .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup()
+                                .addComponent(label_date_from)
+                                .addComponent(spinner_date_from))
+                        .addGroup(layout.createParallelGroup()
+                                .addComponent(label_date_to)
+                                .addComponent(spinner_date_to)))
+                .addComponent(button_request)
+        );
+        layout.setVerticalGroup(layout.createSequentialGroup()
+                .addComponent(label_teacher)
+                .addComponent(comboBox_teachers)
+                .addComponent(label_group)
+                .addComponent(comboBox_groups)
+                .addGroup(layout.createParallelGroup()
+                        .addComponent(label_date_from)
+                        .addComponent(label_date_to))
+                .addGroup(layout.createParallelGroup()
+                        .addComponent(spinner_date_from)
+                        .addComponent(spinner_date_to))
+                .addComponent(button_request)
+        );
+
         Components.applyDefaults(container);
     }
 }
