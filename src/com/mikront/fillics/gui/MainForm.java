@@ -113,7 +113,7 @@ public class MainForm extends Form {
         progressBar = new JProgressBar();
         progressBar.setMaximum(PROGRESS_MAX);
         progressBar.setStringPainted(true);
-        setProgress(0);
+        resetProgress();
 
         var button = new JButton(BUTTON_REQUEST);
         button.addActionListener(buttonClickListener);
@@ -196,19 +196,28 @@ public class MainForm extends Form {
     }
 
     private void requestLists() {
-        setProgress(50);
-        var teachers = Request.teachers();
-        setProgress(PROGRESS_MAX);
-        var groups = Request.groups();
+        setProgress(50, LOADING_TEACHERS);
 
-        teachers.forEach(combo_teachers::addItem);
-        groups.forEach(combo_groups::addItem);
+        combo_teachers.setEnabled(false);
+        Request.teachers().forEach(combo_teachers::addItem);
+        combo_teachers.setEnabled(true);
 
-        setProgress(0);
+        setProgress(PROGRESS_MAX, LOADING_GROUPS);
+
+        combo_groups.setEnabled(false);
+        Request.groups().forEach(combo_groups::addItem);
+        combo_groups.setEnabled(true);
+
+        resetProgress();
     }
 
-    private void setProgress(int progress) {
-        progressBar.setString(progress <= 0 ? "" : null);
-        progressBar.setValue(Math.min(progress, PROGRESS_MAX));
+    private void resetProgress() {
+        progressBar.setValue(0);
+        progressBar.setString(LOADING_READY);
+    }
+
+    private void setProgress(int progress, String title) {
+        progressBar.setValue(progress);
+        progressBar.setString(title);
     }
 }

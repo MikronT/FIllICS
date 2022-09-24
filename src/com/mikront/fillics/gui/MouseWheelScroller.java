@@ -6,6 +6,9 @@ import java.awt.event.MouseWheelEvent;
 
 public class MouseWheelScroller {
     public static void scroll(JComboBox<?> comboBox, MouseWheelEvent event) {
+        if (!comboBox.isEnabled())
+            return;
+
         int i = comboBox.getSelectedIndex();
         int rotation = event.getWheelRotation();
 
@@ -18,6 +21,9 @@ public class MouseWheelScroller {
     }
 
     public static void scroll(JSpinner spinner, MouseWheelEvent event) {
+        if (!spinner.isEnabled())
+            return;
+
         var model = spinner.getModel();
 
         model.setValue(event.getWheelRotation() < 0 ?
