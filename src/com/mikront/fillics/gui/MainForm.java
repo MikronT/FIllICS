@@ -191,7 +191,7 @@ public class MainForm extends Form {
                 var strings = scanner.nextLine().split(";");
                 if (strings.length != 2)
                     continue;
-                map_subjects.put(strings[0], strings[1]);
+                map_subjects.put(strings[0].toLowerCase(Locale.ROOT), strings[1]);
             }
         } catch (IOException e) {
             Log.w("MainForm::requestLists: unable to load subjects map");
@@ -206,7 +206,7 @@ public class MainForm extends Form {
                 var strings = scanner.nextLine().split(";");
                 if (strings.length != 2)
                     continue;
-                map_types.put(strings[0], strings[1]);
+                map_types.put(strings[0].toLowerCase(Locale.ROOT), strings[1]);
             }
         } catch (IOException e) {
             Log.w("MainForm::requestLists: unable to load types map");
@@ -252,8 +252,8 @@ public class MainForm extends Form {
         for (Day day : days)
             for (Cell cell : day)
                 for (Session session : cell) {
-                    String subject = session.getSubject();
-                    String type = session.getType();
+                    var subject = session.getSubject().toLowerCase(Locale.ROOT);
+                    var type = session.getType().toLowerCase(Locale.ROOT);
 
                     if (map_subjects.containsKey(subject)) session.setSubject(map_subjects.get(subject));
                     if (map_types.containsKey(type)) session.setType(map_types.get(type));
