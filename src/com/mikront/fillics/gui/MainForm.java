@@ -11,6 +11,8 @@ import java.util.List;
 
 
 public class MainForm extends Form {
+    private static final String ITEM_UNSET = "";
+
     private final JPanel container = getContainer();
     private final List<String> teachers = Request.teachers();
     private final List<String> groups = Request.groups();
@@ -43,10 +45,12 @@ public class MainForm extends Form {
         var combo_teachers = newJComboBox(teachers);
         var combo_groups = newJComboBox(groups);
 
-        var model_from = new XSpinnerDateModel();
-        var spinner_from = newJSpinner(model_from);
+        combo_teachers.addItemListener(e -> combo_groups.setSelectedItem(ITEM_UNSET));
+        combo_groups.addItemListener(e -> combo_teachers.setSelectedItem(ITEM_UNSET));
 
+        var model_from = new XSpinnerDateModel();
         var model_to = new XSpinnerDateModel();
+        var spinner_from = newJSpinner(model_from);
         var spinner_to = newJSpinner(model_to);
 
         spinner_from.addChangeListener(e -> {
@@ -64,7 +68,7 @@ public class MainForm extends Form {
                 model_from.setValue(date2);
         });
 
-        var button_request = new JButton(BUTTON_REQUEST);
+        var button = new JButton(BUTTON_REQUEST);
 
         /*
          * Layout sketch
@@ -91,7 +95,7 @@ public class MainForm extends Form {
                         .addGroup(layout.createParallelGroup()
                                 .addComponent(label_to)
                                 .addComponent(spinner_to)))
-                .addComponent(button_request, GroupLayout.Alignment.TRAILING)
+                .addComponent(button, GroupLayout.Alignment.TRAILING)
         );
         layout.setVerticalGroup(layout.createSequentialGroup()
                 .addComponent(label_teacher)
@@ -107,7 +111,7 @@ public class MainForm extends Form {
                         .addComponent(spinner_from)
                         .addComponent(spinner_to))
                 .addGap(GAP)
-                .addComponent(button_request)
+                .addComponent(button)
         );
 
         Components.applyDefaults(container);
@@ -121,7 +125,7 @@ public class MainForm extends Form {
 
         box.addMouseWheelListener(e -> MouseWheelScroller.scroll(box, e));
 
-        box.addItem("");
+        box.addItem(ITEM_UNSET);
         list.forEach(box::addItem);
         return box;
     }
