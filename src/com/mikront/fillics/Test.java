@@ -14,6 +14,7 @@ import java.util.List;
 
 public class Test {
     private static final File FILE_SCHEDULE = new File("schedule.html");
+    private static final String DEFAULT_GROUP = "ІП-20-3";
 
 
     public static void main(String[] args) throws IOException {
@@ -22,7 +23,7 @@ public class Test {
 
         Document document = Jsoup.parse(FILE_SCHEDULE, StandardCharsets.UTF_8.name());
         List<Day> days = Parser.of(document)
-                .setDefaultGroup(Main.DEFAULT_GROUP)
+                .setDefaultGroup(DEFAULT_GROUP)
                 .parse();
 
         for (Day day : days)
