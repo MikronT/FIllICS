@@ -45,10 +45,14 @@ public class MainForm extends Form {
         var label_date_from = new JLabel(LABEL_DATE_FROM);
 
         var spinner_date_from = new JSpinner();
+        var model_from = new XSpinnerDateModel();
+        spinner_date_from.setModel(model_from);
 
         var label_date_to = new JLabel(LABEL_DATE_TO);
 
         var spinner_date_to = new JSpinner();
+        var model_to = new XSpinnerDateModel();
+        spinner_date_to.setModel(model_to);
 
 
         var button_request = new JButton(BUTTON_REQUEST);
