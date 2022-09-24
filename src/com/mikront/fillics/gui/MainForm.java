@@ -21,11 +21,11 @@ import java.util.List;
 public class MainForm extends Form {
     private static final File FILE_ICS = new File("import.ics");
     private static final String ITEM_UNSET = "";
+    private static final int PROGRESS_MAX = 100;
 
-    private JComboBox<String> combo_groups;
-    private JComboBox<String> combo_teachers;
-    private XSpinnerDateModel model_from;
-    private XSpinnerDateModel model_to;
+    private JComboBox<String> combo_groups, combo_teachers;
+    private JProgressBar progressBar;
+    private XSpinnerDateModel model_from, model_to;
     private final JPanel container = getContainer();
     private final List<String> groups = Request.groups();
     private final List<String> teachers = Request.teachers();
@@ -112,21 +112,26 @@ public class MainForm extends Form {
                 model_from.setValue(date2);
         });
 
+        progressBar = new JProgressBar();
+        progressBar.setMaximum(PROGRESS_MAX);
+        progressBar.setString(null);
+        progressBar.setStringPainted(true);
+
         var button = new JButton(BUTTON_REQUEST);
         button.addActionListener(buttonClickListener);
 
         /*
          * Layout sketch
          *
-         * V\H   ||||||          |||||
-         *
+         * H: || || [(||) (||)] [||]
+         * V:
          * |     ---
          * |     000000000000000000000000000
          * |     ---
          * |     000000000000000000000000000
-         * ||    ---             ---
-         * ||    00000000000     00000000000
-         * |                          000000
+         * ||    ---            ---
+         * ||    000000000000   000000000000
+         * ||    ==================   000000
          */
         layout.setHorizontalGroup(layout.createParallelGroup()
                 .addComponent(label_teacher)
@@ -140,7 +145,9 @@ public class MainForm extends Form {
                         .addGroup(layout.createParallelGroup()
                                 .addComponent(label_to)
                                 .addComponent(spinner_to)))
-                .addComponent(button, GroupLayout.Alignment.TRAILING)
+                .addGroup(layout.createSequentialGroup()
+                        .addComponent(progressBar)
+                        .addComponent(button))
         );
         layout.setVerticalGroup(layout.createSequentialGroup()
                 .addComponent(label_teacher)
@@ -156,7 +163,9 @@ public class MainForm extends Form {
                         .addComponent(spinner_from)
                         .addComponent(spinner_to))
                 .addGap(GAP)
-                .addComponent(button)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                        .addComponent(progressBar)
+                        .addComponent(button))
         );
 
         Components.applyDefaults(container);
@@ -180,5 +189,11 @@ public class MainForm extends Form {
         spinner.setModel(model);
         spinner.addMouseWheelListener(e -> MouseWheelScroller.scroll(spinner, e));
         return spinner;
+    }
+
+    private void setProgress(int progress) {
+        if (progress < 0)
+            progressBar.setString(null);
+        progressBar.setValue(Math.min(progress, PROGRESS_MAX));
     }
 }
