@@ -37,41 +37,41 @@ public class MainForm extends Form {
 
         var label_teacher = new JLabel(LABEL_TEACHER);
 
-        var comboBox_teachers = new JComboBox<String>();
-        comboBox_teachers.addItem("");
-        teachers.forEach(comboBox_teachers::addItem);
-        comboBox_teachers.addMouseWheelListener(e -> MouseWheelScroller.scroll(comboBox_teachers, e));
+        var combo_teachers = new JComboBox<String>();
+        combo_teachers.addItem("");
+        teachers.forEach(combo_teachers::addItem);
+        combo_teachers.addMouseWheelListener(e -> MouseWheelScroller.scroll(combo_teachers, e));
 
         var label_group = new JLabel(LABEL_GROUP);
 
-        var comboBox_groups = new JComboBox<String>();
-        comboBox_groups.addItem("");
-        groups.forEach(comboBox_groups::addItem);
-        comboBox_groups.addMouseWheelListener(e -> MouseWheelScroller.scroll(comboBox_groups, e));
+        var combo_groups = new JComboBox<String>();
+        combo_groups.addItem("");
+        groups.forEach(combo_groups::addItem);
+        combo_groups.addMouseWheelListener(e -> MouseWheelScroller.scroll(combo_groups, e));
 
 
-        var label_date_from = new JLabel(LABEL_DATE_FROM);
+        var label_from = new JLabel(LABEL_DATE_FROM);
 
-        var spinner_date_from = new JSpinner();
+        var spinner_from = new JSpinner();
         var model_from = new XSpinnerDateModel();
-        spinner_date_from.setModel(model_from);
-        spinner_date_from.addMouseWheelListener(e -> MouseWheelScroller.scroll(spinner_date_from, e));
+        spinner_from.setModel(model_from);
+        spinner_from.addMouseWheelListener(e -> MouseWheelScroller.scroll(spinner_from, e));
 
-        var label_date_to = new JLabel(LABEL_DATE_TO);
+        var label_to = new JLabel(LABEL_DATE_TO);
 
-        var spinner_date_to = new JSpinner();
+        var spinner_to = new JSpinner();
         var model_to = new XSpinnerDateModel();
-        spinner_date_to.setModel(model_to);
-        spinner_date_to.addMouseWheelListener(e -> MouseWheelScroller.scroll(spinner_date_to, e));
+        spinner_to.setModel(model_to);
+        spinner_to.addMouseWheelListener(e -> MouseWheelScroller.scroll(spinner_to, e));
 
-        spinner_date_from.addChangeListener(e -> {
+        spinner_from.addChangeListener(e -> {
             LocalDate
                     date1 = model_from.getDate(),
                     date2 = model_to.getDate();
             if (date1.compareTo(date2) > 0)
                 model_to.setValue(date1);
         });
-        spinner_date_to.addChangeListener(e -> {
+        spinner_to.addChangeListener(e -> {
             LocalDate
                     date1 = model_from.getDate(),
                     date2 = model_to.getDate();
@@ -98,31 +98,31 @@ public class MainForm extends Form {
          */
         layout.setHorizontalGroup(layout.createParallelGroup()
                 .addComponent(label_teacher)
-                .addComponent(comboBox_teachers)
+                .addComponent(combo_teachers)
                 .addComponent(label_group)
-                .addComponent(comboBox_groups)
+                .addComponent(combo_groups)
                 .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup()
-                                .addComponent(label_date_from)
-                                .addComponent(spinner_date_from))
+                                .addComponent(label_from)
+                                .addComponent(spinner_from))
                         .addGroup(layout.createParallelGroup()
-                                .addComponent(label_date_to)
-                                .addComponent(spinner_date_to)))
+                                .addComponent(label_to)
+                                .addComponent(spinner_to)))
                 .addComponent(button_request, GroupLayout.Alignment.TRAILING)
         );
         layout.setVerticalGroup(layout.createSequentialGroup()
                 .addComponent(label_teacher)
-                .addComponent(comboBox_teachers)
+                .addComponent(combo_teachers)
                 .addGap(GAP)
                 .addComponent(label_group)
-                .addComponent(comboBox_groups)
+                .addComponent(combo_groups)
                 .addGap(GAP)
                 .addGroup(layout.createParallelGroup()
-                        .addComponent(label_date_from)
-                        .addComponent(label_date_to))
+                        .addComponent(label_from)
+                        .addComponent(label_to))
                 .addGroup(layout.createParallelGroup()
-                        .addComponent(spinner_date_from)
-                        .addComponent(spinner_date_to))
+                        .addComponent(spinner_from)
+                        .addComponent(spinner_to))
                 .addGap(GAP)
                 .addComponent(button_request)
         );
