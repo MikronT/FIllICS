@@ -14,10 +14,10 @@ import java.util.regex.Pattern;
 
 
 public class Parser {
+    public static final Pattern REGEX_NEWLINE = Pattern.compile("[\r\n]+");
     private static final Pattern
             REGEX_AUDITORY = Pattern.compile(".*(\\d+\\.\\d+)\\.ауд\\."),
             REGEX_LINK = Pattern.compile(".*(http\\S+).*"),
-            REGEX_NEWLINE = Pattern.compile("[\r\n]+"),
             REGEX_TEACHER = Pattern.compile("^ (\\S+) (\\S+ \\S+ \\S+).*"),
             REGEX_TEACHER2_TEACHER_TITLE_TYPE = Pattern.compile("^Увага! Заміна! (.+) замість: (\\S+) (\\S+ \\S+ \\S+) (.+) \\((.+)\\)$"),
             REGEX_TITLE = Pattern.compile("^([^h\\s].+)$"),

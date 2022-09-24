@@ -9,14 +9,12 @@ import de.orbitalcomputer.JComboBoxAutoCompletion;
 import org.jsoup.nodes.Document;
 
 import javax.swing.*;
-import java.awt.*;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.List;
 import java.util.*;
 
 
@@ -48,7 +46,7 @@ public class MainForm extends Form {
         super.onCreate();
 
         var frame = getFrame();
-        frame.setMinimumSize(new Dimension(320, 280));
+        frame.setMinimumSize(FORM_MAIN);
 
         var layout = new GroupLayout(container);
         container.setLayout(layout);
@@ -261,21 +259,21 @@ public class MainForm extends Form {
 
         var exclusions = field_exclusions.getText()
                 .toLowerCase(Locale.ROOT)
-                .split(Concat.LINE_SEPARATOR);
-        Log.d("MainForm::requestSchedule: exclusions = " + Arrays.toString(exclusions));
+                .split(Parser.REGEX_NEWLINE.pattern());
 
         CalendarData data = new CalendarData();
         for (Day day : days)
             for (Cell cell : day)
                 for (Session session : cell) {
-                    var subject = session.getSubject().toLowerCase(Locale.ROOT);
-                    var type = session.getType().toLowerCase(Locale.ROOT);
+                    var sSubject = session.getSubject().toLowerCase(Locale.ROOT);
+                    var sType = session.getType().toLowerCase(Locale.ROOT);
+                    var sGroup = session.getGroup().toLowerCase(Locale.ROOT);
 
-                    if (Arrays.stream(exclusions).anyMatch(subject::contains))
-                        continue;
+                    if (Arrays.stream(exclusions).anyMatch(sSubject::contains)) continue;
+                    if (Arrays.stream(exclusions).anyMatch(sGroup::contains)) continue;
 
-                    if (map_subjects.containsKey(subject)) session.setSubject(map_subjects.get(subject));
-                    if (map_types.containsKey(type)) session.setType(map_types.get(type));
+                    if (map_subjects.containsKey(sSubject)) session.setSubject(map_subjects.get(sSubject));
+                    if (map_types.containsKey(sType)) session.setType(map_types.get(sType));
 
                     data.addEvent(session.toEvent(day, cell));
                 }
