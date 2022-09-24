@@ -24,7 +24,7 @@ public class MainForm extends Form {
         super.onCreate();
 
         var frame = getFrame();
-        frame.setMinimumSize(new Dimension(300, 240));
+        frame.setMinimumSize(new Dimension(320, 280));
 
         var layout = new GroupLayout(container);
         container.setLayout(layout);
@@ -114,14 +114,17 @@ public class MainForm extends Form {
         layout.setVerticalGroup(layout.createSequentialGroup()
                 .addComponent(label_teacher)
                 .addComponent(comboBox_teachers)
+                .addGap(GAP)
                 .addComponent(label_group)
                 .addComponent(comboBox_groups)
+                .addGap(GAP)
                 .addGroup(layout.createParallelGroup()
                         .addComponent(label_date_from)
                         .addComponent(label_date_to))
                 .addGroup(layout.createParallelGroup()
                         .addComponent(spinner_date_from)
                         .addComponent(spinner_date_to))
+                .addGap(GAP)
                 .addComponent(button_request)
         );
 
