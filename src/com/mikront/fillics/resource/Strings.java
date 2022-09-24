@@ -8,7 +8,8 @@ public interface Strings {
     String LABEL_DATE_FROM = "Date from";
     String LABEL_DATE_TO = "Date to";
     String LABEL_EXCLUSIONS = "Exclusions";
-    String BUTTON_REQUEST = "Request";
+    String BUTTON_EXPORT = "Export";
+    String CHECK_OPTIONAL = "Optional";
 
     String STEP_READY = "Ready";
     String STEP_GETTING_TEACHERS = "Getting teachers";

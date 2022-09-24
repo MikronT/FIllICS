@@ -2,7 +2,6 @@ package com.mikront.fillics.gui;
 
 import com.mikront.fillics.ics.CalendarData;
 import com.mikront.fillics.schedule.*;
-import com.mikront.util.Concat;
 import com.mikront.util.Log;
 import com.mikront.util.Utils;
 import de.orbitalcomputer.JComboBoxAutoCompletion;
@@ -25,6 +24,7 @@ public class MainForm extends Form {
     private static final String ITEM_UNSET = "";
     private static final int PROGRESS_MAX = 100;
 
+    private JCheckBox checkBox_optional;
     private JComboBox<String> combo_groups, combo_teachers;
     private JProgressBar progressBar;
     private JTextArea field_exclusions;
@@ -90,10 +90,12 @@ public class MainForm extends Form {
         progressBar.setStringPainted(true);
         resetProgress();
 
-        var button = new JButton(BUTTON_REQUEST);
-        button.addActionListener(e -> new Thread(this::requestSchedule).start());
+        var button_export = new JButton(BUTTON_EXPORT);
+        button_export.addActionListener(e -> new Thread(this::requestSchedule).start());
 
         field_exclusions = new JTextArea();
+
+        checkBox_optional = new JCheckBox(CHECK_OPTIONAL, true);
 
         /*
          * Layout sketch
@@ -104,7 +106,7 @@ public class MainForm extends Form {
          * 000000000000000000000000000   0000000000000000
          * ---            ---            0000000000000000
          * 000000000000   000000000000   0000000000000000
-         * ==================   000000   0000000000000000
+         * ===========================   [x]---    000000
          */
         layout.setHorizontalGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup()
@@ -119,35 +121,37 @@ public class MainForm extends Form {
                                 .addGroup(layout.createParallelGroup()
                                         .addComponent(label_to)
                                         .addComponent(spinner_to)))
-                        .addGroup(layout.createSequentialGroup()
-                                .addComponent(progressBar)
-                                .addComponent(button)))
+                        .addComponent(progressBar))
                 .addGap(GAP)
                 .addGroup(layout.createParallelGroup()
                         .addComponent(label_exclusions)
-                        .addComponent(field_exclusions, FIELD_WIDTH, FIELD_WIDTH, GroupLayout.DEFAULT_SIZE))
+                        .addComponent(field_exclusions, FIELD_WIDTH, FIELD_WIDTH, GroupLayout.DEFAULT_SIZE)
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(checkBox_optional, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(button_export)))
         );
         layout.setVerticalGroup(layout.createParallelGroup()
                 .addGroup(layout.createSequentialGroup()
                         .addComponent(label_teacher)
                         .addComponent(combo_teachers)
-                        .addGap(GAP)
                         .addComponent(label_group)
                         .addComponent(combo_groups)
-                        .addGap(GAP)
                         .addGroup(layout.createParallelGroup()
-                                .addComponent(label_from)
-                                .addComponent(label_to))
-                        .addGroup(layout.createParallelGroup()
-                                .addComponent(spinner_from)
-                                .addComponent(spinner_to))
+                                .addGroup(layout.createSequentialGroup()
+                                        .addComponent(label_from)
+                                        .addComponent(spinner_from))
+                                .addGroup(layout.createSequentialGroup()
+                                        .addComponent(label_to)
+                                        .addComponent(spinner_to)))
                         .addGap(GAP)
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                                .addComponent(progressBar)
-                                .addComponent(button)))
+                        .addComponent(progressBar))
                 .addGroup(layout.createSequentialGroup()
                         .addComponent(label_exclusions)
-                        .addComponent(field_exclusions))
+                        .addComponent(field_exclusions)
+                        .addGap(GAP)
+                        .addGroup(layout.createParallelGroup()
+                                .addComponent(checkBox_optional)
+                                .addComponent(button_export)))
         );
 
         Components.applyDefaults(container);
@@ -265,6 +269,10 @@ public class MainForm extends Form {
         for (Day day : days)
             for (Cell cell : day)
                 for (Session session : cell) {
+                    if (session.isOptional())
+                        if (!checkBox_optional.isSelected())
+                            continue;
+
                     var sSubject = session.getSubject().toLowerCase(Locale.ROOT);
                     var sType = session.getType().toLowerCase(Locale.ROOT);
                     var sGroup = session.getGroup().toLowerCase(Locale.ROOT);
