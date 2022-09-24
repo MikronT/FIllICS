@@ -5,7 +5,9 @@ import com.mikront.util.Log;
 
 import javax.swing.*;
 import java.awt.*;
+import java.text.Collator;
 import java.time.LocalDate;
+import java.util.Locale;
 
 
 public class MainForm extends Form {
@@ -34,12 +36,16 @@ public class MainForm extends Form {
 
         var label_teacher = new JLabel(LABEL_TEACHER);
 
+        Collator collator = Collator.getInstance(new Locale("uk", "UA"));
+
         var comboBox_teachers = new JComboBox<String>();
         comboBox_teachers.addItem("");
-        Request.teachers().stream()
+        Request.teachers()
+                .stream()
                 .filter(s -> !s.contains("!")) //Get rid of fired teachers
                 .filter(s -> !s.contains("Вакансія")) //Get rid of vacancies
                 .map(s -> s.replace("*", "")) //Get rid of asterisks
+                .sorted(collator::compare)
                 .forEach(comboBox_teachers::addItem);
         comboBox_teachers.addMouseWheelListener(e -> MouseWheelScroller.scroll(comboBox_teachers, e));
 
@@ -47,7 +53,10 @@ public class MainForm extends Form {
 
         var comboBox_groups = new JComboBox<String>();
         comboBox_groups.addItem("");
-        Request.groups().forEach(comboBox_groups::addItem);
+        Request.groups()
+                .stream()
+                .sorted(collator::compare)
+                .forEach(comboBox_groups::addItem);
         comboBox_groups.addMouseWheelListener(e -> MouseWheelScroller.scroll(comboBox_groups, e));
 
 
