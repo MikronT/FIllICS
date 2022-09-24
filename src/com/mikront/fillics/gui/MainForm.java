@@ -27,8 +27,6 @@ public class MainForm extends Form {
     private JProgressBar progressBar;
     private XSpinnerDateModel model_from, model_to;
     private final JPanel container = getContainer();
-    private final List<String> groups = Request.groups();
-    private final List<String> teachers = Request.teachers();
     private final ActionListener buttonClickListener = e -> {
         var teacher = (String) combo_teachers.getSelectedItem();
         var group = (String) combo_groups.getSelectedItem();
@@ -86,8 +84,8 @@ public class MainForm extends Form {
         var label_from = new JLabel(LABEL_DATE_FROM);
         var label_to = new JLabel(LABEL_DATE_TO);
 
-        combo_teachers = newJComboBox(teachers);
-        combo_groups = newJComboBox(groups);
+        combo_teachers = newJComboBox();
+        combo_groups = newJComboBox();
 
         combo_teachers.addItemListener(e -> combo_groups.setSelectedItem(ITEM_UNSET));
         combo_groups.addItemListener(e -> combo_teachers.setSelectedItem(ITEM_UNSET));
@@ -114,8 +112,8 @@ public class MainForm extends Form {
 
         progressBar = new JProgressBar();
         progressBar.setMaximum(PROGRESS_MAX);
-        progressBar.setString(null);
         progressBar.setStringPainted(true);
+        setProgress(0);
 
         var button = new JButton(BUTTON_REQUEST);
         button.addActionListener(buttonClickListener);
@@ -171,8 +169,15 @@ public class MainForm extends Form {
         Components.applyDefaults(container);
     }
 
+    @Override
+    protected void inBackground() {
+        super.inBackground();
 
-    private static JComboBox<String> newJComboBox(List<String> list) {
+        requestLists();
+    }
+
+
+    private static JComboBox<String> newJComboBox() {
         var box = new JComboBox<String>();
         box.setEditable(true);
         JComboBoxAutoCompletion.enable(box);
@@ -180,7 +185,6 @@ public class MainForm extends Form {
         box.addMouseWheelListener(e -> MouseWheelScroller.scroll(box, e));
 
         box.addItem(ITEM_UNSET);
-        list.forEach(box::addItem);
         return box;
     }
 
@@ -191,9 +195,20 @@ public class MainForm extends Form {
         return spinner;
     }
 
+    private void requestLists() {
+        setProgress(50);
+        var teachers = Request.teachers();
+        setProgress(PROGRESS_MAX);
+        var groups = Request.groups();
+
+        teachers.forEach(combo_teachers::addItem);
+        groups.forEach(combo_groups::addItem);
+
+        setProgress(0);
+    }
+
     private void setProgress(int progress) {
-        if (progress < 0)
-            progressBar.setString(null);
+        progressBar.setString(progress <= 0 ? "" : null);
         progressBar.setValue(Math.min(progress, PROGRESS_MAX));
     }
 }

@@ -52,6 +52,12 @@ public class Form implements Dimens, Strings {
     public void show() {
         frame.pack();
         frame.setVisible(true);
+
+        Thread thread = new Thread(this::inBackground);
+        thread.start();
+    }
+
+    protected void inBackground() {
     }
 
 
