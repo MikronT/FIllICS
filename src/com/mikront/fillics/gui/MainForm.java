@@ -2,6 +2,7 @@ package com.mikront.fillics.gui;
 
 import com.mikront.fillics.schedule.Request;
 import com.mikront.util.Log;
+import de.orbitalcomputer.JComboBoxAutoCompletion;
 
 import javax.swing.*;
 import java.awt.*;
@@ -115,6 +116,9 @@ public class MainForm extends Form {
 
     private static JComboBox<String> newJComboBox(List<String> list) {
         var box = new JComboBox<String>();
+        box.setEditable(true);
+        JComboBoxAutoCompletion.enable(box);
+
         box.addMouseWheelListener(e -> MouseWheelScroller.scroll(box, e));
 
         box.addItem("");
