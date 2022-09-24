@@ -5,6 +5,7 @@ import com.mikront.util.Log;
 
 import javax.swing.*;
 import java.awt.*;
+import java.time.LocalDate;
 
 
 public class MainForm extends Form {
@@ -53,6 +54,29 @@ public class MainForm extends Form {
         var spinner_date_to = new JSpinner();
         var model_to = new XSpinnerDateModel();
         spinner_date_to.setModel(model_to);
+
+        spinner_date_from.addChangeListener(e -> {
+            LocalDate
+                    date1 = model_from.getDate(),
+                    date2 = model_to.getDate();
+            if (date1.compareTo(date2) > 0)
+                model_to.setValue(date1);
+        });
+        spinner_date_to.addChangeListener(e -> {
+            LocalDate
+                    date1 = model_from.getDate(),
+                    date2 = model_to.getDate();
+            if (date1.compareTo(date2) > 0)
+                model_from.setValue(date2);
+        });
+        spinner_date_from.addMouseWheelListener(e ->
+                model_from.setValue(e.getWheelRotation() < 0 ?
+                        model_from.getNextValue() :
+                        model_from.getPreviousValue()));
+        spinner_date_to.addMouseWheelListener(e ->
+                model_to.setValue(e.getWheelRotation() < 0 ?
+                        model_to.getNextValue() :
+                        model_to.getPreviousValue()));
 
 
         var button_request = new JButton(BUTTON_REQUEST);
