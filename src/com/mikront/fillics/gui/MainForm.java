@@ -34,35 +34,19 @@ public class MainForm extends Form {
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
 
-
         var label_teacher = new JLabel(LABEL_TEACHER);
-
-        var combo_teachers = new JComboBox<String>();
-        combo_teachers.addItem("");
-        teachers.forEach(combo_teachers::addItem);
-        combo_teachers.addMouseWheelListener(e -> MouseWheelScroller.scroll(combo_teachers, e));
-
         var label_group = new JLabel(LABEL_GROUP);
-
-        var combo_groups = new JComboBox<String>();
-        combo_groups.addItem("");
-        groups.forEach(combo_groups::addItem);
-        combo_groups.addMouseWheelListener(e -> MouseWheelScroller.scroll(combo_groups, e));
-
-
         var label_from = new JLabel(LABEL_DATE_FROM);
-
-        var spinner_from = new JSpinner();
-        var model_from = new XSpinnerDateModel();
-        spinner_from.setModel(model_from);
-        spinner_from.addMouseWheelListener(e -> MouseWheelScroller.scroll(spinner_from, e));
-
         var label_to = new JLabel(LABEL_DATE_TO);
 
-        var spinner_to = new JSpinner();
+        var combo_teachers = newJComboBox(teachers);
+        var combo_groups = newJComboBox(groups);
+
+        var model_from = new XSpinnerDateModel();
+        var spinner_from = newJSpinner(model_from);
+
         var model_to = new XSpinnerDateModel();
-        spinner_to.setModel(model_to);
-        spinner_to.addMouseWheelListener(e -> MouseWheelScroller.scroll(spinner_to, e));
+        var spinner_to = newJSpinner(model_to);
 
         spinner_from.addChangeListener(e -> {
             LocalDate
@@ -79,9 +63,7 @@ public class MainForm extends Form {
                 model_from.setValue(date2);
         });
 
-
         var button_request = new JButton(BUTTON_REQUEST);
-
 
         /*
          * Layout sketch
@@ -128,5 +110,22 @@ public class MainForm extends Form {
         );
 
         Components.applyDefaults(container);
+    }
+
+
+    private static JComboBox<String> newJComboBox(List<String> list) {
+        var box = new JComboBox<String>();
+        box.addMouseWheelListener(e -> MouseWheelScroller.scroll(box, e));
+
+        box.addItem("");
+        list.forEach(box::addItem);
+        return box;
+    }
+
+    private static JSpinner newJSpinner(XSpinnerDateModel model) {
+        var spinner = new JSpinner();
+        spinner.setModel(model);
+        spinner.addMouseWheelListener(e -> MouseWheelScroller.scroll(spinner, e));
+        return spinner;
     }
 }
