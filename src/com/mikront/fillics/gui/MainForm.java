@@ -1,21 +1,65 @@
 package com.mikront.fillics.gui;
 
-import com.mikront.fillics.schedule.Request;
+import com.mikront.fillics.ics.CalendarData;
+import com.mikront.fillics.schedule.*;
 import com.mikront.util.Log;
+import com.mikront.util.Utils;
 import de.orbitalcomputer.JComboBoxAutoCompletion;
+import org.jsoup.nodes.Document;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.List;
 
 
 public class MainForm extends Form {
+    private static final File FILE_ICS = new File("import.ics");
     private static final String ITEM_UNSET = "";
 
+    private JComboBox<String> combo_groups;
+    private JComboBox<String> combo_teachers;
+    private XSpinnerDateModel model_from;
+    private XSpinnerDateModel model_to;
     private final JPanel container = getContainer();
-    private final List<String> teachers = Request.teachers();
     private final List<String> groups = Request.groups();
+    private final List<String> teachers = Request.teachers();
+    private final ActionListener buttonClickListener = e -> {
+        var teacher = (String) combo_teachers.getSelectedItem();
+        var group = (String) combo_groups.getSelectedItem();
+
+        if (Utils.isEmpty(teacher) && Utils.isEmpty(group))
+            return;
+
+        Document doc = Request.schedule(
+                teacher,
+                group,
+                model_from.getDate(),
+                model_to.getDate());
+
+        List<Day> days = Parser.of(doc)
+                .setDefaultGroup(group)
+                .parse();
+
+        CalendarData data = new CalendarData();
+        for (Day day : days)
+            for (Cell cell : day)
+                for (Session session : cell)
+                    data.addEvent(session.toEvent(day, cell));
+
+        try (var stream = new FileOutputStream(FILE_ICS)) {
+            stream.write(data.compile().getBytes(StandardCharsets.UTF_8));
+        } catch (IOException ex) {
+            Log.e("MainForm: buttonClickListener-> unable to write file");
+            Log.e("MainForm: buttonClickListener->   - file = " + FILE_ICS);
+            Log.e("MainForm: buttonClickListener->   = catching: ", e);
+        }
+    };
 
 
     public static void main(String[] args) {
@@ -42,14 +86,14 @@ public class MainForm extends Form {
         var label_from = new JLabel(LABEL_DATE_FROM);
         var label_to = new JLabel(LABEL_DATE_TO);
 
-        var combo_teachers = newJComboBox(teachers);
-        var combo_groups = newJComboBox(groups);
+        combo_teachers = newJComboBox(teachers);
+        combo_groups = newJComboBox(groups);
 
         combo_teachers.addItemListener(e -> combo_groups.setSelectedItem(ITEM_UNSET));
         combo_groups.addItemListener(e -> combo_teachers.setSelectedItem(ITEM_UNSET));
 
-        var model_from = new XSpinnerDateModel();
-        var model_to = new XSpinnerDateModel();
+        model_from = new XSpinnerDateModel();
+        model_to = new XSpinnerDateModel();
         var spinner_from = newJSpinner(model_from);
         var spinner_to = newJSpinner(model_to);
 
@@ -69,6 +113,7 @@ public class MainForm extends Form {
         });
 
         var button = new JButton(BUTTON_REQUEST);
+        button.addActionListener(buttonClickListener);
 
         /*
          * Layout sketch
