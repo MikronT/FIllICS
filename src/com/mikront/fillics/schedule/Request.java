@@ -3,20 +3,22 @@ package com.mikront.fillics.schedule;
 import com.mikront.util.Log;
 import com.mikront.util.Utils;
 import org.jetbrains.annotations.Nullable;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
+import java.text.Collator;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 
 public class Request {
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
+    private static final Collator COLLATOR = Collator.getInstance(new Locale("uk", "UA"));
+    private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final String URL = "https://dekanat.nung.edu.ua/cgi-bin/timetable.cgi";
 
 
@@ -33,10 +35,15 @@ public class Request {
         }
 
         JSONObject root = new JSONObject(doc.wholeText());
-        JSONArray array = root.getJSONArray("suggestions");
-        array.forEach(o -> out.add(o.toString()));
-
-        return out;
+        return root.getJSONArray("suggestions")
+                .toList()
+                .stream()
+                .map(Object::toString)
+                .filter(s -> !s.contains("!")) //Get rid of fired teachers
+                .filter(s -> !s.contains("Вакансія")) //Get rid of vacancies
+                .map(s -> s.replace("*", "")) //Get rid of asterisks
+                .sorted(COLLATOR::compare)
+                .toList();
     }
 
     public static List<String> groups() {
@@ -52,10 +59,12 @@ public class Request {
         }
 
         JSONObject root = new JSONObject(doc.wholeText());
-        JSONArray array = root.getJSONArray("suggestions");
-        array.forEach(o -> out.add(o.toString()));
-
-        return out;
+        return root.getJSONArray("suggestions")
+                .toList()
+                .stream()
+                .map(Object::toString)
+                .sorted(COLLATOR::compare)
+                .toList();
     }
 
     @Nullable
@@ -67,9 +76,9 @@ public class Request {
         if (Utils.notEmpty(group))
             connection = connection.data("group", group);
         if (from != null)
-            connection = connection.data("sdate", from.format(formatter));
+            connection = connection.data("sdate", from.format(FORMATTER));
         if (to != null)
-            connection = connection.data("edate", to.format(formatter));
+            connection = connection.data("edate", to.format(FORMATTER));
 
         try {
             return connection
