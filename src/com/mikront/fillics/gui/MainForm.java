@@ -2,6 +2,7 @@ package com.mikront.fillics.gui;
 
 import com.mikront.fillics.ics.CalendarData;
 import com.mikront.fillics.schedule.*;
+import com.mikront.util.Concat;
 import com.mikront.util.Log;
 import com.mikront.util.Utils;
 import de.orbitalcomputer.JComboBoxAutoCompletion;
@@ -15,9 +16,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 
 public class MainForm extends Form {
@@ -29,6 +29,7 @@ public class MainForm extends Form {
 
     private JComboBox<String> combo_groups, combo_teachers;
     private JProgressBar progressBar;
+    private JTextArea field_exclusions;
     private XSpinnerDateModel model_from, model_to;
     private final HashMap<String, String> map_subjects = new HashMap<>();
     private final HashMap<String, String> map_types = new HashMap<>();
@@ -58,6 +59,7 @@ public class MainForm extends Form {
         var label_group = new JLabel(LABEL_GROUP);
         var label_from = new JLabel(LABEL_DATE_FROM);
         var label_to = new JLabel(LABEL_DATE_TO);
+        var label_exclusions = new JLabel(LABEL_EXCLUSIONS);
 
         combo_teachers = newJComboBox();
         combo_teachers.addItemListener(e -> combo_groups.setSelectedItem(ITEM_UNSET));
@@ -93,52 +95,61 @@ public class MainForm extends Form {
         var button = new JButton(BUTTON_REQUEST);
         button.addActionListener(e -> new Thread(this::requestSchedule).start());
 
+        field_exclusions = new JTextArea();
+
         /*
          * Layout sketch
          *
-         * H: || || [(||) (||)] [||]
-         * V:
-         * |     ---
-         * |     000000000000000000000000000
-         * |     ---
-         * |     000000000000000000000000000
-         * ||    ---            ---
-         * ||    000000000000   000000000000
-         * ||    ==================   000000
+         * ---                           ---
+         * 000000000000000000000000000   0000000000000000
+         * ---                           0000000000000000
+         * 000000000000000000000000000   0000000000000000
+         * ---            ---            0000000000000000
+         * 000000000000   000000000000   0000000000000000
+         * ==================   000000   0000000000000000
          */
-        layout.setHorizontalGroup(layout.createParallelGroup()
-                .addComponent(label_teacher)
-                .addComponent(combo_teachers)
-                .addComponent(label_group)
-                .addComponent(combo_groups)
+        layout.setHorizontalGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup()
+                        .addComponent(label_teacher)
+                        .addComponent(combo_teachers, COMBO_WIDTH, COMBO_WIDTH, GroupLayout.DEFAULT_SIZE)
+                        .addComponent(label_group)
+                        .addComponent(combo_groups)
+                        .addGroup(layout.createSequentialGroup()
+                                .addGroup(layout.createParallelGroup()
+                                        .addComponent(label_from)
+                                        .addComponent(spinner_from))
+                                .addGroup(layout.createParallelGroup()
+                                        .addComponent(label_to)
+                                        .addComponent(spinner_to)))
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(progressBar)
+                                .addComponent(button)))
+                .addGap(GAP)
+                .addGroup(layout.createParallelGroup()
+                        .addComponent(label_exclusions)
+                        .addComponent(field_exclusions, FIELD_WIDTH, FIELD_WIDTH, GroupLayout.DEFAULT_SIZE))
+        );
+        layout.setVerticalGroup(layout.createParallelGroup()
                 .addGroup(layout.createSequentialGroup()
+                        .addComponent(label_teacher)
+                        .addComponent(combo_teachers)
+                        .addGap(GAP)
+                        .addComponent(label_group)
+                        .addComponent(combo_groups)
+                        .addGap(GAP)
                         .addGroup(layout.createParallelGroup()
                                 .addComponent(label_from)
-                                .addComponent(spinner_from))
+                                .addComponent(label_to))
                         .addGroup(layout.createParallelGroup()
-                                .addComponent(label_to)
-                                .addComponent(spinner_to)))
+                                .addComponent(spinner_from)
+                                .addComponent(spinner_to))
+                        .addGap(GAP)
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                                .addComponent(progressBar)
+                                .addComponent(button)))
                 .addGroup(layout.createSequentialGroup()
-                        .addComponent(progressBar)
-                        .addComponent(button))
-        );
-        layout.setVerticalGroup(layout.createSequentialGroup()
-                .addComponent(label_teacher)
-                .addComponent(combo_teachers)
-                .addGap(GAP)
-                .addComponent(label_group)
-                .addComponent(combo_groups)
-                .addGap(GAP)
-                .addGroup(layout.createParallelGroup()
-                        .addComponent(label_from)
-                        .addComponent(label_to))
-                .addGroup(layout.createParallelGroup()
-                        .addComponent(spinner_from)
-                        .addComponent(spinner_to))
-                .addGap(GAP)
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                        .addComponent(progressBar)
-                        .addComponent(button))
+                        .addComponent(label_exclusions)
+                        .addComponent(field_exclusions))
         );
 
         Components.applyDefaults(container);
@@ -248,12 +259,20 @@ public class MainForm extends Form {
                 .setDefaultGroup(group)
                 .parse();
 
+        var exclusions = field_exclusions.getText()
+                .toLowerCase(Locale.ROOT)
+                .split(Concat.LINE_SEPARATOR);
+        Log.d("MainForm::requestSchedule: exclusions = " + Arrays.toString(exclusions));
+
         CalendarData data = new CalendarData();
         for (Day day : days)
             for (Cell cell : day)
                 for (Session session : cell) {
                     var subject = session.getSubject().toLowerCase(Locale.ROOT);
                     var type = session.getType().toLowerCase(Locale.ROOT);
+
+                    if (Arrays.stream(exclusions).anyMatch(subject::contains))
+                        continue;
 
                     if (map_subjects.containsKey(subject)) session.setSubject(map_subjects.get(subject));
                     if (map_types.containsKey(type)) session.setType(map_types.get(type));

@@ -7,6 +7,7 @@ public interface Strings {
     String LABEL_GROUP = "Group";
     String LABEL_DATE_FROM = "Date from";
     String LABEL_DATE_TO = "Date to";
+    String LABEL_EXCLUSIONS = "Exclusions";
     String BUTTON_REQUEST = "Request";
 
     String STEP_READY = "Ready";
