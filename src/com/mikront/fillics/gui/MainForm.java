@@ -9,7 +9,6 @@ import org.jsoup.nodes.Document;
 
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -27,37 +26,6 @@ public class MainForm extends Form {
     private JProgressBar progressBar;
     private XSpinnerDateModel model_from, model_to;
     private final JPanel container = getContainer();
-    private final ActionListener buttonClickListener = e -> {
-        var teacher = (String) combo_teachers.getSelectedItem();
-        var group = (String) combo_groups.getSelectedItem();
-
-        if (Utils.isEmpty(teacher) && Utils.isEmpty(group))
-            return;
-
-        Document doc = Request.schedule(
-                teacher,
-                group,
-                model_from.getDate(),
-                model_to.getDate());
-
-        List<Day> days = Parser.of(doc)
-                .setDefaultGroup(group)
-                .parse();
-
-        CalendarData data = new CalendarData();
-        for (Day day : days)
-            for (Cell cell : day)
-                for (Session session : cell)
-                    data.addEvent(session.toEvent(day, cell));
-
-        try (var stream = new FileOutputStream(FILE_ICS)) {
-            stream.write(data.compile().getBytes(StandardCharsets.UTF_8));
-        } catch (IOException ex) {
-            Log.e("MainForm: buttonClickListener-> unable to write file");
-            Log.e("MainForm: buttonClickListener->   - file = " + FILE_ICS);
-            Log.e("MainForm: buttonClickListener->   = catching: ", e);
-        }
-    };
 
 
     public static void main(String[] args) {
@@ -116,7 +84,7 @@ public class MainForm extends Form {
         resetProgress();
 
         var button = new JButton(BUTTON_REQUEST);
-        button.addActionListener(buttonClickListener);
+        button.addActionListener(e -> new Thread(this::requestSchedule).start());
 
         /*
          * Layout sketch
@@ -170,10 +138,10 @@ public class MainForm extends Form {
     }
 
     @Override
-    protected void inBackground() {
-        super.inBackground();
+    protected void onPostShow() {
+        super.onPostShow();
 
-        requestLists();
+        new Thread(this::requestLists).start();
     }
 
 
@@ -196,13 +164,13 @@ public class MainForm extends Form {
     }
 
     private void requestLists() {
-        setProgress(50, LOADING_TEACHERS);
+        setProgress(50, STEP_GETTING_TEACHERS);
 
         combo_teachers.setEnabled(false);
         Request.teachers().forEach(combo_teachers::addItem);
         combo_teachers.setEnabled(true);
 
-        setProgress(PROGRESS_MAX, LOADING_GROUPS);
+        setProgress(PROGRESS_MAX, STEP_GETTING_GROUPS);
 
         combo_groups.setEnabled(false);
         Request.groups().forEach(combo_groups::addItem);
@@ -213,11 +181,49 @@ public class MainForm extends Form {
 
     private void resetProgress() {
         progressBar.setValue(0);
-        progressBar.setString(LOADING_READY);
+        progressBar.setString(STEP_READY);
     }
 
     private void setProgress(int progress, String title) {
         progressBar.setValue(progress);
         progressBar.setString(title);
+    }
+
+    private void requestSchedule() {
+        var teacher = (String) combo_teachers.getSelectedItem();
+        var group = (String) combo_groups.getSelectedItem();
+
+        if (Utils.isEmpty(teacher) && Utils.isEmpty(group))
+            return;
+
+        setProgress(60, STEP_GETTING_SCHEDULE);
+
+        Document doc = Request.schedule(
+                teacher,
+                group,
+                model_from.getDate(),
+                model_to.getDate());
+
+        List<Day> days = Parser.of(doc)
+                .setDefaultGroup(group)
+                .parse();
+
+        setProgress(100, STEP_COMPILING_DATA);
+
+        CalendarData data = new CalendarData();
+        for (Day day : days)
+            for (Cell cell : day)
+                for (Session session : cell)
+                    data.addEvent(session.toEvent(day, cell));
+
+        try (var stream = new FileOutputStream(FILE_ICS)) {
+            stream.write(data.compile().getBytes(StandardCharsets.UTF_8));
+        } catch (IOException e) {
+            Log.e("MainForm::requestSchedule: unable to write file");
+            Log.e("MainForm::requestSchedule:   - file = " + FILE_ICS);
+            Log.e("MainForm::requestSchedule:   = catching: ", e);
+        }
+
+        resetProgress();
     }
 }

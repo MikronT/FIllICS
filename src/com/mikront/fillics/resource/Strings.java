@@ -8,7 +8,10 @@ public interface Strings {
     String LABEL_DATE_FROM = "Date from";
     String LABEL_DATE_TO = "Date to";
     String BUTTON_REQUEST = "Request";
-    String LOADING_READY = "Ready";
-    String LOADING_TEACHERS = "Loading teachers";
-    String LOADING_GROUPS = "Loading groups";
+
+    String STEP_READY = "Ready";
+    String STEP_GETTING_TEACHERS = "Getting teachers";
+    String STEP_GETTING_GROUPS = "Getting groups";
+    String STEP_GETTING_SCHEDULE = "Getting schedule";
+    String STEP_COMPILING_DATA = "Compiling data";
 }

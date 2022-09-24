@@ -21,9 +21,9 @@ public class Form implements Dimens, Strings {
             form = formClass.getConstructor().newInstance();
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
                  NoSuchMethodException e) {
-            Log.e("Components::load: unable to create form instance");
-            Log.e("Components::load:   - formClass = " + formClass);
-            Log.e("Components::load:   = catching: ", e);
+            Log.e("Form::load: unable to create a form instance");
+            Log.e("Form::load:   - formClass = " + formClass);
+            Log.e("Form::load:   = catching: ", e);
             return;
         }
 
@@ -49,15 +49,14 @@ public class Form implements Dimens, Strings {
         container.setBorder(BorderFactory.createEmptyBorder(FORM_PADDING, FORM_PADDING, FORM_PADDING, FORM_PADDING));
     }
 
-    public void show() {
+    private void show() {
         frame.pack();
         frame.setVisible(true);
 
-        Thread thread = new Thread(this::inBackground);
-        thread.start();
+        onPostShow();
     }
 
-    protected void inBackground() {
+    protected void onPostShow() {
     }
 
 
