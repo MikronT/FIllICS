@@ -41,12 +41,14 @@ public class MainForm extends Form {
                 .filter(s -> !s.contains("Вакансія")) //Get rid of vacancies
                 .map(s -> s.replace("*", "")) //Get rid of asterisks
                 .forEach(comboBox_teachers::addItem);
+        comboBox_teachers.addMouseWheelListener(e -> MouseWheelScroller.scroll(comboBox_teachers, e));
 
         var label_group = new JLabel(LABEL_GROUP);
 
         var comboBox_groups = new JComboBox<String>();
         comboBox_groups.addItem("");
         Request.groups().forEach(comboBox_groups::addItem);
+        comboBox_groups.addMouseWheelListener(e -> MouseWheelScroller.scroll(comboBox_groups, e));
 
 
         var label_date_from = new JLabel(LABEL_DATE_FROM);
@@ -54,12 +56,14 @@ public class MainForm extends Form {
         var spinner_date_from = new JSpinner();
         var model_from = new XSpinnerDateModel();
         spinner_date_from.setModel(model_from);
+        spinner_date_from.addMouseWheelListener(e -> MouseWheelScroller.scroll(spinner_date_from, e));
 
         var label_date_to = new JLabel(LABEL_DATE_TO);
 
         var spinner_date_to = new JSpinner();
         var model_to = new XSpinnerDateModel();
         spinner_date_to.setModel(model_to);
+        spinner_date_to.addMouseWheelListener(e -> MouseWheelScroller.scroll(spinner_date_to, e));
 
         spinner_date_from.addChangeListener(e -> {
             LocalDate
@@ -75,14 +79,6 @@ public class MainForm extends Form {
             if (date1.compareTo(date2) > 0)
                 model_from.setValue(date2);
         });
-        spinner_date_from.addMouseWheelListener(e ->
-                model_from.setValue(e.getWheelRotation() < 0 ?
-                        model_from.getNextValue() :
-                        model_from.getPreviousValue()));
-        spinner_date_to.addMouseWheelListener(e ->
-                model_to.setValue(e.getWheelRotation() < 0 ?
-                        model_to.getNextValue() :
-                        model_to.getPreviousValue()));
 
 
         var button_request = new JButton(BUTTON_REQUEST);
