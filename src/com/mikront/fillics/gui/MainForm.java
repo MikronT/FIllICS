@@ -35,11 +35,17 @@ public class MainForm extends Form {
         var label_teacher = new JLabel(LABEL_TEACHER);
 
         var comboBox_teachers = new JComboBox<String>();
-        Request.teachers().forEach(comboBox_teachers::addItem);
+        comboBox_teachers.addItem("");
+        Request.teachers().stream()
+                .filter(s -> !s.contains("!")) //Get rid of fired teachers
+                .filter(s -> !s.contains("Вакансія")) //Get rid of vacancies
+                .map(s -> s.replace("*", "")) //Get rid of asterisks
+                .forEach(comboBox_teachers::addItem);
 
         var label_group = new JLabel(LABEL_GROUP);
 
         var comboBox_groups = new JComboBox<String>();
+        comboBox_groups.addItem("");
         Request.groups().forEach(comboBox_groups::addItem);
 
 
@@ -107,7 +113,7 @@ public class MainForm extends Form {
                         .addGroup(layout.createParallelGroup()
                                 .addComponent(label_date_to)
                                 .addComponent(spinner_date_to)))
-                .addComponent(button_request)
+                .addComponent(button_request, GroupLayout.Alignment.TRAILING)
         );
         layout.setVerticalGroup(layout.createSequentialGroup()
                 .addComponent(label_teacher)
