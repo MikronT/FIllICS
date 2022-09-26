@@ -192,6 +192,15 @@ public class MainForm extends Form {
     private void resetProgress() {
         setProgress(0, STEP_READY);
     }
+
+    private List<String> getExclusions() {
+        return Arrays.stream(field_exclusions.getText()
+                        .toLowerCase(Locale.ROOT)
+                        .split(Parser.REGEX_NEWLINE.pattern()))
+                .toList();
+    }
+
+
     private void requestLists() {
         setProgress(50, STEP_GETTING_TEACHERS);
 
@@ -247,9 +256,7 @@ public class MainForm extends Form {
             return;
 
         boolean shouldSkipOptional = !checkBox_optional.isSelected();
-        var exclusions = field_exclusions.getText()
-                .toLowerCase(Locale.ROOT)
-                .split(Parser.REGEX_NEWLINE.pattern());
+        var exclusions = getExclusions();
 
         setProgress(60, STEP_GETTING_SCHEDULE);
 
@@ -272,13 +279,13 @@ public class MainForm extends Form {
                     if (shouldSkipOptional && session.isOptional()) continue;
 
                     var sSubject = session.getSubject().toLowerCase(Locale.ROOT);
-                    if (Arrays.stream(exclusions).anyMatch(sSubject::contains)) continue;
+                    if (exclusions.stream().anyMatch(sSubject::contains)) continue;
 
                     var sType = session.getType().toLowerCase(Locale.ROOT);
-                    if (Arrays.stream(exclusions).anyMatch(sType::contains)) continue;
+                    if (exclusions.stream().anyMatch(sType::contains)) continue;
 
                     var sGroup = session.getGroup().toLowerCase(Locale.ROOT);
-                    if (Arrays.stream(exclusions).anyMatch(sGroup::contains)) continue;
+                    if (exclusions.stream().anyMatch(sGroup::contains)) continue;
 
                     if (map_subjects.containsKey(sSubject)) session.setSubject(map_subjects.get(sSubject));
                     if (map_types.containsKey(sType)) session.setType(map_types.get(sType));
