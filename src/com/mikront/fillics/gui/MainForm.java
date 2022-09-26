@@ -101,7 +101,7 @@ public class MainForm extends Form {
 
         field_exclusions = new JTextArea();
 
-        checkBox_optional = new JCheckBox(CHECK_OPTIONAL, true);
+        checkBox_optional = new JCheckBox(CHECK_OPTIONAL);
 
         /*
          * Layout sketch

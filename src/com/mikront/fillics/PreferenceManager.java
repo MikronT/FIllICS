@@ -17,10 +17,13 @@ public class PreferenceManager {
             KEY_EXCLUDE = "exclude",
             KEY_INCLUDE_OPTIONAL = "include_optional";
 
-    private boolean shouldIncludeOptional = false;
+    private static final boolean DEFAULT_SHOULD_INCLUDE_OPTIONAL = true;
+    private static final String DEFAULT_TEACHER = "", DEFAULT_GROUP = "";
+    private static final List<String> DEFAULT_EXCLUSIONS = new ArrayList<>();
 
-    private String teacher = "", group = "";
-    private final List<String> exclusions = new ArrayList<>();
+    private boolean shouldIncludeOptional = DEFAULT_SHOULD_INCLUDE_OPTIONAL;
+    private String teacher = DEFAULT_TEACHER, group = DEFAULT_GROUP;
+    private final List<String> exclusions = DEFAULT_EXCLUSIONS;
 
 
     public PreferenceManager() {
@@ -42,7 +45,7 @@ public class PreferenceManager {
         while (scanner.hasNextLine()) {
             var line = scanner.nextLine().split(SEPARATOR);
             if (line.length != 2)
-                return;
+                continue;
 
             var key = line[0];
             var value = line[1];
@@ -74,13 +77,20 @@ public class PreferenceManager {
         }
 
         var printWriter = new PrintWriter(stream);
-        printWriter.println(KEY_TEACHER + SEPARATOR + teacher);
-        printWriter.println(KEY_GROUP + SEPARATOR + group);
-        exclusions.forEach(s -> printWriter.println(KEY_EXCLUDE + SEPARATOR + s));
-        printWriter.println(KEY_INCLUDE_OPTIONAL + SEPARATOR + shouldIncludeOptional);
+
+        if (!DEFAULT_TEACHER.equals(teacher))
+            printWriter.println(KEY_TEACHER + SEPARATOR + teacher);
+
+        if (!DEFAULT_GROUP.equals(group))
+            printWriter.println(KEY_GROUP + SEPARATOR + group);
+
+        if (!DEFAULT_EXCLUSIONS.equals(exclusions))
+            exclusions.forEach(s -> printWriter.println(KEY_EXCLUDE + SEPARATOR + s));
+
+        if (DEFAULT_SHOULD_INCLUDE_OPTIONAL != shouldIncludeOptional)
+            printWriter.println(KEY_INCLUDE_OPTIONAL + SEPARATOR + shouldIncludeOptional);
+
         printWriter.close();
-        
-        Log.d("PreferenceManager::commit: committed");
     }
 
 
