@@ -183,6 +183,15 @@ public class MainForm extends Form {
         return spinner;
     }
 
+
+    private void setProgress(int progress, String title) {
+        progressBar.setValue(progress);
+        progressBar.setString(title);
+    }
+
+    private void resetProgress() {
+        setProgress(0, STEP_READY);
+    }
     private void requestLists() {
         setProgress(50, STEP_GETTING_TEACHERS);
 
@@ -286,16 +295,5 @@ public class MainForm extends Form {
         }
 
         resetProgress();
-    }
-
-
-    private void resetProgress() {
-        progressBar.setValue(0);
-        progressBar.setString(STEP_READY);
-    }
-
-    private void setProgress(int progress, String title) {
-        progressBar.setValue(progress);
-        progressBar.setString(title);
     }
 }

@@ -14,10 +14,10 @@ public class PreferenceManager {
     private static final String
             KEY_TEACHER = "teacher",
             KEY_GROUP = "group",
-            KEY_EXCLUDE_LIST = "exclude_list",
-            KEY_EXCLUDE_OPTIONAL = "exclude_optional";
+            KEY_EXCLUDE = "exclude",
+            KEY_INCLUDE_OPTIONAL = "include_optional";
 
-    private boolean shouldExcludeOptional = false;
+    private boolean shouldIncludeOptional = false;
 
     private String teacher = "", group = "";
     private final List<String> exclusions = new ArrayList<>();
@@ -49,8 +49,8 @@ public class PreferenceManager {
             switch (key) {
                 case KEY_TEACHER -> teacher = value;
                 case KEY_GROUP -> group = value;
-                case KEY_EXCLUDE_LIST -> exclusions.add(value);
-                case KEY_EXCLUDE_OPTIONAL -> shouldExcludeOptional = Boolean.parseBoolean(value);
+                case KEY_EXCLUDE -> exclusions.add(value);
+                case KEY_INCLUDE_OPTIONAL -> shouldIncludeOptional = Boolean.parseBoolean(value);
             }
         }
 
@@ -76,9 +76,11 @@ public class PreferenceManager {
         var printWriter = new PrintWriter(stream);
         printWriter.println(KEY_TEACHER + SEPARATOR + teacher);
         printWriter.println(KEY_GROUP + SEPARATOR + group);
-        exclusions.forEach(s -> printWriter.println(KEY_EXCLUDE_LIST + SEPARATOR + s));
-        printWriter.println(KEY_EXCLUDE_OPTIONAL + SEPARATOR + shouldExcludeOptional);
+        exclusions.forEach(s -> printWriter.println(KEY_EXCLUDE + SEPARATOR + s));
+        printWriter.println(KEY_INCLUDE_OPTIONAL + SEPARATOR + shouldIncludeOptional);
         printWriter.close();
+        
+        Log.d("PreferenceManager::commit: committed");
     }
 
 
@@ -110,12 +112,12 @@ public class PreferenceManager {
         commit();
     }
 
-    public boolean getShouldExcludeOptional() {
-        return shouldExcludeOptional;
+    public boolean getShouldIncludeOptional() {
+        return shouldIncludeOptional;
     }
 
-    public void setShouldExcludeOptional(boolean value) {
-        shouldExcludeOptional = value;
+    public void setShouldIncludeOptional(boolean value) {
+        shouldIncludeOptional = value;
         commit();
     }
 }
