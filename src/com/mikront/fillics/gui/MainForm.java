@@ -230,22 +230,17 @@ public class MainForm extends Form {
         resetProgress();
     }
 
-    private void resetProgress() {
-        progressBar.setValue(0);
-        progressBar.setString(STEP_READY);
-    }
-
-    private void setProgress(int progress, String title) {
-        progressBar.setValue(progress);
-        progressBar.setString(title);
-    }
-
     private void requestSchedule() {
         var teacher = (String) combo_teachers.getSelectedItem();
         var group = (String) combo_groups.getSelectedItem();
 
         if (Utils.isEmpty(teacher) && Utils.isEmpty(group))
             return;
+
+        boolean shouldSkipOptional = !checkBox_optional.isSelected();
+        var exclusions = field_exclusions.getText()
+                .toLowerCase(Locale.ROOT)
+                .split(Parser.REGEX_NEWLINE.pattern());
 
         setProgress(60, STEP_GETTING_SCHEDULE);
 
@@ -261,23 +256,19 @@ public class MainForm extends Form {
                 .setDefaultGroup(group)
                 .parse();
 
-        var exclusions = field_exclusions.getText()
-                .toLowerCase(Locale.ROOT)
-                .split(Parser.REGEX_NEWLINE.pattern());
-
         CalendarData data = new CalendarData();
         for (Day day : days)
             for (Cell cell : day)
                 for (Session session : cell) {
-                    if (session.isOptional())
-                        if (!checkBox_optional.isSelected())
-                            continue;
+                    if (shouldSkipOptional && session.isOptional()) continue;
 
                     var sSubject = session.getSubject().toLowerCase(Locale.ROOT);
-                    var sType = session.getType().toLowerCase(Locale.ROOT);
-                    var sGroup = session.getGroup().toLowerCase(Locale.ROOT);
-
                     if (Arrays.stream(exclusions).anyMatch(sSubject::contains)) continue;
+
+                    var sType = session.getType().toLowerCase(Locale.ROOT);
+                    if (Arrays.stream(exclusions).anyMatch(sType::contains)) continue;
+
+                    var sGroup = session.getGroup().toLowerCase(Locale.ROOT);
                     if (Arrays.stream(exclusions).anyMatch(sGroup::contains)) continue;
 
                     if (map_subjects.containsKey(sSubject)) session.setSubject(map_subjects.get(sSubject));
@@ -295,5 +286,16 @@ public class MainForm extends Form {
         }
 
         resetProgress();
+    }
+
+
+    private void resetProgress() {
+        progressBar.setValue(0);
+        progressBar.setString(STEP_READY);
+    }
+
+    private void setProgress(int progress, String title) {
+        progressBar.setValue(progress);
+        progressBar.setString(title);
     }
 }
