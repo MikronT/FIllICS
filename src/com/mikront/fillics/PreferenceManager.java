@@ -4,6 +4,7 @@ import com.mikront.util.Log;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 
@@ -19,11 +20,11 @@ public class PreferenceManager {
 
     private static final boolean DEFAULT_SHOULD_INCLUDE_OPTIONAL = true;
     private static final String DEFAULT_TEACHER = "", DEFAULT_GROUP = "";
-    private static final List<String> DEFAULT_EXCLUSIONS = new ArrayList<>();
+    private static final List<String> DEFAULT_EXCLUSIONS = Collections.emptyList();
 
     private boolean shouldIncludeOptional = DEFAULT_SHOULD_INCLUDE_OPTIONAL;
     private String teacher = DEFAULT_TEACHER, group = DEFAULT_GROUP;
-    private final List<String> exclusions = DEFAULT_EXCLUSIONS;
+    private final List<String> exclusions = new ArrayList<>(DEFAULT_EXCLUSIONS);
 
 
     public PreferenceManager() {
