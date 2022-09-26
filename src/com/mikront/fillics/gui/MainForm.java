@@ -1,13 +1,17 @@
 package com.mikront.fillics.gui;
 
+import com.mikront.fillics.PreferenceManager;
 import com.mikront.fillics.ics.CalendarData;
 import com.mikront.fillics.schedule.*;
+import com.mikront.util.Concat;
 import com.mikront.util.Log;
 import com.mikront.util.Utils;
 import de.orbitalcomputer.JComboBoxAutoCompletion;
 import org.jsoup.nodes.Document;
 
 import javax.swing.*;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -32,6 +36,7 @@ public class MainForm extends Form {
     private final HashMap<String, String> map_subjects = new HashMap<>();
     private final HashMap<String, String> map_types = new HashMap<>();
     private final JPanel container = getContainer();
+    private final PreferenceManager preferenceManager = new PreferenceManager();
 
 
     public static void main(String[] args) {
@@ -60,12 +65,14 @@ public class MainForm extends Form {
         var label_exclusions = new JLabel(LABEL_EXCLUSIONS);
 
         combo_teachers = newJComboBox();
+        combo_teachers.addItemListener(e -> preferenceManager.setTeacher(e.getItem().toString()));
         combo_teachers.addItemListener(e -> {
             if (!ITEM_UNSET.equals(combo_groups.getSelectedItem()))
                 combo_groups.setSelectedItem(ITEM_UNSET);
         });
 
         combo_groups = newJComboBox();
+        combo_groups.addItemListener(e -> preferenceManager.setGroup(e.getItem().toString()));
         combo_groups.addItemListener(e -> {
             if (!ITEM_UNSET.equals(combo_teachers.getSelectedItem()))
                 combo_teachers.setSelectedItem(ITEM_UNSET);
@@ -100,8 +107,16 @@ public class MainForm extends Form {
         button_export.addActionListener(e -> new Thread(this::requestSchedule).start());
 
         field_exclusions = new JTextArea();
+        field_exclusions.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusLost(FocusEvent e) {
+                preferenceManager.setExclusions(getExclusions());
+            }
+        });
 
         checkBox_optional = new JCheckBox(CHECK_OPTIONAL);
+        checkBox_optional.addActionListener(e ->
+                preferenceManager.setShouldIncludeOptional(checkBox_optional.isSelected()));
 
         /*
          * Layout sketch
@@ -206,8 +221,22 @@ public class MainForm extends Form {
                 .toList();
     }
 
+    private void setExclusions(List<String> list) {
+        if (list.isEmpty())
+            return;
+
+        field_exclusions.setText(Concat.me()
+                .lines(list, item -> item)
+                .enate());
+    }
+
     private void presetOptions() {
         requestLists();
+
+        combo_teachers.setSelectedItem(preferenceManager.getTeacher());
+        combo_groups.setSelectedItem(preferenceManager.getGroup());
+        setExclusions(preferenceManager.getExclusions());
+        checkBox_optional.setSelected(preferenceManager.getShouldIncludeOptional());
     }
 
 
