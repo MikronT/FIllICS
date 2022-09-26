@@ -60,10 +60,16 @@ public class MainForm extends Form {
         var label_exclusions = new JLabel(LABEL_EXCLUSIONS);
 
         combo_teachers = newJComboBox();
-        combo_teachers.addItemListener(e -> combo_groups.setSelectedItem(ITEM_UNSET));
+        combo_teachers.addItemListener(e -> {
+            if (!ITEM_UNSET.equals(combo_groups.getSelectedItem()))
+                combo_groups.setSelectedItem(ITEM_UNSET);
+        });
 
         combo_groups = newJComboBox();
-        combo_groups.addItemListener(e -> combo_teachers.setSelectedItem(ITEM_UNSET));
+        combo_groups.addItemListener(e -> {
+            if (!ITEM_UNSET.equals(combo_teachers.getSelectedItem()))
+                combo_teachers.setSelectedItem(ITEM_UNSET);
+        });
 
         model_from = new XSpinnerDateModel();
         model_to = new XSpinnerDateModel();
@@ -161,7 +167,7 @@ public class MainForm extends Form {
     protected void onPostShow() {
         super.onPostShow();
 
-        new Thread(this::requestLists).start();
+        new Thread(this::presetOptions).start();
     }
 
 
@@ -198,6 +204,10 @@ public class MainForm extends Form {
                         .toLowerCase(Locale.ROOT)
                         .split(Parser.REGEX_NEWLINE.pattern()))
                 .toList();
+    }
+
+    private void presetOptions() {
+        requestLists();
     }
 
 
