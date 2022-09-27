@@ -6,7 +6,6 @@ import com.mikront.fillics.schedule.*;
 import com.mikront.util.Concat;
 import com.mikront.util.Log;
 import com.mikront.util.Utils;
-import de.orbitalcomputer.JComboBoxAutoCompletion;
 import org.jsoup.nodes.Document;
 
 import javax.swing.*;
@@ -25,7 +24,6 @@ public class MainForm extends Form {
     private static final File FILE_ICS = new File("import.ics");
     private static final File FILE_MAP_SUBJECTS = new File("map_subjects.txt");
     private static final File FILE_MAP_TYPES = new File("map_types.txt");
-    private static final String ITEM_UNSET = "";
     private static final int PROGRESS_MAX = 100;
 
     private JCheckBox checkBox_optional;
@@ -64,24 +62,24 @@ public class MainForm extends Form {
         var label_to = new JLabel(LABEL_DATE_TO);
         var label_exclusions = new JLabel(LABEL_EXCLUSIONS);
 
-        combo_teachers = newJComboBox();
+        combo_teachers = Components.newOptionalJComboBox();
         combo_teachers.addItemListener(e -> preferenceManager.setTeacher(e.getItem().toString()));
         combo_teachers.addItemListener(e -> {
-            if (!ITEM_UNSET.equals(combo_groups.getSelectedItem()))
-                combo_groups.setSelectedItem(ITEM_UNSET);
+            if (!Components.ITEM_UNSET.equals(combo_groups.getSelectedItem()))
+                combo_groups.setSelectedItem(Components.ITEM_UNSET);
         });
 
-        combo_groups = newJComboBox();
+        combo_groups = Components.newOptionalJComboBox();
         combo_groups.addItemListener(e -> preferenceManager.setGroup(e.getItem().toString()));
         combo_groups.addItemListener(e -> {
-            if (!ITEM_UNSET.equals(combo_teachers.getSelectedItem()))
-                combo_teachers.setSelectedItem(ITEM_UNSET);
+            if (!Components.ITEM_UNSET.equals(combo_teachers.getSelectedItem()))
+                combo_teachers.setSelectedItem(Components.ITEM_UNSET);
         });
 
         model_from = new XSpinnerDateModel();
         model_to = new XSpinnerDateModel();
 
-        var spinner_from = newJSpinner(model_from);
+        var spinner_from = Components.newJSpinner(model_from);
         spinner_from.addChangeListener(e -> {
             LocalDate
                     date1 = model_from.getDate(),
@@ -89,7 +87,7 @@ public class MainForm extends Form {
             if (date1.compareTo(date2) > 0)
                 model_to.setValue(date1);
         });
-        var spinner_to = newJSpinner(model_to);
+        var spinner_to = Components.newJSpinner(model_to);
         spinner_to.addChangeListener(e -> {
             LocalDate
                     date1 = model_from.getDate(),
@@ -178,56 +176,12 @@ public class MainForm extends Form {
         Components.applyDefaults(container);
     }
 
+
     @Override
     protected void onPostShow() {
         super.onPostShow();
 
         new Thread(this::presetOptions).start();
-    }
-
-
-    private static JComboBox<String> newJComboBox() {
-        var box = new JComboBox<String>();
-        box.setEditable(true);
-        JComboBoxAutoCompletion.enable(box);
-
-        box.addMouseWheelListener(e -> MouseWheelScroller.scroll(box, e));
-
-        box.addItem(ITEM_UNSET);
-        return box;
-    }
-
-    private static JSpinner newJSpinner(XSpinnerDateModel model) {
-        var spinner = new JSpinner();
-        spinner.setModel(model);
-        spinner.addMouseWheelListener(e -> MouseWheelScroller.scroll(spinner, e));
-        return spinner;
-    }
-
-
-    private void setProgress(int progress, String title) {
-        progressBar.setValue(progress);
-        progressBar.setString(title);
-    }
-
-    private void resetProgress() {
-        setProgress(0, STEP_READY);
-    }
-
-    private List<String> getExclusions() {
-        return Arrays.stream(field_exclusions.getText()
-                        .toLowerCase(Locale.ROOT)
-                        .split(Parser.REGEX_NEWLINE.pattern()))
-                .toList();
-    }
-
-    private void setExclusions(List<String> list) {
-        if (list.isEmpty())
-            return;
-
-        field_exclusions.setText(Concat.me()
-                .lines(list, item -> item)
-                .enate());
     }
 
     private void presetOptions() {
@@ -239,19 +193,18 @@ public class MainForm extends Form {
         checkBox_optional.setSelected(preferenceManager.getShouldIncludeOptional());
     }
 
-
     private void requestLists() {
         setProgress(50, STEP_GETTING_TEACHERS);
 
         combo_teachers.setEnabled(false);
         combo_groups.setEnabled(false);
 
-        Request.teachers().forEach(combo_teachers::addItem);
+        Schedule.getTeachers().forEach(combo_teachers::addItem);
         combo_teachers.setEnabled(true);
 
         setProgress(PROGRESS_MAX, STEP_GETTING_GROUPS);
 
-        Request.groups().forEach(combo_groups::addItem);
+        Schedule.getGroups().forEach(combo_groups::addItem);
         combo_groups.setEnabled(true);
 
         try (var stream = new FileInputStream(FILE_MAP_SUBJECTS);
@@ -299,7 +252,7 @@ public class MainForm extends Form {
 
         setProgress(60, STEP_GETTING_SCHEDULE);
 
-        Document doc = Request.schedule(
+        Document doc = Schedule.getSchedule(
                 teacher,
                 group,
                 model_from.getDate(),
@@ -341,5 +294,31 @@ public class MainForm extends Form {
         }
 
         resetProgress();
+    }
+
+
+    private void setProgress(int progress, String title) {
+        progressBar.setValue(progress);
+        progressBar.setString(title);
+    }
+
+    private void resetProgress() {
+        setProgress(0, STEP_READY);
+    }
+
+    private List<String> getExclusions() {
+        return Arrays.stream(field_exclusions.getText()
+                        .toLowerCase(Locale.ROOT)
+                        .split(Parser.REGEX_NEWLINE.pattern()))
+                .toList();
+    }
+
+    private void setExclusions(List<String> list) {
+        if (list.isEmpty())
+            return;
+
+        field_exclusions.setText(Concat.me()
+                .lines(list, item -> item)
+                .enate());
     }
 }

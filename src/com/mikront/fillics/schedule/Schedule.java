@@ -16,21 +16,21 @@ import java.util.List;
 import java.util.Locale;
 
 
-public class Request {
+public class Schedule {
     private static final Collator COLLATOR = Collator.getInstance(new Locale("uk", "UA"));
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final String URL = "https://dekanat.nung.edu.ua/cgi-bin/timetable.cgi";
 
 
-    public static List<String> teachers() {
+    public static List<String> getTeachers() {
         List<String> out = new ArrayList<>();
 
         Document doc;
         try {
             doc = Jsoup.connect(URL + "?n=701&lev=141").get();
         } catch (IOException e) {
-            Log.e("Request::teachers: unable to get teachers list");
-            Log.e("Request::teachers:   = catching: ", e);
+            Log.e("Schedule::getTeachers: unable to get teachers list");
+            Log.e("Schedule::getTeachers:   = catching: ", e);
             return out;
         }
 
@@ -46,15 +46,15 @@ public class Request {
                 .toList();
     }
 
-    public static List<String> groups() {
+    public static List<String> getGroups() {
         List<String> out = new ArrayList<>();
 
         Document doc;
         try {
             doc = Jsoup.connect(URL + "?n=701&lev=142").get();
         } catch (IOException e) {
-            Log.e("Request::groups: unable to get groups list");
-            Log.e("Request::groups:   = catching: ", e);
+            Log.e("Schedule::getGroups: unable to get groups list");
+            Log.e("Schedule::getGroups:   = catching: ", e);
             return out;
         }
 
@@ -68,7 +68,7 @@ public class Request {
     }
 
     @Nullable
-    public static Document schedule(String teacher, String group, LocalDate from, LocalDate to) {
+    public static Document getSchedule(String teacher, String group, LocalDate from, LocalDate to) {
         var connection = Jsoup.connect(URL + "?n=700");
 
         if (Utils.notEmpty(teacher))
@@ -85,8 +85,8 @@ public class Request {
                     .postDataCharset("windows-1251")
                     .post();
         } catch (IOException e) {
-            Log.e("Request::schedule: unable to get schedule");
-            Log.e("Request::schedule:   = catching: ", e);
+            Log.e("Schedule::getSchedule: unable to get schedule");
+            Log.e("Schedule::getSchedule:   = catching: ", e);
         }
         return null;
     }
