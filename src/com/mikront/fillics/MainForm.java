@@ -1,6 +1,8 @@
-package com.mikront.fillics.gui;
+package com.mikront.fillics;
 
-import com.mikront.fillics.PreferenceManager;
+import com.mikront.fillics.gui.Components;
+import com.mikront.fillics.gui.Form;
+import com.mikront.fillics.gui.XSpinnerDateModel;
 import com.mikront.fillics.ics.CalendarData;
 import com.mikront.fillics.schedule.*;
 import com.mikront.util.Concat;
