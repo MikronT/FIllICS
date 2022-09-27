@@ -8,16 +8,13 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
-import java.text.Collator;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 
 public class Schedule {
-    private static final Collator COLLATOR = Collator.getInstance(new Locale("uk", "UA"));
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final String URL = "https://dekanat.nung.edu.ua/cgi-bin/timetable.cgi";
 
@@ -42,7 +39,7 @@ public class Schedule {
                 .filter(s -> !s.contains("!")) //Get rid of fired teachers
                 .filter(s -> !s.contains("Вакансія")) //Get rid of vacancies
                 .map(s -> s.replace("*", "")) //Get rid of asterisks
-                .sorted(COLLATOR::compare)
+                .sorted(Utils.COLLATOR::compare)
                 .toList();
     }
 
@@ -63,7 +60,7 @@ public class Schedule {
                 .toList()
                 .stream()
                 .map(Object::toString)
-                .sorted(COLLATOR::compare)
+                .sorted(Utils.COLLATOR::compare)
                 .toList();
     }
 

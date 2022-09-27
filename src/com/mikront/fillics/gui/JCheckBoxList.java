@@ -1,13 +1,13 @@
 package com.mikront.fillics.gui;
 
 import javax.swing.*;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class JCheckBoxList extends JScrollPane {
     private final GroupLayout layout;
-    private final Map<String, JCheckBox> boxes = new HashMap<>();
+    private final List<JCheckBox> boxes = new ArrayList<>();
 
 
     public JCheckBoxList() {
@@ -26,40 +26,39 @@ public class JCheckBoxList extends JScrollPane {
     /**
      * Creates a new checkbox and puts it into the list layout
      *
-     * @param key   checkbox identifier
-     * @param title checkbox title
+     * @param title checkbox title and id
      */
-    public void add(String key, String title) {
-        add(key, title, true);
+    public void put(String title) {
+        put(title, true);
     }
 
     /**
      * Creates a new checkbox. You can specify {@code shouldUpdateLayout = false} if you want
      * to update layout at certain moment using {@link #updateLayout()}
      *
-     * @param key                checkbox identifier
-     * @param title              checkbox title
+     * @param title              checkbox title and id
      * @param shouldUpdateLayout specifies whether to notify the layout about this change
      */
-    public void add(String key, String title, boolean shouldUpdateLayout) {
-        if (boxes.containsKey(key))
-            throw new IllegalArgumentException("Key already exists");
+    public void put(String title, boolean shouldUpdateLayout) {
+        for (var box : boxes)
+            if (box.getText().equals(title))
+                return;
 
         var box = new JCheckBox(title);
-        boxes.put(key, box);
+        boxes.add(box);
 
         if (shouldUpdateLayout)
             updateLayout();
     }
 
     /**
-     * Updates layout. Useful after using {@link #add(String, String)}
+     * Updates layout. Useful after using {@link #put(String)}
      */
     public void updateLayout() {
         GroupLayout.ParallelGroup horizontalGroup = layout.createParallelGroup();
         GroupLayout.SequentialGroup verticalGroup = layout.createSequentialGroup();
 
-        boxes.forEach((key, box) -> {
+        boxes.forEach(box -> {
             horizontalGroup.addComponent(box);
             verticalGroup.addComponent(box);
         });
@@ -71,11 +70,14 @@ public class JCheckBoxList extends JScrollPane {
     }
 
 
-    public JCheckBox get(String key) {
-        return boxes.get(key);
+    public JCheckBox get(String title) {
+        for (var box : boxes)
+            if (box.getText().equals(title))
+                return box;
+        return null;
     }
 
-    public boolean isChecked(String key) {
-        return get(key).isSelected();
+    public boolean isChecked(String title) {
+        return get(title).isSelected();
     }
 }
