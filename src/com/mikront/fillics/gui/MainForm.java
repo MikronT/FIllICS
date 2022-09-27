@@ -26,10 +26,12 @@ public class MainForm extends Form {
     private static final File FILE_MAP_TYPES = new File("map_types.txt");
     private static final int PROGRESS_MAX = 100;
 
+    private JButton button_request, button_export;
     private JCheckBox checkBox_optional;
     private JComboBox<String> combo_groups, combo_teachers;
     private JProgressBar progressBar;
     private JTextArea field_exclusions;
+    private List<Day> schedule;
     private XSpinnerDateModel model_from, model_to;
     private final HashMap<String, String> map_subjects = new HashMap<>();
     private final HashMap<String, String> map_types = new HashMap<>();
@@ -101,8 +103,8 @@ public class MainForm extends Form {
         progressBar.setStringPainted(true);
         resetProgress();
 
-        var button_export = new JButton(BUTTON_EXPORT);
-        button_export.addActionListener(e -> new Thread(this::requestSchedule).start());
+        button_request = new JButton(BUTTON_REQUEST);
+        button_request.addActionListener(e -> new Thread(this::requestSchedule).start());
 
         field_exclusions = new JTextArea();
         field_exclusions.addFocusListener(new FocusAdapter() {
@@ -116,6 +118,10 @@ public class MainForm extends Form {
         checkBox_optional.addActionListener(e ->
                 preferenceManager.setShouldIncludeOptional(checkBox_optional.isSelected()));
 
+        button_export = new JButton(BUTTON_EXPORT);
+        button_export.setEnabled(false);
+        button_export.addActionListener(e -> new Thread(this::exportSchedule).start());
+
         /*
          * Layout sketch
          *
@@ -125,7 +131,7 @@ public class MainForm extends Form {
          * 000000000000000000000000000   0000000000000000
          * ---            ---            0000000000000000
          * 000000000000   000000000000   0000000000000000
-         * ===========================   [x]---    000000
+         * =================   [00000]   [x]---    000000
          */
         layout.setHorizontalGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup()
@@ -140,7 +146,9 @@ public class MainForm extends Form {
                                 .addGroup(layout.createParallelGroup()
                                         .addComponent(label_to)
                                         .addComponent(spinner_to)))
-                        .addComponent(progressBar))
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(progressBar)
+                                .addComponent(button_request)))
                 .addGap(GAP)
                 .addGroup(layout.createParallelGroup()
                         .addComponent(label_exclusions)
@@ -163,7 +171,9 @@ public class MainForm extends Form {
                                         .addComponent(label_to)
                                         .addComponent(spinner_to)))
                         .addGap(GAP)
-                        .addComponent(progressBar))
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                                .addComponent(progressBar)
+                                .addComponent(button_request)))
                 .addGroup(layout.createSequentialGroup()
                         .addComponent(label_exclusions)
                         .addComponent(field_exclusions)
@@ -247,9 +257,6 @@ public class MainForm extends Form {
         if (Utils.isEmpty(teacher) && Utils.isEmpty(group))
             return;
 
-        boolean shouldSkipOptional = !checkBox_optional.isSelected();
-        var exclusions = getExclusions();
-
         setProgress(60, STEP_GETTING_SCHEDULE);
 
         Document doc = Schedule.getSchedule(
@@ -260,12 +267,23 @@ public class MainForm extends Form {
 
         setProgress(100, STEP_COMPILING_DATA);
 
-        List<Day> days = Parser.of(doc)
+        schedule = Parser.of(doc)
                 .setDefaultGroup(group)
                 .parse();
 
+        button_export.setEnabled(true);
+        resetProgress();
+    }
+
+    private void exportSchedule() {
+        button_request.setEnabled(false);
+        button_export.setEnabled(false);
+
+        boolean shouldSkipOptional = !checkBox_optional.isSelected();
+        var exclusions = getExclusions();
+
         CalendarData data = new CalendarData();
-        for (Day day : days)
+        for (Day day : schedule)
             for (Cell cell : day)
                 for (Session session : cell) {
                     if (shouldSkipOptional && session.isOptional()) continue;
@@ -293,7 +311,8 @@ public class MainForm extends Form {
             Log.e("MainForm::requestSchedule:   = catching: ", e);
         }
 
-        resetProgress();
+        button_request.setEnabled(true);
+        button_export.setEnabled(true);
     }
 
 
