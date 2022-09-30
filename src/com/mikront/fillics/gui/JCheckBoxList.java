@@ -6,6 +6,12 @@ import java.util.List;
 
 
 public class JCheckBoxList extends JScrollPane {
+    public static final int
+            ORIENTATION_VERTICAL = 0,
+            ORIENTATION_HORIZONTAL = 1;
+
+    private int orientation = ORIENTATION_VERTICAL;
+
     private final GroupLayout layout;
     private final List<JCheckBox> boxes = new ArrayList<>();
 
@@ -51,12 +57,22 @@ public class JCheckBoxList extends JScrollPane {
             updateLayout();
     }
 
+    public void setOrientation(int orientation) {
+        this.orientation = orientation;
+    }
+
     /**
      * Updates layout. Useful after using {@link #put(String)}
      */
     public void updateLayout() {
-        GroupLayout.ParallelGroup horizontalGroup = layout.createParallelGroup();
-        GroupLayout.SequentialGroup verticalGroup = layout.createSequentialGroup();
+        GroupLayout.Group horizontalGroup, verticalGroup;
+        if (orientation == ORIENTATION_VERTICAL) {
+            horizontalGroup = layout.createParallelGroup();
+            verticalGroup = layout.createSequentialGroup();
+        } else {
+            horizontalGroup = layout.createSequentialGroup();
+            verticalGroup = layout.createParallelGroup();
+        }
 
         boxes.forEach(box -> {
             horizontalGroup.addComponent(box);
