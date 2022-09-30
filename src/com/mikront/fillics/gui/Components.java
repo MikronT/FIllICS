@@ -30,6 +30,7 @@ public class Components {
         var spinner = new JSpinner();
         spinner.setModel(model);
         spinner.addMouseWheelListener(e -> MouseWheelScroller.scroll(spinner, e));
+        spinner.getEditor().getComponent(0).setBackground(Color.WHITE);
         return spinner;
     }
 
