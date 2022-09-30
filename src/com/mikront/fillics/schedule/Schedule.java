@@ -1,25 +1,36 @@
 package com.mikront.fillics.schedule;
 
-import com.mikront.util.debug.Log;
 import com.mikront.util.Utils;
+import com.mikront.util.debug.Build;
+import com.mikront.util.debug.Log;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
 public class Schedule {
+    private static final List<String> DEBUG_TEACHERS = Collections.emptyList();
+    private static final List<String> DEBUG_GROUPS = Collections.singletonList("ІП-20-3");
+    private static final File DEBUG_SCHEDULE = new File("schedule.html");
+
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final String URL = "https://dekanat.nung.edu.ua/cgi-bin/timetable.cgi";
 
 
     public static List<String> getTeachers() {
+        if (Build.debug())
+            return DEBUG_TEACHERS;
+
         List<String> out = new ArrayList<>();
 
         Document doc;
@@ -44,6 +55,9 @@ public class Schedule {
     }
 
     public static List<String> getGroups() {
+        if (Build.debug())
+            return DEBUG_GROUPS;
+
         List<String> out = new ArrayList<>();
 
         Document doc;
@@ -66,6 +80,13 @@ public class Schedule {
 
     @Nullable
     public static Document getSchedule(String teacher, String group, LocalDate from, LocalDate to) {
+        if (Build.debug())
+            try {
+                return Jsoup.parse(DEBUG_SCHEDULE, StandardCharsets.UTF_8.name());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
         var connection = Jsoup.connect(URL + "?n=700");
 
         if (Utils.notEmpty(teacher))
