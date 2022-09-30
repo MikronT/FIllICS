@@ -11,6 +11,7 @@ public class JCheckBoxList {
     private boolean shouldRefreshLayout = false; //Do not refresh at start
     private int orientation = ORIENTATION_VERTICAL;
 
+    private OnItemCheckedListener onItemCheckedListener;
     private final GroupLayout layout;
     private final JScrollPane pane;
     private final List<JCheckBox> boxes = new ArrayList<>();
@@ -30,6 +31,15 @@ public class JCheckBoxList {
         container.setLayout(layout);
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
+    }
+
+
+    public interface OnItemCheckedListener {
+        void itemChecked(String title);
+    }
+
+    public void setOnItemCheckedListener(OnItemCheckedListener onItemCheckedListener) {
+        this.onItemCheckedListener = onItemCheckedListener;
     }
 
 
@@ -55,6 +65,8 @@ public class JCheckBoxList {
         var box = new JCheckBox(title, checked);
         boxes.add(box);
 
+        if (onItemCheckedListener != null)
+            box.addActionListener(e -> onItemCheckedListener.itemChecked(box.getText()));
 
         //Refresh only after pushing to UI
         if (shouldRefreshLayout)
