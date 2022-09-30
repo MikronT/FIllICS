@@ -1,6 +1,6 @@
 package com.mikront.fillics.schedule;
 
-import com.mikront.util.Log;
+import com.mikront.util.debug.Log;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.nodes.Document;

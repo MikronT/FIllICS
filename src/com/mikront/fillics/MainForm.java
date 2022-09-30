@@ -6,7 +6,7 @@ import com.mikront.fillics.gui.XSpinnerDateModel;
 import com.mikront.fillics.ics.CalendarData;
 import com.mikront.fillics.schedule.*;
 import com.mikront.util.Concat;
-import com.mikront.util.Log;
+import com.mikront.util.debug.Log;
 import com.mikront.util.Utils;
 import org.jsoup.nodes.Document;
 

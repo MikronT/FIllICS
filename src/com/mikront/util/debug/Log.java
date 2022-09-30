@@ -1,4 +1,4 @@
-package com.mikront.util;
+package com.mikront.util.debug;
 
 
 @SuppressWarnings("unused")

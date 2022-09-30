@@ -1,6 +1,6 @@
 package com.mikront.fillics;
 
-import com.mikront.util.Log;
+import com.mikront.util.debug.Log;
 
 import java.io.*;
 import java.util.ArrayList;

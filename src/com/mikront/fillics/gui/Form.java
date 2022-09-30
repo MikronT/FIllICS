@@ -2,7 +2,7 @@ package com.mikront.fillics.gui;
 
 import com.mikront.fillics.resource.Dimens;
 import com.mikront.fillics.resource.Strings;
-import com.mikront.util.Log;
+import com.mikront.util.debug.Log;
 
 import javax.swing.*;
 import java.awt.*;

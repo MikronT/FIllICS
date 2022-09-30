@@ -1,6 +1,6 @@
 package com.mikront.fillics.schedule;
 
-import com.mikront.util.Log;
+import com.mikront.util.debug.Log;
 import com.mikront.util.Utils;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;

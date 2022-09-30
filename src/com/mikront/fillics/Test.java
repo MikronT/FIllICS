@@ -2,7 +2,7 @@ package com.mikront.fillics;
 
 import com.mikront.fillics.schedule.Day;
 import com.mikront.fillics.schedule.Parser;
-import com.mikront.util.Log;
+import com.mikront.util.debug.Log;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 

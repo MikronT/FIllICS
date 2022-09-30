@@ -1,6 +1,6 @@
 package com.mikront.fillics.gui;
 
-import com.mikront.util.Log;
+import com.mikront.util.debug.Log;
 import de.orbitalcomputer.JComboBoxAutoCompletion;
 
 import javax.swing.*;
