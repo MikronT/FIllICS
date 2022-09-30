@@ -6,8 +6,8 @@ import com.mikront.fillics.gui.XSpinnerDateModel;
 import com.mikront.fillics.ics.CalendarData;
 import com.mikront.fillics.schedule.*;
 import com.mikront.util.Concat;
-import com.mikront.util.debug.Log;
 import com.mikront.util.Utils;
+import com.mikront.util.debug.Log;
 import org.jsoup.nodes.Document;
 
 import javax.swing.*;
@@ -30,7 +30,7 @@ public class MainForm extends Form {
 
     private JButton button_request, button_export;
     private JCheckBox checkBox_optional;
-    private JComboBox<String> combo_groups, combo_teachers;
+    private JComboBox<String> combo_group, combo_teacher;
     private JProgressBar progressBar;
     private JTextArea field_exclusions;
     private List<Day> schedule;
@@ -52,9 +52,6 @@ public class MainForm extends Form {
     protected void onCreate() {
         super.onCreate();
 
-        var frame = getFrame();
-        frame.setMinimumSize(FORM_MAIN);
-
         var layout = new GroupLayout(container);
         container.setLayout(layout);
         layout.setAutoCreateGaps(true);
@@ -66,18 +63,18 @@ public class MainForm extends Form {
         var label_to = new JLabel(LABEL_DATE_TO);
         var label_exclusions = new JLabel(LABEL_EXCLUSIONS);
 
-        combo_teachers = Components.newOptionalJComboBox();
-        combo_teachers.addItemListener(e -> preferenceManager.setTeacher(e.getItem().toString()));
-        combo_teachers.addItemListener(e -> {
-            if (!Components.ITEM_UNSET.equals(combo_groups.getSelectedItem()))
-                combo_groups.setSelectedItem(Components.ITEM_UNSET);
+        combo_teacher = Components.newOptionalJComboBox();
+        combo_teacher.addItemListener(e -> preferenceManager.setTeacher(e.getItem().toString()));
+        combo_teacher.addItemListener(e -> {
+            if (!Components.ITEM_UNSET.equals(combo_group.getSelectedItem()))
+                combo_group.setSelectedItem(Components.ITEM_UNSET);
         });
 
-        combo_groups = Components.newOptionalJComboBox();
-        combo_groups.addItemListener(e -> preferenceManager.setGroup(e.getItem().toString()));
-        combo_groups.addItemListener(e -> {
-            if (!Components.ITEM_UNSET.equals(combo_teachers.getSelectedItem()))
-                combo_teachers.setSelectedItem(Components.ITEM_UNSET);
+        combo_group = Components.newOptionalJComboBox();
+        combo_group.addItemListener(e -> preferenceManager.setGroup(e.getItem().toString()));
+        combo_group.addItemListener(e -> {
+            if (!Components.ITEM_UNSET.equals(combo_teacher.getSelectedItem()))
+                combo_teacher.setSelectedItem(Components.ITEM_UNSET);
         });
 
         model_from = new XSpinnerDateModel();
@@ -124,23 +121,13 @@ public class MainForm extends Form {
         button_export.setEnabled(false);
         button_export.addActionListener(e -> new Thread(this::exportSchedule).start());
 
-        /*
-         * Layout sketch
-         *
-         * ---                           ---
-         * 000000000000000000000000000   0000000000000000
-         * ---                           0000000000000000
-         * 000000000000000000000000000   0000000000000000
-         * ---            ---            0000000000000000
-         * 000000000000   000000000000   0000000000000000
-         * =================   [00000]   [x]---    000000
-         */
+
         layout.setHorizontalGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup()
                         .addComponent(label_teacher)
-                        .addComponent(combo_teachers, COMBO_WIDTH, COMBO_WIDTH, GroupLayout.DEFAULT_SIZE)
+                        .addComponent(combo_teacher, TEACHER_WIDTH, TEACHER_WIDTH, DEFAULT_SIZE)
                         .addComponent(label_group)
-                        .addComponent(combo_groups)
+                        .addComponent(combo_group)
                         .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup()
                                         .addComponent(label_from)
@@ -162,9 +149,9 @@ public class MainForm extends Form {
         layout.setVerticalGroup(layout.createParallelGroup()
                 .addGroup(layout.createSequentialGroup()
                         .addComponent(label_teacher)
-                        .addComponent(combo_teachers)
+                        .addComponent(combo_teacher)
                         .addComponent(label_group)
-                        .addComponent(combo_groups)
+                        .addComponent(combo_group)
                         .addGroup(layout.createParallelGroup()
                                 .addGroup(layout.createSequentialGroup()
                                         .addComponent(label_from)
@@ -193,31 +180,31 @@ public class MainForm extends Form {
     protected void onPostShow() {
         super.onPostShow();
 
-        new Thread(this::presetOptions).start();
+        new Thread(this::presetRequestOptions).start();
     }
 
-    private void presetOptions() {
+    private void presetRequestOptions() {
         requestLists();
 
-        combo_teachers.setSelectedItem(preferenceManager.getTeacher());
-        combo_groups.setSelectedItem(preferenceManager.getGroup());
         setExclusions(preferenceManager.getExclusions());
+        combo_teacher.setSelectedItem(preferenceManager.getTeacher());
+        combo_group.setSelectedItem(preferenceManager.getGroup());
         checkBox_optional.setSelected(preferenceManager.getShouldIncludeOptional());
     }
 
     private void requestLists() {
         setProgress(50, STEP_GETTING_TEACHERS);
 
-        combo_teachers.setEnabled(false);
-        combo_groups.setEnabled(false);
+        combo_teacher.setEnabled(false);
+        combo_group.setEnabled(false);
 
-        Schedule.getTeachers().forEach(combo_teachers::addItem);
-        combo_teachers.setEnabled(true);
+        Schedule.getTeachers().forEach(combo_teacher::addItem);
+        combo_teacher.setEnabled(true);
 
         setProgress(PROGRESS_MAX, STEP_GETTING_GROUPS);
 
-        Schedule.getGroups().forEach(combo_groups::addItem);
-        combo_groups.setEnabled(true);
+        Schedule.getGroups().forEach(combo_group::addItem);
+        combo_group.setEnabled(true);
 
         try (var stream = new FileInputStream(FILE_MAP_SUBJECTS);
              var scanner = new Scanner(stream)) {
@@ -253,8 +240,8 @@ public class MainForm extends Form {
     }
 
     private void requestSchedule() {
-        var teacher = (String) combo_teachers.getSelectedItem();
-        var group = (String) combo_groups.getSelectedItem();
+        var teacher = (String) combo_teacher.getSelectedItem();
+        var group = (String) combo_group.getSelectedItem();
 
         if (Utils.isEmpty(teacher) && Utils.isEmpty(group))
             return;

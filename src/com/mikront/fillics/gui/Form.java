@@ -57,6 +57,7 @@ public class Form implements Dimens, Strings {
     }
 
     protected void onPostShow() {
+        frame.setMinimumSize(frame.getSize());
     }
 
 

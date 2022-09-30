@@ -8,6 +8,6 @@ public interface Dimens {
 
     Dimension FORM_MAIN = new Dimension(320, 260);
     int GAP = 16;
-    int COMBO_WIDTH = 240;
     int FIELD_WIDTH = 240;
+    int TEACHER_WIDTH = 240;
 }
