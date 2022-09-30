@@ -5,25 +5,26 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class JCheckBoxList extends JScrollPane {
-    public static final int
-            ORIENTATION_VERTICAL = 0,
-            ORIENTATION_HORIZONTAL = 1;
+public class JCheckBoxList {
+    public static final int ORIENTATION_VERTICAL = 0, ORIENTATION_HORIZONTAL = 1;
 
+    private boolean shouldRefreshLayout = false; //Do not refresh at start
     private int orientation = ORIENTATION_VERTICAL;
 
     private final GroupLayout layout;
+    private final JScrollPane pane;
     private final List<JCheckBox> boxes = new ArrayList<>();
 
 
     public JCheckBoxList() {
         super();
 
-        getVerticalScrollBar().setUnitIncrement(12);
-        getHorizontalScrollBar().setUnitIncrement(8);
+        pane = new JScrollPane();
+        pane.getVerticalScrollBar().setUnitIncrement(12);
+        pane.getHorizontalScrollBar().setUnitIncrement(8);
 
         JPanel container = new JPanel();
-        setViewportView(container);
+        pane.setViewportView(container);
 
         layout = new GroupLayout(container);
         container.setLayout(layout);
@@ -32,42 +33,37 @@ public class JCheckBoxList extends JScrollPane {
     }
 
 
-    /**
-     * Creates a new checkbox and puts it into the list layout
-     *
-     * @param title checkbox title and id
-     */
-    public void put(String title) {
-        put(title, true);
-    }
-
-    /**
-     * Creates a new checkbox. You can specify {@code shouldUpdateLayout = false} if you want
-     * to update layout at certain moment using {@link #updateLayout()}
-     *
-     * @param title              checkbox title and id
-     * @param shouldUpdateLayout specifies whether to notify the layout about this change
-     */
-    public void put(String title, boolean shouldUpdateLayout) {
-        for (var box : boxes)
-            if (box.getText().equals(title))
-                return;
-
-        var box = new JCheckBox(title);
-        boxes.add(box);
-
-        if (shouldUpdateLayout)
-            updateLayout();
-    }
-
     public void setOrientation(int orientation) {
         this.orientation = orientation;
     }
 
-    /**
-     * Updates layout. Useful after using {@link #put(String)}
-     */
-    public void updateLayout() {
+
+    public void add(List<String> titles, boolean checked) {
+        shouldRefreshLayout = false; //Disable refreshing
+
+        titles.forEach(s -> add(s, checked));
+
+        shouldRefreshLayout = true; //Re-enable it
+        refresh();
+    }
+
+    public void add(String title, boolean checked) {
+        for (var box : boxes)
+            if (box.getText().equals(title))
+                return;
+
+        var box = new JCheckBox(title, checked);
+        boxes.add(box);
+
+
+        //Refresh only after pushing to UI
+        if (shouldRefreshLayout)
+            refresh();
+    }
+
+
+    private void refresh() {
+
         GroupLayout.Group horizontalGroup, verticalGroup;
         if (orientation == ORIENTATION_VERTICAL) {
             horizontalGroup = layout.createParallelGroup();
@@ -85,7 +81,15 @@ public class JCheckBoxList extends JScrollPane {
         layout.setHorizontalGroup(horizontalGroup);
         layout.setVerticalGroup(verticalGroup);
 
-        Components.applyDefaults(this);
+        Components.applyDefaults(pane);
+    }
+
+    public JScrollPane make() {
+        if (!shouldRefreshLayout) { //Refresh after all the checkboxes were added
+            shouldRefreshLayout = true;
+            refresh();
+        }
+        return pane;
     }
 
 

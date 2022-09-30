@@ -57,6 +57,7 @@ public class MainForm extends Form {
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
 
+
         var label_teacher = new JLabel(LABEL_TEACHER);
         var label_group = new JLabel(LABEL_GROUP);
         var label_from = new JLabel(LABEL_DATE_FROM);
