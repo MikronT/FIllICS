@@ -19,6 +19,9 @@ public class JCheckBoxList extends JScrollPane {
     public JCheckBoxList() {
         super();
 
+        getVerticalScrollBar().setUnitIncrement(12);
+        getHorizontalScrollBar().setUnitIncrement(8);
+
         JPanel container = new JPanel();
         setViewportView(container);
 
