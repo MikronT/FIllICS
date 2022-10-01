@@ -4,6 +4,7 @@ import com.mikront.util.Utils;
 import com.mikront.util.debug.Log;
 
 import javax.swing.*;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,7 +16,6 @@ public class JCheckBoxList extends JScrollPane {
     private int orientation = ORIENTATION_VERTICAL;
 
     private OnItemCheckedListener onItemCheckedListener;
-    private final GroupLayout layout;
     private final List<JCheckBox> boxes = new ArrayList<>();
 
 
@@ -24,14 +24,6 @@ public class JCheckBoxList extends JScrollPane {
 
         getVerticalScrollBar().setUnitIncrement(12);
         getHorizontalScrollBar().setUnitIncrement(8);
-
-        JPanel container = new JPanel();
-        setViewportView(container);
-
-        layout = new GroupLayout(container);
-        container.setLayout(layout);
-        layout.setAutoCreateGaps(true);
-        layout.setAutoCreateContainerGaps(true);
     }
 
     public JCheckBoxList(boolean newItemChecked) {
@@ -162,6 +154,18 @@ public class JCheckBoxList extends JScrollPane {
 
 
     private void buildUI() {
+        EventQueue.invokeLater(buildUI_runnable);
+    }
+
+    private final Runnable buildUI_runnable = () -> {
+        JPanel panel = new JPanel();
+        setViewportView(panel);
+
+        GroupLayout layout = new GroupLayout(panel);
+        panel.setLayout(layout);
+        layout.setAutoCreateGaps(true);
+        layout.setAutoCreateContainerGaps(true);
+
         GroupLayout.Group horizontalGroup, verticalGroup;
         if (orientation == ORIENTATION_VERTICAL) {
             horizontalGroup = layout.createParallelGroup();
@@ -180,7 +184,7 @@ public class JCheckBoxList extends JScrollPane {
         layout.setVerticalGroup(verticalGroup);
 
         Components.applyDefaults(this);
-    }
+    };
 
 
     public JCheckBox get(String title) {
