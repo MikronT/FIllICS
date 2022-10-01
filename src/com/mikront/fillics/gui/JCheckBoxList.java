@@ -56,18 +56,18 @@ public class JCheckBoxList extends JScrollPane {
 
     public void add(String title) {
         if (create(title))
-            updateUI();
+            buildUI();
     }
 
     public void add(List<String> titles) {
-        boolean shouldUpdateUI = false;
+        boolean shouldRebuildUI = false;
 
         for (String s : titles)
             if (create(s))
-                shouldUpdateUI = true;
+                shouldRebuildUI = true;
 
-        if (shouldUpdateUI)
-            updateUI();
+        if (shouldRebuildUI)
+            buildUI();
     }
 
     private boolean create(String title) {
@@ -85,18 +85,18 @@ public class JCheckBoxList extends JScrollPane {
 
     public void remove(String title) {
         if (destroy(title))
-            updateUI();
+            buildUI();
     }
 
     public void remove(List<String> titles) {
-        boolean shouldUpdateUI = false;
+        boolean shouldRebuildUI = false;
 
         for (String s : titles)
             if (destroy(s))
-                shouldUpdateUI = true;
+                shouldRebuildUI = true;
 
-        if (shouldUpdateUI)
-            updateUI();
+        if (shouldRebuildUI)
+            buildUI();
     }
 
     private boolean destroy(String title) {
@@ -105,7 +105,7 @@ public class JCheckBoxList extends JScrollPane {
 
     public void clear() {
         boxes.clear();
-        updateUI();
+        buildUI();
     }
 
     public void replaceWith(List<String> newList) {
@@ -147,7 +147,7 @@ public class JCheckBoxList extends JScrollPane {
             added.forEach(checkBoxes::create);
 
             if (!removed.isEmpty() || !added.isEmpty())
-                checkBoxes.updateUI();
+                checkBoxes.buildUI();
         }
     }
 
@@ -161,15 +161,7 @@ public class JCheckBoxList extends JScrollPane {
     }
 
 
-    @Override
-    public void updateUI() {
-        if (layout != null)
-            makeUI();
-
-        super.updateUI();
-    }
-
-    private void makeUI() {
+    private void buildUI() {
         GroupLayout.Group horizontalGroup, verticalGroup;
         if (orientation == ORIENTATION_VERTICAL) {
             horizontalGroup = layout.createParallelGroup();
