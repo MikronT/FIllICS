@@ -5,14 +5,11 @@ import com.mikront.fillics.gui.Form;
 import com.mikront.fillics.gui.XSpinnerDateModel;
 import com.mikront.fillics.ics.CalendarData;
 import com.mikront.fillics.schedule.*;
-import com.mikront.util.Concat;
 import com.mikront.util.Utils;
 import com.mikront.util.debug.Log;
 import org.jsoup.nodes.Document;
 
 import javax.swing.*;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -20,6 +17,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.*;
+
+import static javax.swing.GroupLayout.DEFAULT_SIZE;
 
 
 public class MainForm extends Form {
@@ -32,7 +31,6 @@ public class MainForm extends Form {
     private JCheckBox checkBox_optional;
     private JComboBox<String> combo_group, combo_teacher;
     private JProgressBar progressBar;
-    private JTextArea field_exclusions;
     private List<Day> schedule;
     private XSpinnerDateModel model_from, model_to;
     private final HashMap<String, String> map_subjects = new HashMap<>();
@@ -62,7 +60,6 @@ public class MainForm extends Form {
         var label_group = new JLabel(LABEL_GROUP);
         var label_from = new JLabel(LABEL_DATE_FROM);
         var label_to = new JLabel(LABEL_DATE_TO);
-        var label_exclusions = new JLabel(LABEL_EXCLUSIONS);
 
         combo_teacher = Components.newOptionalJComboBox();
         combo_teacher.addItemListener(e -> preferenceManager.setTeacher(e.getItem().toString()));
@@ -106,14 +103,6 @@ public class MainForm extends Form {
         button_request = new JButton(BUTTON_REQUEST);
         button_request.addActionListener(e -> new Thread(this::requestSchedule).start());
 
-        field_exclusions = new JTextArea();
-        field_exclusions.addFocusListener(new FocusAdapter() {
-            @Override
-            public void focusLost(FocusEvent e) {
-                preferenceManager.setExclusions(getExclusions());
-            }
-        });
-
         checkBox_optional = new JCheckBox(CHECK_OPTIONAL);
         checkBox_optional.addActionListener(e ->
                 preferenceManager.setShouldIncludeOptional(checkBox_optional.isSelected()));
@@ -141,10 +130,8 @@ public class MainForm extends Form {
                                 .addComponent(button_request)))
                 .addGap(GAP)
                 .addGroup(layout.createParallelGroup()
-                        .addComponent(label_exclusions)
-                        .addComponent(field_exclusions, FIELD_WIDTH, FIELD_WIDTH, GroupLayout.DEFAULT_SIZE)
                         .addGroup(layout.createSequentialGroup()
-                                .addComponent(checkBox_optional, GroupLayout.DEFAULT_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(checkBox_optional, DEFAULT_SIZE, DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(button_export)))
         );
         layout.setVerticalGroup(layout.createParallelGroup()
@@ -165,9 +152,6 @@ public class MainForm extends Form {
                                 .addComponent(progressBar)
                                 .addComponent(button_request)))
                 .addGroup(layout.createSequentialGroup()
-                        .addComponent(label_exclusions)
-                        .addComponent(field_exclusions)
-                        .addGap(GAP)
                         .addGroup(layout.createParallelGroup()
                                 .addComponent(checkBox_optional)
                                 .addComponent(button_export)))
@@ -187,7 +171,6 @@ public class MainForm extends Form {
     private void presetRequestOptions() {
         requestLists();
 
-        setExclusions(preferenceManager.getExclusions());
         combo_teacher.setSelectedItem(preferenceManager.getTeacher());
         combo_group.setSelectedItem(preferenceManager.getGroup());
         checkBox_optional.setSelected(preferenceManager.getShouldIncludeOptional());
@@ -270,7 +253,6 @@ public class MainForm extends Form {
         button_export.setEnabled(false);
 
         boolean shouldSkipOptional = !checkBox_optional.isSelected();
-        var exclusions = getExclusions();
 
         CalendarData data = new CalendarData();
         for (Day day : schedule)
@@ -279,13 +261,10 @@ public class MainForm extends Form {
                     if (shouldSkipOptional && session.isOptional()) continue;
 
                     var sSubject = session.getSubject().toLowerCase(Locale.ROOT);
-                    if (exclusions.stream().anyMatch(sSubject::contains)) continue;
 
                     var sType = session.getType().toLowerCase(Locale.ROOT);
-                    if (exclusions.stream().anyMatch(sType::contains)) continue;
 
                     var sGroup = session.getGroup().toLowerCase(Locale.ROOT);
-                    if (exclusions.stream().anyMatch(sGroup::contains)) continue;
 
                     if (map_subjects.containsKey(sSubject)) session.setSubject(map_subjects.get(sSubject));
                     if (map_types.containsKey(sType)) session.setType(map_types.get(sType));
@@ -313,21 +292,5 @@ public class MainForm extends Form {
 
     private void resetProgress() {
         setProgress(0, STEP_READY);
-    }
-
-    private List<String> getExclusions() {
-        return Arrays.stream(field_exclusions.getText()
-                        .toLowerCase(Locale.ROOT)
-                        .split(Parser.REGEX_NEWLINE.pattern()))
-                .toList();
-    }
-
-    private void setExclusions(List<String> list) {
-        if (list.isEmpty())
-            return;
-
-        field_exclusions.setText(Concat.me()
-                .lines(list, item -> item)
-                .enate());
     }
 }

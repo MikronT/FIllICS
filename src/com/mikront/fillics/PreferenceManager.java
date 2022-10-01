@@ -3,9 +3,6 @@ package com.mikront.fillics;
 import com.mikront.util.debug.Log;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Scanner;
 
 
@@ -15,16 +12,13 @@ public class PreferenceManager {
     private static final String
             KEY_TEACHER = "teacher",
             KEY_GROUP = "group",
-            KEY_EXCLUDE = "exclude",
             KEY_INCLUDE_OPTIONAL = "include_optional";
 
     private static final boolean DEFAULT_SHOULD_INCLUDE_OPTIONAL = true;
     private static final String DEFAULT_TEACHER = "", DEFAULT_GROUP = "";
-    private static final List<String> DEFAULT_EXCLUSIONS = Collections.emptyList();
 
     private boolean shouldIncludeOptional = DEFAULT_SHOULD_INCLUDE_OPTIONAL;
     private String teacher = DEFAULT_TEACHER, group = DEFAULT_GROUP;
-    private final List<String> exclusions = new ArrayList<>(DEFAULT_EXCLUSIONS);
 
 
     public PreferenceManager() {
@@ -53,7 +47,6 @@ public class PreferenceManager {
             switch (key) {
                 case KEY_TEACHER -> teacher = value;
                 case KEY_GROUP -> group = value;
-                case KEY_EXCLUDE -> exclusions.add(value);
                 case KEY_INCLUDE_OPTIONAL -> shouldIncludeOptional = Boolean.parseBoolean(value);
             }
         }
@@ -85,9 +78,6 @@ public class PreferenceManager {
         if (!DEFAULT_GROUP.equals(group))
             printWriter.println(KEY_GROUP + SEPARATOR + group);
 
-        if (!DEFAULT_EXCLUSIONS.equals(exclusions))
-            exclusions.forEach(s -> printWriter.println(KEY_EXCLUDE + SEPARATOR + s));
-
         if (DEFAULT_SHOULD_INCLUDE_OPTIONAL != shouldIncludeOptional)
             printWriter.println(KEY_INCLUDE_OPTIONAL + SEPARATOR + shouldIncludeOptional);
 
@@ -110,16 +100,6 @@ public class PreferenceManager {
 
     public void setGroup(String value) {
         group = value;
-        commit();
-    }
-
-    public List<String> getExclusions() {
-        return exclusions;
-    }
-
-    public void setExclusions(List<String> list) {
-        exclusions.clear();
-        exclusions.addAll(list);
         commit();
     }
 
