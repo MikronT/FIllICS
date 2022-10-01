@@ -2,6 +2,7 @@ package com.mikront.fillics;
 
 import com.mikront.fillics.gui.Components;
 import com.mikront.fillics.gui.Form;
+import com.mikront.fillics.gui.JCheckBoxList;
 import com.mikront.fillics.gui.XSpinnerDateModel;
 import com.mikront.fillics.ics.CalendarData;
 import com.mikront.fillics.schedule.*;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
 import java.util.*;
+import java.util.function.Function;
 
 import static javax.swing.GroupLayout.DEFAULT_SIZE;
 
@@ -29,6 +31,7 @@ public class MainForm extends Form {
 
     private JButton button_request, button_export;
     private JCheckBox checkBox_optional;
+    private JCheckBoxList checkBoxes_subjects, checkBoxes_groups, checkBoxes_types;
     private JComboBox<String> combo_group, combo_teacher;
     private JProgressBar progressBar;
     private List<Day> schedule;
@@ -103,6 +106,15 @@ public class MainForm extends Form {
         button_request = new JButton(BUTTON_REQUEST);
         button_request.addActionListener(e -> new Thread(this::requestSchedule).start());
 
+
+        var label_subjects = new JLabel(LABEL_SUBJECTS);
+        var label_types = new JLabel(LABEL_TYPES);
+        var label_groups = new JLabel(LABEL_GROUPS);
+
+        checkBoxes_subjects = new JCheckBoxList(true);
+        checkBoxes_groups = new JCheckBoxList(true);
+        checkBoxes_types = new JCheckBoxList(true);
+
         checkBox_optional = new JCheckBox(CHECK_OPTIONAL);
         checkBox_optional.addActionListener(e ->
                 preferenceManager.setShouldIncludeOptional(checkBox_optional.isSelected()));
@@ -113,6 +125,7 @@ public class MainForm extends Form {
 
 
         layout.setHorizontalGroup(layout.createSequentialGroup()
+                //Request schedule
                 .addGroup(layout.createParallelGroup()
                         .addComponent(label_teacher)
                         .addComponent(combo_teacher, TEACHER_WIDTH, TEACHER_WIDTH, DEFAULT_SIZE)
@@ -127,14 +140,28 @@ public class MainForm extends Form {
                                         .addComponent(spinner_to)))
                         .addGroup(layout.createSequentialGroup()
                                 .addComponent(progressBar)
-                                .addComponent(button_request)))
-                .addGap(GAP)
+                                .addComponent(button_request))
+                        .addComponent(label_types)
+                        .addComponent(checkBoxes_types)
+                )
+                .addGap(GAP_BIG)
+                //Filter subjects
                 .addGroup(layout.createParallelGroup()
+                        .addComponent(label_subjects, SUBJECTS_WIDTH, SUBJECTS_WIDTH, DEFAULT_SIZE)
+                        .addComponent(checkBoxes_subjects)
+                )
+                .addGap(GAP_BIG)
+                //Filter groups and types and export
+                .addGroup(layout.createParallelGroup()
+                        .addComponent(label_groups)
+                        .addComponent(checkBoxes_groups, GROUPS_WIDTH, GROUPS_WIDTH, DEFAULT_SIZE)
                         .addGroup(layout.createSequentialGroup()
-                                .addComponent(checkBox_optional, DEFAULT_SIZE, DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(button_export)))
+                                .addComponent(checkBox_optional)
+                                .addComponent(button_export))
+                )
         );
-        layout.setVerticalGroup(layout.createParallelGroup()
+        layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                //Request schedule
                 .addGroup(layout.createSequentialGroup()
                         .addComponent(label_teacher)
                         .addComponent(combo_teacher)
@@ -147,14 +174,27 @@ public class MainForm extends Form {
                                 .addGroup(layout.createSequentialGroup()
                                         .addComponent(label_to)
                                         .addComponent(spinner_to)))
-                        .addGap(GAP)
+                        .addGap(GAP_MEDIUM)
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                                 .addComponent(progressBar)
-                                .addComponent(button_request)))
+                                .addComponent(button_request))
+                        .addGap(GAP_BIG)
+                        .addComponent(label_types)
+                        .addComponent(checkBoxes_types, TYPES_HEIGHT, TYPES_HEIGHT, DEFAULT_SIZE)
+                )
+                //Filter subjects
                 .addGroup(layout.createSequentialGroup()
+                        .addComponent(label_subjects)
+                        .addComponent(checkBoxes_subjects)
+                )
+                //Filter groups and types and export
+                .addGroup(layout.createSequentialGroup()
+                        .addComponent(label_groups)
+                        .addComponent(checkBoxes_groups, GROUPS_HEIGHT, GROUPS_HEIGHT, DEFAULT_SIZE)
                         .addGroup(layout.createParallelGroup()
                                 .addComponent(checkBox_optional)
-                                .addComponent(button_export)))
+                                .addComponent(button_export))
+                )
         );
 
         Components.applyDefaults(container);
@@ -244,8 +284,16 @@ public class MainForm extends Form {
                 .setDefaultGroup(group)
                 .parse();
 
+        presetFilters();
         button_export.setEnabled(true);
         resetProgress();
+    }
+
+    private void presetFilters() {
+        var sessions = getSessions();
+        checkBoxes_subjects.replaceWith(getSessionData(sessions, Session::getSubject));
+        checkBoxes_groups.replaceWith(getSessionData(sessions, Session::getGroup));
+        checkBoxes_types.replaceWith(getSessionData(sessions, Session::getType));
     }
 
     private void exportSchedule() {
@@ -292,5 +340,23 @@ public class MainForm extends Form {
 
     private void resetProgress() {
         setProgress(0, STEP_READY);
+    }
+
+
+    private List<Session> getSessions() {
+        List<Session> out = new ArrayList<>();
+        for (Day day : schedule)
+            for (Cell cell : day)
+                for (Session session : cell)
+                    out.add(session);
+        return out;
+    }
+
+    private List<String> getSessionData(List<Session> sessions, Function<Session, String> mapper) {
+        return sessions.stream()
+                .map(mapper)
+                .filter(Utils::notEmpty)
+                .distinct()
+                .toList();
     }
 }

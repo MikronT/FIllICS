@@ -7,6 +7,9 @@ public interface Strings {
     String LABEL_GROUP = "Group";
     String LABEL_DATE_FROM = "Date from";
     String LABEL_DATE_TO = "Date to";
+    String LABEL_SUBJECTS = "Subjects";
+    String LABEL_GROUPS = "Groups";
+    String LABEL_TYPES = "Session types";
     String BUTTON_REQUEST = "Request";
     String BUTTON_EXPORT = "Export";
     String CHECK_OPTIONAL = "Include optional";
