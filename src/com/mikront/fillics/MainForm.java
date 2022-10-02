@@ -114,6 +114,11 @@ public class MainForm extends Form {
         checkBoxes_subjects = new JCheckBoxList(true);
         checkBoxes_groups = new JCheckBoxList(true);
 
+        checkBoxes_types.setOnItemCheckedListener(title -> {
+            filterByTypes();
+            filterBySubjects();
+        });
+        checkBoxes_subjects.setOnItemCheckedListener(title -> filterBySubjects());
 
         button_export = new JButton(BUTTON_EXPORT);
         button_export.setEnabled(false);
@@ -285,6 +290,41 @@ public class MainForm extends Form {
         checkBoxes_subjects.replaceWith(getSessionData(sessions, Session::getSubject, null));
         checkBoxes_groups.replaceWith(getSessionData(sessions, Session::getGroup, UNKNOWN_GROUP));
         checkBoxes_types.replaceWith(getSessionData(sessions, Session::getType, UNKNOWN_TYPE));
+    }
+
+    private void filterByTypes() {
+        var newSessions = getSessions().stream()
+                .filter(session -> {
+                    var type = session.getType();
+                    if (Utils.isEmpty(type))
+                        type = UNKNOWN_TYPE;
+
+                    return checkBoxes_types.isChecked(type);
+                })
+                .toList();
+        var newSubjects = getSessionData(newSessions, Session::getSubject, null);
+        var newGroups = getSessionData(newSessions, Session::getGroup, UNKNOWN_GROUP);
+
+        checkBoxes_subjects.replaceWith(newSubjects);
+        checkBoxes_groups.replaceWith(newGroups);
+    }
+
+    private void filterBySubjects() {
+        var newSessions = getSessions().stream()
+                .filter(session -> {
+                    var subject = session.getSubject();
+                    if (Utils.isEmpty(subject)) {
+                        Log.i("MainForm::filterBySubjects: Predicate-> subject is empty");
+                        Log.i("MainForm::filterBySubjects: Predicate->   - session = " + session);
+                        Log.i("MainForm::filterBySubjects: Predicate->   - subject = " + subject);
+                    }
+
+                    return checkBoxes_subjects.get(subject) != null && checkBoxes_subjects.isChecked(subject);
+                })
+                .toList();
+        var newGroups = getSessionData(newSessions, Session::getGroup, UNKNOWN_GROUP);
+
+        checkBoxes_groups.replaceWith(newGroups);
     }
 
     private void exportSchedule() {
