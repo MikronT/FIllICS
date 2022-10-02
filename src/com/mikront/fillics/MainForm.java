@@ -311,9 +311,9 @@ public class MainForm extends Form {
 
     private void presetFilters() {
         var sessions = getSessions();
-        checkBoxes_types.replaceWith(getSessionData(sessions, Session::getType));
+        checkBoxes_types.replaceWith(getSessionData(sessions, Session::getTypeOrUnknown));
         checkBoxes_subjects.replaceWith(getSessionData(sessions, Session::getSubject));
-        checkBoxes_groups.replaceWith(getSessionData(sessions, Session::getGroup));
+        checkBoxes_groups.replaceWith(getSessionData(sessions, Session::getGroupOrUnknown));
 
         preferenceManager.getFilterTypes().forEach(s -> checkBoxes_types.setChecked(s, false));
         preferenceManager.getFilterSubjects().forEach(s -> checkBoxes_subjects.setChecked(s, false));
@@ -322,10 +322,10 @@ public class MainForm extends Form {
 
     private void filterByTypes() {
         var newSessions = getSessions().stream()
-                .filter(session -> checkBoxes_types.isChecked(session.getType()))
+                .filter(session -> checkBoxes_types.isChecked(session.getTypeOrUnknown()))
                 .toList();
         var newSubjects = getSessionData(newSessions, Session::getSubject);
-        var newGroups = getSessionData(newSessions, Session::getGroup);
+        var newGroups = getSessionData(newSessions, Session::getGroupOrUnknown);
 
         checkBoxes_subjects.replaceWith(newSubjects);
         checkBoxes_groups.replaceWith(newGroups);
@@ -344,7 +344,7 @@ public class MainForm extends Form {
                     return checkBoxes_subjects.isChecked(subject);
                 })
                 .toList();
-        var newGroups = getSessionData(newSessions, Session::getGroup);
+        var newGroups = getSessionData(newSessions, Session::getGroupOrUnknown);
 
         checkBoxes_groups.replaceWith(newGroups);
     }
@@ -374,9 +374,9 @@ public class MainForm extends Form {
         try (var stream = new FileOutputStream(FILE_ICS)) {
             stream.write(data.compile().getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
-            Log.e("MainForm::requestSchedule: unable to write file");
-            Log.e("MainForm::requestSchedule:   - file = " + FILE_ICS);
-            Log.e("MainForm::requestSchedule:   = catching: ", e);
+            Log.e("MainForm::exportSchedule: unable to write file");
+            Log.e("MainForm::exportSchedule:   - file = " + FILE_ICS);
+            Log.e("MainForm::exportSchedule:   = catching: ", e);
         }
 
         button_request.setEnabled(true);

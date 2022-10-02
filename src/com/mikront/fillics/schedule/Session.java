@@ -18,10 +18,6 @@ public class Session {
         this.subject = subject;
     }
 
-    public String getSubject() {
-        return subject == null ? "" : subject;
-    }
-
     public void setType(String type) {
         this.type = type;
     }
@@ -80,11 +76,23 @@ public class Session {
                 .enate();
     }
 
+    public String getSubject() {
+        return Utils.isEmpty(subject) ? "" : subject;
+    }
+
     public String getType() {
+        return Utils.isEmpty(type) ? "" : type;
+    }
+
+    public String getTypeOrUnknown() {
         return Utils.isEmpty(type) ? Strings.UNKNOWN_TYPE : type;
     }
 
     public String getGroup() {
+        return Utils.isEmpty(group) ? "" : group;
+    }
+
+    public String getGroupOrUnknown() {
         return Utils.isEmpty(group) ? Strings.UNKNOWN_GROUP : group;
     }
 

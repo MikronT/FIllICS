@@ -130,12 +130,12 @@ public class JCheckBoxList extends JScrollPane {
         public void applyChanges() {
             List<String> removed = new ArrayList<>(oldList);
             removed.removeAll(newList);
-            Log.v("JCheckBoxList::DiffUtil::commit: removed = " + removed);
+            Log.v("JCheckBoxList.DiffUtil::applyChanges: removed = " + removed);
             removed.forEach(checkBoxes::destroy);
 
             List<String> added = new ArrayList<>(newList);
             added.removeAll(oldList);
-            Log.v("JCheckBoxList::DiffUtil::commit: added = " + added);
+            Log.v("JCheckBoxList.DiffUtil::applyChanges: added = " + added);
             added.forEach(checkBoxes::create);
 
             if (!removed.isEmpty() || !added.isEmpty())
