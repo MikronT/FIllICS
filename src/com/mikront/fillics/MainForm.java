@@ -7,6 +7,7 @@ import com.mikront.fillics.gui.XSpinnerDateModel;
 import com.mikront.fillics.ics.CalendarData;
 import com.mikront.fillics.schedule.*;
 import com.mikront.util.Utils;
+import com.mikront.util.debug.Build;
 import com.mikront.util.debug.Log;
 import org.jsoup.nodes.Document;
 
@@ -41,6 +42,7 @@ public class MainForm extends Form {
 
 
     public static void main(String[] args) {
+        Build.debug(false);
         Log.ging(true);
         Log.level(Log.LEVEL_DEBUG);
 
@@ -104,9 +106,15 @@ public class MainForm extends Form {
 
         button_request = new JButton(BUTTON_REQUEST);
         button_request.addActionListener(e -> new Thread(() -> {
+            button_request.setEnabled(false);
+
             requestSchedule();
+            presetFilters();
             filterByTypes();
             filterBySubjects();
+
+            button_request.setEnabled(true);
+            button_export.setEnabled(true);
         }).start());
 
 
@@ -225,17 +233,11 @@ public class MainForm extends Form {
     }
 
     private void presetRequestOptions() {
-        requestLists();
-
-        combo_teacher.setSelectedItem(preferenceManager.getTeacher());
-        combo_group.setSelectedItem(preferenceManager.getGroup());
-    }
-
-    private void requestLists() {
-        setProgress(50, STEP_GETTING_TEACHERS);
-
+        button_request.setEnabled(false);
         combo_teacher.setEnabled(false);
         combo_group.setEnabled(false);
+
+        setProgress(50, STEP_GETTING_TEACHERS);
 
         Schedule.getTeachers().forEach(combo_teacher::addItem);
         combo_teacher.setEnabled(true);
@@ -255,9 +257,9 @@ public class MainForm extends Form {
                 map_subjects.put(strings[0].toLowerCase(Locale.ROOT), strings[1]);
             }
         } catch (IOException e) {
-            Log.w("MainForm::requestLists: unable to load subjects map");
-            Log.w("MainForm::requestLists:   - file = " + FILE_MAP_SUBJECTS);
-            Log.w("MainForm::requestLists:   = catching: ", e);
+            Log.w("MainForm::presetRequestOptions: unable to load subjects map");
+            Log.w("MainForm::presetRequestOptions:   - file = " + FILE_MAP_SUBJECTS);
+            Log.w("MainForm::presetRequestOptions:   = catching: ", e);
         }
 
         try (var stream = new FileInputStream(FILE_MAP_TYPES);
@@ -270,12 +272,17 @@ public class MainForm extends Form {
                 map_types.put(strings[0].toLowerCase(Locale.ROOT), strings[1]);
             }
         } catch (IOException e) {
-            Log.w("MainForm::requestLists: unable to load types map");
-            Log.w("MainForm::requestLists:   - file = " + FILE_MAP_TYPES);
-            Log.w("MainForm::requestLists:   = catching: ", e);
+            Log.w("MainForm::presetRequestOptions: unable to load types map");
+            Log.w("MainForm::presetRequestOptions:   - file = " + FILE_MAP_TYPES);
+            Log.w("MainForm::presetRequestOptions:   = catching: ", e);
         }
 
+        combo_teacher.setSelectedItem(preferenceManager.getTeacher());
+        combo_group.setSelectedItem(preferenceManager.getGroup());
+
         resetProgress();
+
+        button_request.setEnabled(true);
     }
 
     private void requestSchedule() {
@@ -299,8 +306,6 @@ public class MainForm extends Form {
                 .setDefaultGroup(group)
                 .parse();
 
-        presetFilters();
-        button_export.setEnabled(true);
         resetProgress();
     }
 

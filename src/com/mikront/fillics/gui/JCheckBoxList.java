@@ -145,7 +145,9 @@ public class JCheckBoxList extends JScrollPane {
 
 
     public void setChecked(String title, boolean checked) {
-        get(title).setSelected(checked);
+        var box = get(title);
+        if (box != null)
+            box.setSelected(checked);
     }
 
     public void setNewItemChecked(boolean value) {
@@ -175,10 +177,10 @@ public class JCheckBoxList extends JScrollPane {
             verticalGroup = layout.createParallelGroup();
         }
 
-        boxes.forEach(box -> {
+        for (JCheckBox box : boxes) {
             horizontalGroup.addComponent(box);
             verticalGroup.addComponent(box);
-        });
+        }
 
         layout.setHorizontalGroup(horizontalGroup);
         layout.setVerticalGroup(verticalGroup);
