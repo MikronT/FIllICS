@@ -91,6 +91,7 @@ public class MainForm extends Form {
             if (date1.compareTo(date2) > 0)
                 model_to.setValue(date1);
         });
+
         var spinner_to = Components.newJSpinner(model_to);
         spinner_to.addChangeListener(e -> {
             LocalDate
@@ -118,15 +119,11 @@ public class MainForm extends Form {
             button_export.setEnabled(true);
         }).start());
 
-
         var label_types = new JLabel(LABEL_TYPES);
         var label_subjects = new JLabel(LABEL_SUBJECTS);
         var label_groups = new JLabel(LABEL_GROUPS);
 
         checkBoxes_types = new JCheckBoxList(true);
-        checkBoxes_subjects = new JCheckBoxList(true);
-        checkBoxes_groups = new JCheckBoxList(true);
-
         checkBoxes_types.setOnItemCheckedListener((title, checked) -> {
             filterByTypes();
             filterBySubjects();
@@ -135,6 +132,8 @@ public class MainForm extends Form {
                 preferenceManager.addFilterType(title);
             else preferenceManager.removeFilterType(title);
         });
+
+        checkBoxes_subjects = new JCheckBoxList(true);
         checkBoxes_subjects.setOnItemCheckedListener((title, checked) -> {
             filterBySubjects();
 
@@ -142,6 +141,8 @@ public class MainForm extends Form {
                 preferenceManager.addFilterSubject(title);
             else preferenceManager.removeFilterSubject(title);
         });
+
+        checkBoxes_groups = new JCheckBoxList(true);
         checkBoxes_groups.setOnItemCheckedListener((title, checked) -> {
             if (!checked)
                 preferenceManager.addFilterGroup(title);
@@ -334,6 +335,7 @@ public class MainForm extends Form {
 
     private void filterBySubjects() {
         var newSessions = getSessions().stream()
+                .filter(session -> checkBoxes_types.isChecked(session.getTypeOrUnknown()))
                 .filter(session -> {
                     var subject = session.getSubject();
                     if (Utils.isEmpty(subject)) {
