@@ -30,7 +30,7 @@ public class MainForm extends Form {
     private static final int PROGRESS_MAX = 100;
 
     private JButton button_request, button_export;
-    private JCheckBoxList checkBoxes_subjects, checkBoxes_groups, checkBoxes_types;
+    private JCheckBoxList checkBoxes_types, checkBoxes_subjects, checkBoxes_groups;
     private JComboBox<String> combo_group, combo_teacher;
     private JProgressBar progressBar;
     private List<Day> schedule;
@@ -118,11 +118,26 @@ public class MainForm extends Form {
         checkBoxes_subjects = new JCheckBoxList(true);
         checkBoxes_groups = new JCheckBoxList(true);
 
-        checkBoxes_types.setOnItemCheckedListener(title -> {
+        checkBoxes_types.setOnItemCheckedListener((title, checked) -> {
             filterByTypes();
             filterBySubjects();
+
+            if (!checked)
+                preferenceManager.addFilterType(title);
+            else preferenceManager.removeFilterType(title);
         });
-        checkBoxes_subjects.setOnItemCheckedListener(title -> filterBySubjects());
+        checkBoxes_subjects.setOnItemCheckedListener((title, checked) -> {
+            filterBySubjects();
+
+            if (!checked)
+                preferenceManager.addFilterSubject(title);
+            else preferenceManager.removeFilterSubject(title);
+        });
+        checkBoxes_groups.setOnItemCheckedListener((title, checked) -> {
+            if (!checked)
+                preferenceManager.addFilterGroup(title);
+            else preferenceManager.removeFilterGroup(title);
+        });
 
         button_export = new JButton(BUTTON_EXPORT);
         button_export.setEnabled(false);
@@ -291,9 +306,13 @@ public class MainForm extends Form {
 
     private void presetFilters() {
         var sessions = getSessions();
+        checkBoxes_types.replaceWith(getSessionData(sessions, Session::getType));
         checkBoxes_subjects.replaceWith(getSessionData(sessions, Session::getSubject));
         checkBoxes_groups.replaceWith(getSessionData(sessions, Session::getGroup));
-        checkBoxes_types.replaceWith(getSessionData(sessions, Session::getType));
+
+        preferenceManager.getFilterTypes().forEach(s -> checkBoxes_types.setChecked(s, false));
+        preferenceManager.getFilterSubjects().forEach(s -> checkBoxes_subjects.setChecked(s, false));
+        preferenceManager.getFilterGroups().forEach(s -> checkBoxes_groups.setChecked(s, false));
     }
 
     private void filterByTypes() {

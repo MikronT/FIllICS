@@ -3,6 +3,8 @@ package com.mikront.fillics;
 import com.mikront.util.debug.Log;
 
 import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 
@@ -11,12 +13,22 @@ public class PreferenceManager {
     private static final String SEPARATOR = "=";
     private static final String
             KEY_TEACHER = "teacher",
-            KEY_GROUP = "group";
+            KEY_GROUP = "group",
+            KEY_FILTER_TYPES = "filter_type",
+            KEY_FILTER_SUBJECTS = "filter_subject",
+            KEY_FILTER_GROUPS = "filter_group";
 
-    private static final String DEFAULT_TEACHER = "", DEFAULT_GROUP = "";
+    private static final String DEFAULT_TEACHER, DEFAULT_GROUP;
 
-    private String teacher = DEFAULT_TEACHER, group = DEFAULT_GROUP;
+    private String teacher = DEFAULT_TEACHER;
+    private String group = DEFAULT_GROUP;
+    private final List<String> filter_types = new ArrayList<>();
+    private final List<String> filter_subjects=  new ArrayList<>();
+    private final List<String> filter_groups =  new ArrayList<>();
 
+    static {
+        DEFAULT_TEACHER = DEFAULT_GROUP = "";
+    }
 
     public PreferenceManager() {
         read();
@@ -44,6 +56,9 @@ public class PreferenceManager {
             switch (key) {
                 case KEY_TEACHER -> teacher = value;
                 case KEY_GROUP -> group = value;
+                case KEY_FILTER_TYPES -> filter_types.add(value);
+                case KEY_FILTER_SUBJECTS -> filter_subjects.add(value);
+                case KEY_FILTER_GROUPS -> filter_groups.add(value);
             }
         }
 
@@ -74,6 +89,18 @@ public class PreferenceManager {
         if (!DEFAULT_GROUP.equals(group))
             printWriter.println(KEY_GROUP + SEPARATOR + group);
 
+        if (!filter_types.isEmpty())
+            for (String s : filter_types)
+                printWriter.println(KEY_FILTER_TYPES + SEPARATOR + s);
+
+        if (!filter_subjects.isEmpty())
+            for (String s : filter_subjects)
+                printWriter.println(KEY_FILTER_SUBJECTS + SEPARATOR + s);
+
+        if (!filter_groups.isEmpty())
+            for (String s : filter_groups)
+                printWriter.println(KEY_FILTER_GROUPS + SEPARATOR + s);
+
         printWriter.close();
     }
 
@@ -93,6 +120,48 @@ public class PreferenceManager {
 
     public void setGroup(String value) {
         group = value;
+        commit();
+    }
+
+    public List<String> getFilterTypes() {
+        return filter_types;
+    }
+
+    public void addFilterType(String value) {
+        filter_types.add(value);
+        commit();
+    }
+
+    public void removeFilterType(String value) {
+        filter_types.remove(value);
+        commit();
+    }
+
+    public List<String> getFilterSubjects() {
+        return filter_subjects;
+    }
+
+    public void addFilterSubject(String value) {
+        filter_subjects.add(value);
+        commit();
+    }
+
+    public void removeFilterSubject(String value) {
+        filter_subjects.remove(value);
+        commit();
+    }
+
+    public List<String> getFilterGroups() {
+        return filter_groups;
+    }
+
+    public void addFilterGroup(String value) {
+        filter_groups.add(value);
+        commit();
+    }
+
+    public void removeFilterGroup(String value) {
+        filter_groups.remove(value);
         commit();
     }
 }

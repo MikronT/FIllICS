@@ -38,7 +38,7 @@ public class JCheckBoxList extends JScrollPane {
     }
 
     public interface OnItemCheckedListener {
-        void itemChecked(String title);
+        void itemChecked(String title, boolean checked);
     }
 
     public void setOnItemCheckedListener(OnItemCheckedListener onItemCheckedListener) {
@@ -71,7 +71,7 @@ public class JCheckBoxList extends JScrollPane {
         boxes.add(box);
 
         if (onItemCheckedListener != null)
-            box.addActionListener(e -> onItemCheckedListener.itemChecked(box.getText()));
+            box.addActionListener(e -> onItemCheckedListener.itemChecked(box.getText(), box.isSelected()));
         return true;
     }
 
