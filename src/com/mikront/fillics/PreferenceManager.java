@@ -11,13 +11,10 @@ public class PreferenceManager {
     private static final String SEPARATOR = "=";
     private static final String
             KEY_TEACHER = "teacher",
-            KEY_GROUP = "group",
-            KEY_INCLUDE_OPTIONAL = "include_optional";
+            KEY_GROUP = "group";
 
-    private static final boolean DEFAULT_SHOULD_INCLUDE_OPTIONAL = true;
     private static final String DEFAULT_TEACHER = "", DEFAULT_GROUP = "";
 
-    private boolean shouldIncludeOptional = DEFAULT_SHOULD_INCLUDE_OPTIONAL;
     private String teacher = DEFAULT_TEACHER, group = DEFAULT_GROUP;
 
 
@@ -47,7 +44,6 @@ public class PreferenceManager {
             switch (key) {
                 case KEY_TEACHER -> teacher = value;
                 case KEY_GROUP -> group = value;
-                case KEY_INCLUDE_OPTIONAL -> shouldIncludeOptional = Boolean.parseBoolean(value);
             }
         }
 
@@ -78,9 +74,6 @@ public class PreferenceManager {
         if (!DEFAULT_GROUP.equals(group))
             printWriter.println(KEY_GROUP + SEPARATOR + group);
 
-        if (DEFAULT_SHOULD_INCLUDE_OPTIONAL != shouldIncludeOptional)
-            printWriter.println(KEY_INCLUDE_OPTIONAL + SEPARATOR + shouldIncludeOptional);
-
         printWriter.close();
     }
 
@@ -100,15 +93,6 @@ public class PreferenceManager {
 
     public void setGroup(String value) {
         group = value;
-        commit();
-    }
-
-    public boolean getShouldIncludeOptional() {
-        return shouldIncludeOptional;
-    }
-
-    public void setShouldIncludeOptional(boolean value) {
-        shouldIncludeOptional = value;
         commit();
     }
 }

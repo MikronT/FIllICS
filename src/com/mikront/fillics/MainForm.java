@@ -30,7 +30,6 @@ public class MainForm extends Form {
     private static final int PROGRESS_MAX = 100;
 
     private JButton button_request, button_export;
-    private JCheckBox checkBox_optional;
     private JCheckBoxList checkBoxes_subjects, checkBoxes_groups, checkBoxes_types;
     private JComboBox<String> combo_group, combo_teacher;
     private JProgressBar progressBar;
@@ -107,17 +106,14 @@ public class MainForm extends Form {
         button_request.addActionListener(e -> new Thread(this::requestSchedule).start());
 
 
-        var label_subjects = new JLabel(LABEL_SUBJECTS);
         var label_types = new JLabel(LABEL_TYPES);
+        var label_subjects = new JLabel(LABEL_SUBJECTS);
         var label_groups = new JLabel(LABEL_GROUPS);
 
+        checkBoxes_types = new JCheckBoxList(true);
         checkBoxes_subjects = new JCheckBoxList(true);
         checkBoxes_groups = new JCheckBoxList(true);
-        checkBoxes_types = new JCheckBoxList(true);
 
-        checkBox_optional = new JCheckBox(CHECK_OPTIONAL);
-        checkBox_optional.addActionListener(e ->
-                preferenceManager.setShouldIncludeOptional(checkBox_optional.isSelected()));
 
         button_export = new JButton(BUTTON_EXPORT);
         button_export.setEnabled(false);
@@ -155,9 +151,7 @@ public class MainForm extends Form {
                 .addGroup(layout.createParallelGroup()
                         .addComponent(label_groups)
                         .addComponent(checkBoxes_groups, GROUPS_WIDTH, GROUPS_WIDTH, DEFAULT_SIZE)
-                        .addGroup(layout.createSequentialGroup()
-                                .addComponent(checkBox_optional)
-                                .addComponent(button_export))
+                        .addComponent(button_export, GroupLayout.Alignment.TRAILING)
                 )
         );
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -191,9 +185,7 @@ public class MainForm extends Form {
                 .addGroup(layout.createSequentialGroup()
                         .addComponent(label_groups)
                         .addComponent(checkBoxes_groups, GROUPS_HEIGHT, GROUPS_HEIGHT, DEFAULT_SIZE)
-                        .addGroup(layout.createParallelGroup()
-                                .addComponent(checkBox_optional)
-                                .addComponent(button_export))
+                        .addComponent(button_export)
                 )
         );
 
@@ -213,7 +205,6 @@ public class MainForm extends Form {
 
         combo_teacher.setSelectedItem(preferenceManager.getTeacher());
         combo_group.setSelectedItem(preferenceManager.getGroup());
-        checkBox_optional.setSelected(preferenceManager.getShouldIncludeOptional());
     }
 
     private void requestLists() {
@@ -300,14 +291,10 @@ public class MainForm extends Form {
         button_request.setEnabled(false);
         button_export.setEnabled(false);
 
-        boolean shouldSkipOptional = !checkBox_optional.isSelected();
-
         CalendarData data = new CalendarData();
         for (Day day : schedule)
             for (Cell cell : day)
                 for (Session session : cell) {
-                    if (shouldSkipOptional && session.isOptional()) continue;
-
                     var sSubject = session.getSubject().toLowerCase(Locale.ROOT);
 
                     var sType = session.getType().toLowerCase(Locale.ROOT);

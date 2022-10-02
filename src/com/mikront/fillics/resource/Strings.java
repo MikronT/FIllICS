@@ -5,14 +5,13 @@ public interface Strings {
 
     String LABEL_TEACHER = "Teacher";
     String LABEL_GROUP = "Group";
-    String LABEL_DATE_FROM = "Date from";
-    String LABEL_DATE_TO = "Date to";
-    String LABEL_SUBJECTS = "Subjects";
-    String LABEL_GROUPS = "Groups";
+    String LABEL_DATE_FROM = "From date";
+    String LABEL_DATE_TO = "To date";
     String LABEL_TYPES = "Session types";
+    String LABEL_SUBJECTS = "Subjects";
+    String LABEL_GROUPS = "Student groups";
     String BUTTON_REQUEST = "Request";
     String BUTTON_EXPORT = "Export";
-    String CHECK_OPTIONAL = "Include optional";
 
     String STEP_READY = "Ready";
     String STEP_GETTING_TEACHERS = "Getting teachers";
