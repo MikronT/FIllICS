@@ -165,8 +165,10 @@ public class Concat {
          * @return this object instance
          */
         public ConcatWhen otherwise(boolean expression) {
+            //Invert the original expression
+            otherwise();
             //The original expression is false, 'else' clause
-            if (!this.expression)
+            if (this.expression)
                 this.expression = expression;
             return this;
         }
