@@ -360,15 +360,14 @@ public class MainForm extends Form {
         for (Day day : schedule)
             for (Cell cell : day)
                 for (Session session : cell) {
-                    var type = session.getType();
-                    if (!checkBoxes_types.isChecked(type)) continue;
+                    if (!checkBoxes_types.isChecked(session.getTypeOrUnknown())) continue;
 
                     var subject = session.getSubject();
                     if (!checkBoxes_subjects.isChecked(subject)) continue;
 
-                    var group = session.getGroup();
-                    if (!checkBoxes_groups.isChecked(group)) continue;
+                    if (!checkBoxes_groups.isChecked(session.getGroupOrUnknown())) continue;
 
+                    var type = session.getType();
                     var type_final = map_types.getOrDefault(type.toLowerCase(), type);
                     var subject_final = map_subjects.getOrDefault(subject.toLowerCase(), subject);
 
