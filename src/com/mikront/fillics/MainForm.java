@@ -357,9 +357,9 @@ public class MainForm extends Form {
         for (Day day : schedule)
             for (Cell cell : day)
                 for (Session session : cell) {
-                    var type = session.getType();
-                    var subject = session.getSubject();
-                    var group = session.getGroup();
+                    var type = session.getType().toLowerCase();
+                    var subject = session.getSubject().toLowerCase();
+                    var group = session.getGroup().toLowerCase();
 
                     if (!checkBoxes_types.isChecked(type)) continue;
                     if (!checkBoxes_subjects.isChecked(subject)) continue;
