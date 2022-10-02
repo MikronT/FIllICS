@@ -43,16 +43,12 @@ public class Components {
 
     public static List<JComponent> getComponentsRecursively(JComponent root) {
         List<JComponent> out = new ArrayList<>();
-
-        Log.v("Components::getComponentsRecursively: components found = [");
         for (Component c : root.getComponents())
             if (c instanceof JComponent j) {
-                Log.v("Components::getComponentsRecursively:     " + c.getName());
+                Log.v("Components::getComponentsRecursively: component found = " + j.getUIClassID());
                 out.add(j);
                 out.addAll(getComponentsRecursively(j));
             }
-        Log.v("Components::getComponentsRecursively: ]");
-
         return out;
     }
 }

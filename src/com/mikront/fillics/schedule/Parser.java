@@ -18,8 +18,9 @@ public class Parser {
     private static final Pattern
             REGEX_AUDITORY = Pattern.compile(".*(\\d+\\.\\d+)\\.ауд\\."),
             REGEX_LINK = Pattern.compile(".*(http\\S+).*"),
-            REGEX_TEACHER = Pattern.compile("^ (\\S+) (\\S+ \\S+ \\S+).*"),
-            REGEX_TEACHER2_TEACHER_TITLE_TYPE = Pattern.compile("^Увага! Заміна! (.+) замість: (\\S+) (\\S+ \\S+ \\S+) (.+) \\((.+)\\)$"),
+            REGEX_TEACHER1 = Pattern.compile("^ (\\S+) (\\S+ \\S+ \\S+).*"),
+            REGEX_TEACHER2 = Pattern.compile("^ \\((\\S+ \\S+)\\) (\\S+ \\S+ \\S+).*"),
+            REGEX_TEACHERS_TITLE_TYPE = Pattern.compile("^Увага! Заміна! (.+) замість: (\\S+) (\\S+ \\S+ \\S+) (.+) \\((.+)\\)$"),
             REGEX_TITLE = Pattern.compile("^([^h\\s].+)$"),
             REGEX_TITLE_TYPE = Pattern.compile("^([^h\\s].+) \\((.+)\\)$"),
             REGEX_STREAM1 = Pattern.compile(".+Спец\\.потік.+\\((.*)\\)"),
@@ -31,7 +32,7 @@ public class Parser {
             SUFFIX_SUBGROUP2 = "\\.(\\d).+ \\(.*\\)";
 
     private Pattern regex_subgroup2;
-    private String defaultGroup = "Норкомани-алкоголіки";
+    private String defaultGroup = "Наркомани-алкоголіки";
     private final Document document;
 
 
@@ -102,7 +103,10 @@ public class Parser {
             if (s.contains("Лабораторна робота")) continue;
             if (s.contains("Meeting")) continue;
 
-            if (s.contains("ст. викладач")) s = s.replace("ст. викладач", "старший викладач");
+            if (s.contains("ст. викладач"))
+                s = s.replace("ст. викладач", "(старший викладач)");
+            if (s.contains("старший викладач"))
+                s = s.replace("старший викладач", "(старший викладач)");
 
             //Get rid of asterisks
             int index = s.indexOf('*');
@@ -152,7 +156,7 @@ public class Parser {
 
     private Session trySearchingTitleToInitClass(String s) {
         //Get teachers, title, and type first
-        Matcher matcher = REGEX_TEACHER2_TEACHER_TITLE_TYPE.matcher(s);
+        Matcher matcher = REGEX_TEACHERS_TITLE_TYPE.matcher(s);
         if (matcher.matches()) {
             Log.v("Parser::trySearchingTitleToInitClass: teachers = " + s);
             Session current = new Session();
@@ -234,12 +238,14 @@ public class Parser {
 
     private boolean trySearchingTeacher(Session current, String s) {
         //Get teacher
-        Matcher matcher = REGEX_TEACHER.matcher(s);
-        if (matcher.matches()) {
-            Log.v("Parser::trySearchingTeacher: teacher = " + s);
-            current.setTeacherPosition(matcher.replaceAll("$1"));
-            current.setTeacher(matcher.replaceAll("$2"));
-            return true;
+        for (Pattern p : List.of(REGEX_TEACHER2, REGEX_TEACHER1)) {
+            Matcher matcher = p.matcher(s);
+            if (matcher.matches()) {
+                Log.v("Parser::trySearchingTeacher: teacher = " + s);
+                current.setTeacherPosition(matcher.replaceAll("$1"));
+                current.setTeacher(matcher.replaceAll("$2"));
+                return true;
+            }
         }
         return false;
     }
