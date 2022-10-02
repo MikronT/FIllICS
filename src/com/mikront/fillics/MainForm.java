@@ -333,6 +333,9 @@ public class MainForm extends Form {
                     var subject = session.getSubject();
                     var group = session.getGroup();
 
+                    if (!checkBoxes_types.isChecked(type)) continue;
+                    if (!checkBoxes_subjects.isChecked(subject)) continue;
+                    if (!checkBoxes_groups.isChecked(group)) continue;
 
                     if (map_types.containsKey(type)) session.setType(map_types.get(type));
                     if (map_subjects.containsKey(subject)) session.setSubject(map_subjects.get(subject));
