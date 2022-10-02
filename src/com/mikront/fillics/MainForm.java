@@ -103,7 +103,11 @@ public class MainForm extends Form {
         resetProgress();
 
         button_request = new JButton(BUTTON_REQUEST);
-        button_request.addActionListener(e -> new Thread(this::requestSchedule).start());
+        button_request.addActionListener(e -> new Thread(() -> {
+            requestSchedule();
+            filterByTypes();
+            filterBySubjects();
+        }).start());
 
 
         var label_types = new JLabel(LABEL_TYPES);
