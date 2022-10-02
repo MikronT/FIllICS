@@ -3,9 +3,9 @@ package com.mikront.fillics;
 import com.mikront.util.debug.Log;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 
 
 public class PreferenceManager {
@@ -22,9 +22,9 @@ public class PreferenceManager {
 
     private String teacher = DEFAULT_TEACHER;
     private String group = DEFAULT_GROUP;
-    private final List<String> filter_types = new ArrayList<>();
-    private final List<String> filter_subjects=  new ArrayList<>();
-    private final List<String> filter_groups =  new ArrayList<>();
+    private final Set<String> filter_types = new HashSet<>();
+    private final Set<String> filter_subjects = new HashSet<>();
+    private final Set<String> filter_groups = new HashSet<>();
 
     static {
         DEFAULT_TEACHER = DEFAULT_GROUP = "";
@@ -123,7 +123,7 @@ public class PreferenceManager {
         commit();
     }
 
-    public List<String> getFilterTypes() {
+    public Set<String> getFilterTypes() {
         return filter_types;
     }
 
@@ -137,7 +137,7 @@ public class PreferenceManager {
         commit();
     }
 
-    public List<String> getFilterSubjects() {
+    public Set<String> getFilterSubjects() {
         return filter_subjects;
     }
 
@@ -151,7 +151,7 @@ public class PreferenceManager {
         commit();
     }
 
-    public List<String> getFilterGroups() {
+    public Set<String> getFilterGroups() {
         return filter_groups;
     }
 
