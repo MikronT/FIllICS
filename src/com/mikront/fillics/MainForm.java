@@ -6,6 +6,7 @@ import com.mikront.fillics.gui.JCheckBoxList;
 import com.mikront.fillics.gui.XSpinnerDateModel;
 import com.mikront.fillics.ics.CalendarData;
 import com.mikront.fillics.schedule.*;
+import com.mikront.util.Concat;
 import com.mikront.util.Utils;
 import com.mikront.util.debug.Build;
 import com.mikront.util.debug.Log;
@@ -357,18 +358,23 @@ public class MainForm extends Form {
         for (Day day : schedule)
             for (Cell cell : day)
                 for (Session session : cell) {
-                    var type = session.getType().toLowerCase();
-                    var subject = session.getSubject().toLowerCase();
-                    var group = session.getGroup().toLowerCase();
-
+                    var type = session.getType();
                     if (!checkBoxes_types.isChecked(type)) continue;
+
+                    var subject = session.getSubject();
                     if (!checkBoxes_subjects.isChecked(subject)) continue;
+
+                    var group = session.getGroup();
                     if (!checkBoxes_groups.isChecked(group)) continue;
 
-                    if (map_types.containsKey(type)) session.setType(map_types.get(type));
-                    if (map_subjects.containsKey(subject)) session.setSubject(map_subjects.get(subject));
+                    var type_final = map_types.getOrDefault(type.toLowerCase(), type);
+                    var subject_final = map_subjects.getOrDefault(subject.toLowerCase(), subject);
 
-                    data.addEvent(session.toEvent(day, cell));
+                    data.addEvent(session.toEvent(day, cell, session1 -> Concat.me()
+                            .word(type_final)
+                            .when(Utils.notEmpty(subject_final))
+                            .words(" (", subject_final, ")")
+                            .enate(), Session::getDescription));
                 }
 
         try (var stream = new FileOutputStream(FILE_ICS)) {

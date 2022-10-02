@@ -8,6 +8,7 @@ import com.mikront.util.Utils;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.function.Function;
 
 
 public class Session {
@@ -47,7 +48,7 @@ public class Session {
     }
 
 
-    private String getTitle() {
+    public String getTitle() {
         return Concat.me()
                 .word(subject)
                 .when(Utils.notEmpty(type))
@@ -55,7 +56,7 @@ public class Session {
                 .enate();
     }
 
-    private String getDescription() {
+    public String getDescription() {
         return Concat.me()
                 .when(Utils.notEmpty(group))
                 .line(group)
@@ -101,6 +102,12 @@ public class Session {
     }
 
     public Event toEvent(Day day, Cell cell) {
+        return toEvent(day, cell, Session::getTitle, Session::getDescription);
+    }
+
+    public Event toEvent(Day day, Cell cell,
+                         Function<Session, String> titleProvider,
+                         Function<Session, String> descriptionProvider) {
         LocalDate date = day.getDate();
         LocalTime time = cell.getTime();
         LocalDateTime from = LocalDateTime.of(date, time);
@@ -109,8 +116,8 @@ public class Session {
         return Event.begin()
                 .setTimeFrom(from)
                 .setTimeTo(to)
-                .setTitle(getTitle())
-                .setDescription(getDescription());
+                .setTitle(titleProvider.apply(this))
+                .setDescription(descriptionProvider.apply(this));
     }
 
     @Override
