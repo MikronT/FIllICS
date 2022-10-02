@@ -3,6 +3,9 @@ package com.mikront.fillics.resource;
 public interface Strings {
     String APP_NAME = "FIllICS";
 
+    String UNKNOWN_TYPE = "Unknown session type";
+    String UNKNOWN_GROUP = "Unknown group";
+
     String LABEL_TEACHER = "Teacher";
     String LABEL_GROUP = "Group";
     String LABEL_DATE_FROM = "From date";

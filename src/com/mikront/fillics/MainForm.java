@@ -282,9 +282,9 @@ public class MainForm extends Form {
 
     private void presetFilters() {
         var sessions = getSessions();
-        checkBoxes_subjects.replaceWith(getSessionData(sessions, Session::getSubject));
-        checkBoxes_groups.replaceWith(getSessionData(sessions, Session::getGroup));
-        checkBoxes_types.replaceWith(getSessionData(sessions, Session::getType));
+        checkBoxes_subjects.replaceWith(getSessionData(sessions, Session::getSubject, null));
+        checkBoxes_groups.replaceWith(getSessionData(sessions, Session::getGroup, UNKNOWN_GROUP));
+        checkBoxes_types.replaceWith(getSessionData(sessions, Session::getType, UNKNOWN_TYPE));
     }
 
     private void exportSchedule() {
@@ -339,10 +339,10 @@ public class MainForm extends Form {
         return out;
     }
 
-    private List<String> getSessionData(List<Session> sessions, Function<Session, String> mapper) {
+    private List<String> getSessionData(List<Session> sessions, Function<Session, String> mapper, String defaultValue) {
         return sessions.stream()
                 .map(mapper)
-                .filter(Utils::notEmpty)
+                .map(s -> Utils.notEmpty(s) ? s : defaultValue)
                 .distinct()
                 .toList();
     }
