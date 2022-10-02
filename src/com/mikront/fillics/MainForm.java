@@ -373,9 +373,9 @@ public class MainForm extends Form {
                     var subject_final = map_subjects.getOrDefault(subject.toLowerCase(), subject);
 
                     data.addEvent(session.toEvent(day, cell, session1 -> Concat.me()
-                            .word(type_final)
-                            .when(Utils.notEmpty(subject_final))
-                            .words(" (", subject_final, ")")
+                            .word(subject_final)
+                            .when(Utils.notEmpty(type_final))
+                            .words(" (", type_final, ")")
                             .enate(), Session::getDescription));
                 }
 
