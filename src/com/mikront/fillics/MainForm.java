@@ -37,7 +37,6 @@ public class MainForm extends Form {
     private XSpinnerDateModel model_from, model_to;
     private final HashMap<String, String> map_subjects = new HashMap<>();
     private final HashMap<String, String> map_types = new HashMap<>();
-    private final JPanel container = getContainer();
     private final PreferenceManager preferenceManager = new PreferenceManager();
 
 
@@ -52,6 +51,7 @@ public class MainForm extends Form {
     protected void onCreate() {
         super.onCreate();
 
+        var container = getContainer();
         var layout = new GroupLayout(container);
         container.setLayout(layout);
         layout.setAutoCreateGaps(true);
@@ -287,23 +287,17 @@ public class MainForm extends Form {
 
     private void presetFilters() {
         var sessions = getSessions();
-        checkBoxes_subjects.replaceWith(getSessionData(sessions, Session::getSubject, null));
-        checkBoxes_groups.replaceWith(getSessionData(sessions, Session::getGroup, UNKNOWN_GROUP));
-        checkBoxes_types.replaceWith(getSessionData(sessions, Session::getType, UNKNOWN_TYPE));
+        checkBoxes_subjects.replaceWith(getSessionData(sessions, Session::getSubject));
+        checkBoxes_groups.replaceWith(getSessionData(sessions, Session::getGroup));
+        checkBoxes_types.replaceWith(getSessionData(sessions, Session::getType));
     }
 
     private void filterByTypes() {
         var newSessions = getSessions().stream()
-                .filter(session -> {
-                    var type = session.getType();
-                    if (Utils.isEmpty(type))
-                        type = UNKNOWN_TYPE;
-
-                    return checkBoxes_types.isChecked(type);
-                })
+                .filter(session -> checkBoxes_types.isChecked(session.getType()))
                 .toList();
-        var newSubjects = getSessionData(newSessions, Session::getSubject, null);
-        var newGroups = getSessionData(newSessions, Session::getGroup, UNKNOWN_GROUP);
+        var newSubjects = getSessionData(newSessions, Session::getSubject);
+        var newGroups = getSessionData(newSessions, Session::getGroup);
 
         checkBoxes_subjects.replaceWith(newSubjects);
         checkBoxes_groups.replaceWith(newGroups);
@@ -319,10 +313,10 @@ public class MainForm extends Form {
                         Log.i("MainForm::filterBySubjects: Predicate->   - subject = " + subject);
                     }
 
-                    return checkBoxes_subjects.get(subject) != null && checkBoxes_subjects.isChecked(subject);
+                    return checkBoxes_subjects.isChecked(subject);
                 })
                 .toList();
-        var newGroups = getSessionData(newSessions, Session::getGroup, UNKNOWN_GROUP);
+        var newGroups = getSessionData(newSessions, Session::getGroup);
 
         checkBoxes_groups.replaceWith(newGroups);
     }
@@ -335,14 +329,13 @@ public class MainForm extends Form {
         for (Day day : schedule)
             for (Cell cell : day)
                 for (Session session : cell) {
-                    var sSubject = session.getSubject().toLowerCase(Locale.ROOT);
+                    var type = session.getType();
+                    var subject = session.getSubject();
+                    var group = session.getGroup();
 
-                    var sType = session.getType().toLowerCase(Locale.ROOT);
 
-                    var sGroup = session.getGroup().toLowerCase(Locale.ROOT);
-
-                    if (map_subjects.containsKey(sSubject)) session.setSubject(map_subjects.get(sSubject));
-                    if (map_types.containsKey(sType)) session.setType(map_types.get(sType));
+                    if (map_types.containsKey(type)) session.setType(map_types.get(type));
+                    if (map_subjects.containsKey(subject)) session.setSubject(map_subjects.get(subject));
 
                     data.addEvent(session.toEvent(day, cell));
                 }
@@ -379,10 +372,9 @@ public class MainForm extends Form {
         return out;
     }
 
-    private List<String> getSessionData(List<Session> sessions, Function<Session, String> mapper, String defaultValue) {
+    private static List<String> getSessionData(List<Session> sessions, Function<Session, String> mapper) {
         return sessions.stream()
                 .map(mapper)
-                .map(s -> Utils.notEmpty(s) ? s : defaultValue)
                 .distinct()
                 .toList();
     }

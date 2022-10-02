@@ -12,5 +12,5 @@ public interface Dimens {
     int SUBJECTS_WIDTH = 420;
     int GROUPS_WIDTH = 240;
     int GROUPS_HEIGHT = 160;
-    int TYPES_HEIGHT = 100;
+    int TYPES_HEIGHT = 120;
 }

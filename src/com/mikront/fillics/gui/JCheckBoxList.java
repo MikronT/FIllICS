@@ -189,7 +189,7 @@ public class JCheckBoxList extends JScrollPane {
 
     public JCheckBox get(String title) {
         for (var box : boxes)
-            if (box.getText().equals(title))
+            if (box.getText().equalsIgnoreCase(title))
                 return box;
         return null;
     }
@@ -201,6 +201,7 @@ public class JCheckBoxList extends JScrollPane {
     }
 
     public boolean isChecked(String title) {
-        return get(title).isSelected();
+        var item = get(title);
+        return item != null && item.isSelected();
     }
 }

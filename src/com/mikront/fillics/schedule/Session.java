@@ -1,6 +1,7 @@
 package com.mikront.fillics.schedule;
 
 import com.mikront.fillics.ics.Event;
+import com.mikront.fillics.resource.Strings;
 import com.mikront.util.Concat;
 import com.mikront.util.Utils;
 
@@ -25,16 +26,8 @@ public class Session {
         this.type = type;
     }
 
-    public String getType() {
-        return type == null ? "" : type;
-    }
-
     public void setGroup(String group) {
         this.group = group;
-    }
-
-    public String getGroup() {
-        return group == null ? "" : group;
     }
 
     public void setTeacher(String teacher) {
@@ -85,6 +78,14 @@ public class Session {
                 .when(Utils.notEmpty(link))
                 .line(link)
                 .enate();
+    }
+
+    public String getType() {
+        return Utils.isEmpty(type) ? Strings.UNKNOWN_TYPE : type;
+    }
+
+    public String getGroup() {
+        return Utils.isEmpty(group) ? Strings.UNKNOWN_GROUP : group;
     }
 
     public boolean isOptional() {
