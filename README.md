@@ -4,7 +4,7 @@
 
 A Java program that fetches IFNTUOG schedule and converts it into an ICS file (iCal file format)
 
-Version: **2.2**
+Version: **2.2.1**
 
 ## Dependencies
 

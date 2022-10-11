@@ -130,8 +130,8 @@ public class Parser {
         Session current = null;
 
         for (String s : lines) {
-            Session temp;
-            if ((temp = trySearchingTitleToInitClass(s)) != null) {
+            Session temp = trySearchingTitleToInitClass(s);
+            if (temp != null) {
                 current = temp;
                 cell.add(current);
                 continue;
@@ -212,7 +212,7 @@ public class Parser {
         return false;
     }
 
-    private boolean trySearchingSubgroup(Session current, String s) {
+    private boolean trySearchingSubgroup(@NotNull Session current, String s) {
         //Get subgroup
         for (Pattern p : List.of(REGEX_SUBGROUP1, regex_subgroup2)) {
             Matcher matcher = p.matcher(s);
@@ -225,7 +225,7 @@ public class Parser {
         return false;
     }
 
-    private boolean trySearchingAuditory(Session current, String s) {
+    private boolean trySearchingAuditory(@NotNull Session current, String s) {
         //Get auditory
         Matcher matcher = REGEX_AUDITORY.matcher(s);
         if (matcher.matches()) {
@@ -236,7 +236,7 @@ public class Parser {
         return false;
     }
 
-    private boolean trySearchingTeacher(Session current, String s) {
+    private boolean trySearchingTeacher(@NotNull Session current, String s) {
         //Get teacher
         for (Pattern p : List.of(REGEX_TEACHER2, REGEX_TEACHER1)) {
             Matcher matcher = p.matcher(s);
