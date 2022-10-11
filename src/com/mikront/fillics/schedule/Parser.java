@@ -133,6 +133,13 @@ public class Parser {
             Session temp = trySearchingTitleToInitClass(s);
             if (temp != null) {
                 current = temp;
+
+                if (current.getTitle().contains("Увага! Заняття відмінено!")) {
+                    Log.i("Parser::parseCell: found cancelled class");
+                    Log.i("Parser::parseCell:   - s = " + s);
+                    continue; //Not add to the cell but continue filling with info
+                }
+
                 cell.add(current);
                 continue;
             }
