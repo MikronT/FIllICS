@@ -1,6 +1,7 @@
 package com.mikront.fillics.ics;
 
 import com.mikront.util.Concat;
+import com.mikront.util.debug.Log;
 
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -23,6 +24,7 @@ public class CalendarData {
     public String compile() {
         ZonedDateTime now = ZonedDateTime.now();
         String createdAt = FORMATTER.format(now);
+        Log.v("CalendarData::compile: createdAt = " + createdAt);
 
         return Concat.me()
                 .lines("BEGIN:VCALENDAR",
@@ -30,26 +32,27 @@ public class CalendarData {
                         "VERSION:2.0",
                         "CALSCALE:GREGORIAN",
                         "METHOD:PUBLISH",
+                        "X-WR-TIMEZONE:Europe/Kiev",
 
                         "BEGIN:VTIMEZONE",
                         "TZID:Europe/Kiev",
                         "X-LIC-LOCATION:Europe/Kiev",
 
+                        "BEGIN:DAYLIGHT",
+                        "TZOFFSETFROM:+0200",
+                        "TZOFFSETTO:+0300",
+                        "TZNAME:EEST",
+                        "DTSTART:19700329T000000",
+                        "RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=-1SU",
+                        "END:DAYLIGHT",
+
                         "BEGIN:STANDARD",
                         "TZOFFSETFROM:+0300",
                         "TZOFFSETTO:+0200",
                         "TZNAME:EET",
-                        "DTSTART:19701030T010000",
-                        "RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1FR",
+                        "DTSTART:19701025T000000",
+                        "RRULE:FREQ=YEARLY;BYMONTH=10;BYDAY=-1SU",
                         "END:STANDARD",
-
-                        "BEGIN:DAYLIGHT",
-                        "TZOFFSETFROM:+0300",
-                        "TZOFFSETTO:+0300",
-                        "TZNAME:EEST",
-                        "DTSTART:19700226T235959",
-                        "RRULE:FREQ=YEARLY;BYMONTH=2;BYDAY=-1TH",
-                        "END:DAYLIGHT",
 
                         "END:VTIMEZONE")
                 .lines(events, item -> item.compile(createdAt))
