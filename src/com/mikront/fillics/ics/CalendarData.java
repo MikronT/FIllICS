@@ -3,7 +3,7 @@ package com.mikront.fillics.ics;
 import com.mikront.util.Concat;
 import com.mikront.util.debug.Log;
 
-import java.time.ZonedDateTime;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
 
 public class CalendarData {
     @SuppressWarnings("SpellCheckingInspection")
-    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'");
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("'TZID=Europe/Kiev:'yyyyMMdd'T'HHmmss");
 
     private final List<Event> events = new ArrayList<>();
 
@@ -22,8 +22,7 @@ public class CalendarData {
 
     @SuppressWarnings("SpellCheckingInspection")
     public String compile() {
-        ZonedDateTime now = ZonedDateTime.now();
-        String createdAt = FORMATTER.format(now);
+        String createdAt = FORMATTER.format(LocalDateTime.now());
         Log.v("CalendarData::compile: createdAt = " + createdAt);
 
         return Concat.me()
