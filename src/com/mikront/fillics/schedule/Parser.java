@@ -103,10 +103,13 @@ public class Parser {
             if (s.contains("Лабораторна робота")) continue;
             if (s.contains("Meeting")) continue;
 
+            //Multiword titles
             if (s.contains("ст. викладач"))
                 s = s.replace("ст. викладач", "(старший викладач)");
             if (s.contains("старший викладач"))
                 s = s.replace("старший викладач", "(старший викладач)");
+            if (s.contains("зав. кафедрою"))
+                s = s.replace("зав. кафедрою", "(завідувач кафедрою)");
 
             //Get rid of asterisks
             int index = s.indexOf('*');
