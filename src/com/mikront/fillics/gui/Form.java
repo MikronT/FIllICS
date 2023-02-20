@@ -27,11 +27,11 @@ public class Form implements Dimens, Strings {
             return;
         }
 
-        form.onCreate();
+        form.create();
         EventQueue.invokeLater(form::show);
     }
 
-    protected void onCreate() {
+    private void create() {
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
@@ -47,18 +47,21 @@ public class Form implements Dimens, Strings {
         frame.setContentPane(container);
 
         container.setBorder(BorderFactory.createEmptyBorder(FORM_PADDING, FORM_PADDING, FORM_PADDING, FORM_PADDING));
+
+        onCreate();
     }
+
+    protected void onCreate() {}
 
     private void show() {
         frame.pack();
         frame.setVisible(true);
+        frame.setMinimumSize(frame.getSize());
 
         onPostShow();
     }
 
-    protected void onPostShow() {
-        frame.setMinimumSize(frame.getSize());
-    }
+    protected void onPostShow() {}
 
 
     public JFrame getFrame() {

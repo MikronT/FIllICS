@@ -52,8 +52,6 @@ public class MainForm extends Form {
 
     @Override
     protected void onCreate() {
-        super.onCreate();
-
         var container = getContainer();
         var layout = new GroupLayout(container);
         container.setLayout(layout);
@@ -231,8 +229,6 @@ public class MainForm extends Form {
 
     @Override
     protected void onPostShow() {
-        super.onPostShow();
-
         new Thread(this::presetRequestOptions).start();
     }
 
