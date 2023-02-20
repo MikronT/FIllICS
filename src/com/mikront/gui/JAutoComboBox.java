@@ -1,4 +1,4 @@
-package com.mikront.fillics.gui;
+package com.mikront.gui;
 
 import de.orbitalcomputer.JComboBoxAutoCompletion;
 

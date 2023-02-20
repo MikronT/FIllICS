@@ -1,4 +1,4 @@
-package com.mikront.fillics.gui;
+package com.mikront.gui;
 
 import com.mikront.fillics.resource.Dimens;
 import com.mikront.fillics.resource.Strings;
@@ -33,6 +33,7 @@ public class Form implements Dimens, Strings {
 
     private void create() {
         try {
+            //Apply Windows look and feel
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
                  UnsupportedLookAndFeelException e) {
@@ -49,6 +50,9 @@ public class Form implements Dimens, Strings {
         container.setBorder(BorderFactory.createEmptyBorder(FORM_PADDING, FORM_PADDING, FORM_PADDING, FORM_PADDING));
 
         onCreate();
+
+        //Apply default styles to components after layout creation
+        Components.applyDefaults(Components.getWholeTree(container));
     }
 
     protected void onCreate() {}

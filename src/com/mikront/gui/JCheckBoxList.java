@@ -1,4 +1,4 @@
-package com.mikront.fillics.gui;
+package com.mikront.gui;
 
 import com.mikront.util.Utils;
 import com.mikront.util.debug.Log;
@@ -185,7 +185,7 @@ public class JCheckBoxList extends JScrollPane {
         layout.setHorizontalGroup(horizontalGroup);
         layout.setVerticalGroup(verticalGroup);
 
-        Components.applyDefaults(this);
+        Components.applyDefaults(boxes);
     };
 
 

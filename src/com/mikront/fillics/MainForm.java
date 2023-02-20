@@ -1,8 +1,8 @@
 package com.mikront.fillics;
 
-import com.mikront.fillics.gui.*;
 import com.mikront.fillics.ics.CalendarData;
 import com.mikront.fillics.schedule.*;
+import com.mikront.gui.*;
 import com.mikront.util.Concat;
 import com.mikront.util.Utils;
 import com.mikront.util.debug.Build;
@@ -225,8 +225,6 @@ public class MainForm extends Form {
                         .addComponent(button_export)
                 )
         );
-
-        Components.applyDefaults(container);
     }
 
 
