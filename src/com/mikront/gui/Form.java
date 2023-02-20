@@ -2,11 +2,11 @@ package com.mikront.gui;
 
 import com.mikront.fillics.resource.Dimens;
 import com.mikront.fillics.resource.Strings;
+import com.mikront.util.Utils;
 import com.mikront.util.debug.Log;
 
 import javax.swing.*;
 import java.awt.*;
-import java.lang.reflect.InvocationTargetException;
 
 
 public class Form implements Dimens, Strings {
@@ -16,17 +16,7 @@ public class Form implements Dimens, Strings {
 
     @SuppressWarnings("SameParameterValue")
     protected static <T extends Form> void load(Class<T> formClass) {
-        Form form;
-        try {
-            form = formClass.getConstructor().newInstance();
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
-                 NoSuchMethodException e) {
-            Log.e("Form::load: unable to create a form instance");
-            Log.e("Form::load:   - formClass = " + formClass);
-            Log.e("Form::load:   = catching: ", e);
-            return;
-        }
-
+        Form form = Utils.getNewInstanceOrThrow(formClass);
         form.create();
         EventQueue.invokeLater(form::show);
     }
