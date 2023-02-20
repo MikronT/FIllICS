@@ -1,11 +1,8 @@
 package com.mikront.fillics;
 
-import com.mikront.fillics.gui.Components;
-import com.mikront.fillics.gui.Form;
-import com.mikront.fillics.gui.JCheckBoxList;
-import com.mikront.fillics.gui.XSpinnerDateModel;
 import com.mikront.fillics.ics.CalendarData;
 import com.mikront.fillics.schedule.*;
+import com.mikront.fillics.gui.*;
 import com.mikront.util.Concat;
 import com.mikront.util.Utils;
 import com.mikront.util.debug.Build;
@@ -81,7 +78,7 @@ public class MainForm extends Form {
         model_from = new XSpinnerDateModel();
         model_to = new XSpinnerDateModel();
 
-        var spinner_from = Components.newJSpinner(model_from);
+        var spinner_from = new JDateSpinner(model_from);
         spinner_from.addChangeListener(e -> {
             LocalDate
                     date1 = model_from.getDate(),
@@ -91,7 +88,7 @@ public class MainForm extends Form {
                 model_to.setValue(date1);
         });
 
-        var spinner_to = Components.newJSpinner(model_to);
+        var spinner_to = new JDateSpinner(model_to);
         spinner_to.addChangeListener(e -> {
             LocalDate
                     date1 = model_from.getDate(),

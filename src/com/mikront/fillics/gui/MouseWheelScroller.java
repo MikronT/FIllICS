@@ -19,15 +19,4 @@ public class MouseWheelScroller {
                 i - 1 :
                 i + 1);
     }
-
-    public static void scroll(JSpinner spinner, MouseWheelEvent event) {
-        if (!spinner.isEnabled())
-            return;
-
-        var model = spinner.getModel();
-
-        model.setValue(event.getWheelRotation() < 0 ?
-                model.getNextValue() :
-                model.getPreviousValue());
-    }
 }

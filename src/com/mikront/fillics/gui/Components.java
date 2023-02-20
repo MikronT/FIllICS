@@ -26,14 +26,6 @@ public class Components {
         return box;
     }
 
-    public static JSpinner newJSpinner(XSpinnerDateModel model) {
-        var spinner = new JSpinner();
-        spinner.setModel(model);
-        spinner.addMouseWheelListener(e -> MouseWheelScroller.scroll(spinner, e));
-        spinner.getEditor().getComponent(0).setBackground(Color.WHITE);
-        return spinner;
-    }
-
 
     public static void applyDefaults(JComponent component) {
         for (var i : Components.getComponentsRecursively(component))
