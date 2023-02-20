@@ -1,7 +1,6 @@
 package com.mikront.fillics.gui;
 
 import com.mikront.util.debug.Log;
-import de.orbitalcomputer.JComboBoxAutoCompletion;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,21 +9,7 @@ import java.util.List;
 
 
 public class Components {
-    public static final String ITEM_UNSET = "";
-
     private static final Font FONT_DEFAULT = Font.decode("Segoe UI");
-
-
-    public static JComboBox<String> newOptionalJComboBox() {
-        var box = new JComboBox<String>();
-        box.setEditable(true);
-        JComboBoxAutoCompletion.enable(box);
-
-        box.addMouseWheelListener(e -> MouseWheelScroller.scroll(box, e));
-
-        box.addItem(ITEM_UNSET);
-        return box;
-    }
 
 
     public static void applyDefaults(JComponent component) {

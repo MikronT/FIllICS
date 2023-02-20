@@ -1,8 +1,8 @@
 package com.mikront.fillics;
 
+import com.mikront.fillics.gui.*;
 import com.mikront.fillics.ics.CalendarData;
 import com.mikront.fillics.schedule.*;
-import com.mikront.fillics.gui.*;
 import com.mikront.util.Concat;
 import com.mikront.util.Utils;
 import com.mikront.util.debug.Build;
@@ -61,18 +61,24 @@ public class MainForm extends Form {
         var label_from = new JLabel(LABEL_DATE_FROM);
         var label_to = new JLabel(LABEL_DATE_TO);
 
-        combo_teacher = Components.newOptionalJComboBox();
-        combo_teacher.addItemListener(e -> preferenceManager.setTeacher(e.getItem().toString()));
+        combo_teacher = new JAutoComboBox();
         combo_teacher.addItemListener(e -> {
-            if (!Components.ITEM_UNSET.equals(combo_group.getSelectedItem()))
-                combo_group.setSelectedItem(Components.ITEM_UNSET);
+            //Update preference state
+            preferenceManager.setTeacher(e.getItem().toString());
+
+            //Unset group filter
+            if (!JAutoComboBox.ITEM_UNSET.equals(combo_group.getSelectedItem()))
+                combo_group.setSelectedItem(JAutoComboBox.ITEM_UNSET);
         });
 
-        combo_group = Components.newOptionalJComboBox();
-        combo_group.addItemListener(e -> preferenceManager.setGroup(e.getItem().toString()));
+        combo_group = new JAutoComboBox();
         combo_group.addItemListener(e -> {
-            if (!Components.ITEM_UNSET.equals(combo_teacher.getSelectedItem()))
-                combo_teacher.setSelectedItem(Components.ITEM_UNSET);
+            //Update preference state
+            preferenceManager.setGroup(e.getItem().toString());
+
+            //Unset teacher filter
+            if (!JAutoComboBox.ITEM_UNSET.equals(combo_teacher.getSelectedItem()))
+                combo_teacher.setSelectedItem(JAutoComboBox.ITEM_UNSET);
         });
 
         model_from = new XSpinnerDateModel();
