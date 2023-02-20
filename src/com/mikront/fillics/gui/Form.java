@@ -42,7 +42,7 @@ public class Form implements Dimens, Strings {
 
         frame.setTitle(APP_NAME);
         frame.setLocationByPlatform(true); //Let the system decide
-        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
         frame.setContentPane(container);
 

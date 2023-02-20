@@ -88,7 +88,8 @@ public class MainForm extends Form {
             LocalDate
                     date1 = model_from.getDate(),
                     date2 = model_to.getDate();
-            if (date1.compareTo(date2) > 0)
+            //Reset if date out of bounds
+            if (date1.isAfter(date2))
                 model_to.setValue(date1);
         });
 
@@ -97,7 +98,8 @@ public class MainForm extends Form {
             LocalDate
                     date1 = model_from.getDate(),
                     date2 = model_to.getDate();
-            if (date1.compareTo(date2) > 0)
+            //Reset if date out of bounds
+            if (date1.isAfter(date2))
                 model_from.setValue(date2);
         });
 
