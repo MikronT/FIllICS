@@ -1,5 +1,6 @@
 package com.mikront.util;
 
+import com.mikront.fillics.resource.Translations;
 import com.mikront.util.debug.Log;
 
 import java.lang.reflect.InvocationTargetException;
@@ -8,7 +9,7 @@ import java.util.Locale;
 
 
 public class Utils {
-    public static final Collator COLLATOR = Collator.getInstance(Locale.forLanguageTag("uk"));
+    public static final Collator COLLATOR = Collator.getInstance(Locale.forLanguageTag(Translations.UK));
 
 
     public static boolean isEmpty(String s) {
