@@ -54,36 +54,9 @@ public class MainForm extends Form {
         var panel_root = getRootPanel();
 
         var panel_request = createRequestPanel();
-
-        var label_types = new JLabel(getString(Strings.LABEL_TYPES));
-        var label_subjects = new JLabel(getString(Strings.LABEL_SUBJECTS));
-        var label_groups = new JLabel(getString(Strings.LABEL_GROUPS));
-
-        checkBoxes_types = new JCheckBoxList(true);
-        checkBoxes_types.setOnItemCheckedListener((title, checked) -> {
-            filterByTypes();
-            filterBySubjects();
-
-            if (!checked)
-                preferenceManager.addFilterType(title);
-            else preferenceManager.removeFilterType(title);
-        });
-
-        checkBoxes_subjects = new JCheckBoxList(true);
-        checkBoxes_subjects.setOnItemCheckedListener((title, checked) -> {
-            filterBySubjects();
-
-            if (!checked)
-                preferenceManager.addFilterSubject(title);
-            else preferenceManager.removeFilterSubject(title);
-        });
-
-        checkBoxes_groups = new JCheckBoxList(true);
-        checkBoxes_groups.setOnItemCheckedListener((title, checked) -> {
-            if (!checked)
-                preferenceManager.addFilterGroup(title);
-            else preferenceManager.removeFilterGroup(title);
-        });
+        var panel_types = createTypesFilterPanel();
+        var panel_subjects = createSubjectsFilterPanel();
+        var panel_groups = createGroupsFilterPanel();
 
         button_export = new JButton(getString(Strings.BUTTON_EXPORT));
         button_export.setEnabled(false);
@@ -92,43 +65,33 @@ public class MainForm extends Form {
 
         var layout = initGroupLayoutFor(panel_root);
         layout.setHorizontalGroup(layout.createSequentialGroup()
-                //Request schedule
+                //Request schedule and filter types
                 .addGroup(layout.createParallelGroup()
                         .addComponent(panel_request)
-                        .addComponent(label_types)
-                        .addComponent(checkBoxes_types)
+                        .addComponent(panel_types)
                 )
                 .addGap(Dimens.GAP_BIG)
                 //Filter subjects
-                .addGroup(layout.createParallelGroup()
-                        .addComponent(label_subjects, Dimens.SUBJECTS_WIDTH, Dimens.SUBJECTS_WIDTH, DEFAULT_SIZE)
-                        .addComponent(checkBoxes_subjects)
-                )
+                .addComponent(panel_subjects, Dimens.SUBJECTS_WIDTH, Dimens.SUBJECTS_WIDTH, DEFAULT_SIZE)
                 .addGap(Dimens.GAP_BIG)
-                //Filter groups and types and export
+                //Filter groups and export button
                 .addGroup(layout.createParallelGroup()
-                        .addComponent(label_groups)
-                        .addComponent(checkBoxes_groups, Dimens.GROUPS_WIDTH, Dimens.GROUPS_WIDTH, DEFAULT_SIZE)
+                        .addComponent(panel_groups, Dimens.GROUPS_WIDTH, Dimens.GROUPS_WIDTH, DEFAULT_SIZE)
                         .addComponent(button_export, GroupLayout.Alignment.TRAILING)
                 )
         );
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                //Request schedule
+                //Request schedule and filter types
                 .addGroup(layout.createSequentialGroup()
                         .addComponent(panel_request)
                         .addGap(Dimens.GAP_BIG)
-                        .addComponent(label_types)
-                        .addComponent(checkBoxes_types, Dimens.TYPES_HEIGHT, Dimens.TYPES_HEIGHT, DEFAULT_SIZE)
+                        .addComponent(panel_types, Dimens.TYPES_HEIGHT, Dimens.TYPES_HEIGHT, DEFAULT_SIZE)
                 )
                 //Filter subjects
+                .addComponent(panel_subjects)
+                //Filter groups and export button
                 .addGroup(layout.createSequentialGroup()
-                        .addComponent(label_subjects)
-                        .addComponent(checkBoxes_subjects)
-                )
-                //Filter groups and types and export
-                .addGroup(layout.createSequentialGroup()
-                        .addComponent(label_groups)
-                        .addComponent(checkBoxes_groups, Dimens.GROUPS_HEIGHT, Dimens.GROUPS_HEIGHT, DEFAULT_SIZE)
+                        .addComponent(panel_groups, Dimens.GROUPS_HEIGHT, Dimens.GROUPS_HEIGHT, DEFAULT_SIZE)
                         .addComponent(button_export)
                 )
         );
@@ -241,6 +204,44 @@ public class MainForm extends Form {
         );
 
         return out;
+    }
+
+    private JCheckBoxList createTypesFilterPanel() {
+        checkBoxes_types = new JCheckBoxList(true);
+        checkBoxes_types.setBorder(BorderFactory.createTitledBorder(getString(Strings.PANEL_TYPES)));
+        checkBoxes_types.setOnItemCheckedListener((title, checked) -> {
+            filterByTypes();
+            filterBySubjects();
+
+            if (!checked)
+                preferenceManager.addFilterType(title);
+            else preferenceManager.removeFilterType(title);
+        });
+        return checkBoxes_types;
+    }
+
+    private JCheckBoxList createSubjectsFilterPanel() {
+        checkBoxes_subjects = new JCheckBoxList(true);
+        checkBoxes_subjects.setBorder(BorderFactory.createTitledBorder(getString(Strings.PANEL_SUBJECTS)));
+        checkBoxes_subjects.setOnItemCheckedListener((title, checked) -> {
+            filterBySubjects();
+
+            if (!checked)
+                preferenceManager.addFilterSubject(title);
+            else preferenceManager.removeFilterSubject(title);
+        });
+        return checkBoxes_subjects;
+    }
+
+    private JCheckBoxList createGroupsFilterPanel() {
+        checkBoxes_groups = new JCheckBoxList(true);
+        checkBoxes_groups.setBorder(BorderFactory.createTitledBorder(getString(Strings.PANEL_SUBJECTS)));
+        checkBoxes_groups.setOnItemCheckedListener((title, checked) -> {
+            if (!checked)
+                preferenceManager.addFilterGroup(title);
+            else preferenceManager.removeFilterGroup(title);
+        });
+        return checkBoxes_groups;
     }
 
     private static GroupLayout initGroupLayoutFor(JComponent component) {

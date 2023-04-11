@@ -30,15 +30,15 @@ public class Translations {
                 default -> "To date";
                 case UK -> "По дату";
             };
-            case LABEL_TYPES -> switch (lang) {
+            case PANEL_TYPES -> switch (lang) {
                 default -> "Session types";
                 case UK -> "Типи занять";
             };
-            case LABEL_SUBJECTS -> switch (lang) {
+            case PANEL_SUBJECTS -> switch (lang) {
                 default -> "Subjects";
                 case UK -> "Предмети";
             };
-            case LABEL_GROUPS -> switch (lang) {
+            case PANEL_GROUPS -> switch (lang) {
                 default -> "Student groups";
                 case UK -> "Студентські групи";
             };
