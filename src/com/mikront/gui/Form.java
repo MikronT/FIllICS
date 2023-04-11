@@ -9,7 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 
 
-public class Form implements Dimens, Strings {
+public class Form implements Strings {
     private final JFrame frame = new JFrame();
     private final JPanel container = new JPanel();
 
@@ -37,7 +37,11 @@ public class Form implements Dimens, Strings {
 
         frame.setContentPane(container);
 
-        container.setBorder(BorderFactory.createEmptyBorder(FORM_PADDING, FORM_PADDING, FORM_PADDING, FORM_PADDING));
+        container.setBorder(BorderFactory.createEmptyBorder(
+                Dimens.FORM_PADDING,
+                Dimens.FORM_PADDING,
+                Dimens.FORM_PADDING,
+                Dimens.FORM_PADDING));
 
         onCreate();
 

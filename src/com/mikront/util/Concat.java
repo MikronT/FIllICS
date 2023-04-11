@@ -1,5 +1,8 @@
 package com.mikront.util;
 
+import org.jetbrains.annotations.Contract;
+
+
 @SuppressWarnings("unused UnusedReturnValue")
 public class Concat {
     public static final String LINE_SEPARATOR = System.lineSeparator();
@@ -10,6 +13,7 @@ public class Concat {
     private Concat() {
     }
 
+    @Contract("-> new")
     public static Concat me() {
         return new Concat();
     }

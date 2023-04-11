@@ -1,6 +1,7 @@
 package com.mikront.fillics.ics;
 
 import com.mikront.util.Concat;
+import org.jetbrains.annotations.Contract;
 
 import java.time.LocalDateTime;
 
@@ -13,6 +14,7 @@ public class Event {
     private Event() {
     }
 
+    @Contract("-> new")
     public static Event begin() {
         return new Event();
     }

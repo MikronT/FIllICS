@@ -1,6 +1,7 @@
 package com.mikront.fillics;
 
 import com.mikront.fillics.ics.CalendarData;
+import com.mikront.fillics.resource.Dimens;
 import com.mikront.fillics.schedule.*;
 import com.mikront.gui.*;
 import com.mikront.util.Concat;
@@ -161,7 +162,7 @@ public class MainForm extends Form {
                 //Request schedule
                 .addGroup(layout.createParallelGroup()
                         .addComponent(label_teacher)
-                        .addComponent(combo_teacher, TEACHER_WIDTH, TEACHER_WIDTH, DEFAULT_SIZE)
+                        .addComponent(combo_teacher, Dimens.TEACHER_WIDTH, Dimens.TEACHER_WIDTH, DEFAULT_SIZE)
                         .addComponent(label_group)
                         .addComponent(combo_group)
                         .addGroup(layout.createSequentialGroup()
@@ -177,17 +178,17 @@ public class MainForm extends Form {
                         .addComponent(label_types)
                         .addComponent(checkBoxes_types)
                 )
-                .addGap(GAP_BIG)
+                .addGap(Dimens.GAP_BIG)
                 //Filter subjects
                 .addGroup(layout.createParallelGroup()
-                        .addComponent(label_subjects, SUBJECTS_WIDTH, SUBJECTS_WIDTH, DEFAULT_SIZE)
+                        .addComponent(label_subjects, Dimens.SUBJECTS_WIDTH, Dimens.SUBJECTS_WIDTH, DEFAULT_SIZE)
                         .addComponent(checkBoxes_subjects)
                 )
-                .addGap(GAP_BIG)
+                .addGap(Dimens.GAP_BIG)
                 //Filter groups and types and export
                 .addGroup(layout.createParallelGroup()
                         .addComponent(label_groups)
-                        .addComponent(checkBoxes_groups, GROUPS_WIDTH, GROUPS_WIDTH, DEFAULT_SIZE)
+                        .addComponent(checkBoxes_groups, Dimens.GROUPS_WIDTH, Dimens.GROUPS_WIDTH, DEFAULT_SIZE)
                         .addComponent(button_export, GroupLayout.Alignment.TRAILING)
                 )
         );
@@ -205,13 +206,13 @@ public class MainForm extends Form {
                                 .addGroup(layout.createSequentialGroup()
                                         .addComponent(label_to)
                                         .addComponent(spinner_to)))
-                        .addGap(GAP_MEDIUM)
+                        .addGap(Dimens.GAP_MEDIUM)
                         .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                                 .addComponent(progressBar)
                                 .addComponent(button_request))
-                        .addGap(GAP_BIG)
+                        .addGap(Dimens.GAP_BIG)
                         .addComponent(label_types)
-                        .addComponent(checkBoxes_types, TYPES_HEIGHT, TYPES_HEIGHT, DEFAULT_SIZE)
+                        .addComponent(checkBoxes_types, Dimens.TYPES_HEIGHT, Dimens.TYPES_HEIGHT, DEFAULT_SIZE)
                 )
                 //Filter subjects
                 .addGroup(layout.createSequentialGroup()
@@ -221,7 +222,7 @@ public class MainForm extends Form {
                 //Filter groups and types and export
                 .addGroup(layout.createSequentialGroup()
                         .addComponent(label_groups)
-                        .addComponent(checkBoxes_groups, GROUPS_HEIGHT, GROUPS_HEIGHT, DEFAULT_SIZE)
+                        .addComponent(checkBoxes_groups, Dimens.GROUPS_HEIGHT, Dimens.GROUPS_HEIGHT, DEFAULT_SIZE)
                         .addComponent(button_export)
                 )
         );
