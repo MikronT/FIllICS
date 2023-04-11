@@ -256,7 +256,7 @@ public class MainForm extends Form {
 
                     int i = name.lastIndexOf('.'); //Find extension
                     if (i == -1)
-                        return false; //The file has no extension
+                        return true; //The file has no extension or is a folder
                     var extension = name.substring(i + 1);
 
                     //Show only webpages
@@ -293,6 +293,8 @@ public class MainForm extends Form {
             presetFilters();
             filterByTypes();
             filterBySubjects();
+
+            button_export.setEnabled(true);
         });
 
 
@@ -451,7 +453,7 @@ public class MainForm extends Form {
 
         Document doc;
         try {
-            doc = Jsoup.parse(file, "UTF-8");
+            doc = Jsoup.parse(file);
         } catch (IOException e) {
             Log.e("MainForm::importScheduleFrom: file parsing failed");
             Log.e("MainForm::importScheduleFrom:   - file = " + file);
