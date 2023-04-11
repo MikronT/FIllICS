@@ -124,6 +124,7 @@ public class Parser {
             if (s.isBlank()) continue;
             if (s.contains("дистанційно")) continue;
             if (s.contains("Лабораторна робота")) continue;
+            if (s.contains("Лекція")) continue;
             if (s.contains("Meeting")) continue;
 
             //Multiword titles

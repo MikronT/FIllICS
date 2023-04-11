@@ -75,6 +75,10 @@ public class JCheckBoxList extends JScrollPane {
         return true;
     }
 
+    private void sort() {
+        boxes.sort((o1, o2) -> Utils.COLLATOR.compare(o1.getText(), o2.getText()));
+    }
+
     public void remove(String title) {
         if (destroy(title))
             buildUI();
@@ -121,7 +125,6 @@ public class JCheckBoxList extends JScrollPane {
 
         public DiffUtil newList(List<String> newList) {
             this.newList = newList.stream()
-                    .sorted(Utils.COLLATOR)
                     .distinct()
                     .toList();
             return this;
@@ -137,6 +140,9 @@ public class JCheckBoxList extends JScrollPane {
             added.removeAll(oldList);
             Log.v("JCheckBoxList.DiffUtil::applyChanges: added = " + added);
             added.forEach(checkBoxes::create);
+
+            //Sort list
+            checkBoxes.sort();
 
             if (!removed.isEmpty() || !added.isEmpty())
                 checkBoxes.buildUI();
