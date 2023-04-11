@@ -51,9 +51,9 @@ public class MainForm extends Form {
 
     @Override
     protected void onCreate() {
-        var container = getContainer();
-        var layout = new GroupLayout(container);
-        container.setLayout(layout);
+        var panel_root = getRootPanel();
+        var layout = new GroupLayout(panel_root);
+        panel_root.setLayout(layout);
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
 

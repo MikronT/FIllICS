@@ -11,7 +11,7 @@ import java.awt.*;
 
 public class Form extends Context {
     private final JFrame frame = new JFrame();
-    private final JPanel container = new JPanel();
+    private final JPanel rootPanel = new JPanel();
 
 
     @SuppressWarnings("SameParameterValue")
@@ -35,9 +35,9 @@ public class Form extends Context {
         frame.setLocationByPlatform(true); //Let the system decide
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 
-        frame.setContentPane(container);
+        frame.setContentPane(rootPanel);
 
-        container.setBorder(BorderFactory.createEmptyBorder(
+        rootPanel.setBorder(BorderFactory.createEmptyBorder(
                 Dimens.FORM_PADDING,
                 Dimens.FORM_PADDING,
                 Dimens.FORM_PADDING,
@@ -46,7 +46,7 @@ public class Form extends Context {
         onCreate();
 
         //Apply default styles to components after layout creation
-        Components.applyDefaults(Components.getWholeTree(container));
+        Components.applyDefaults(Components.getWholeTree(rootPanel));
     }
 
     protected void onCreate() {}
@@ -66,7 +66,7 @@ public class Form extends Context {
         return frame;
     }
 
-    public JPanel getContainer() {
-        return container;
+    public JPanel getRootPanel() {
+        return rootPanel;
     }
 }
