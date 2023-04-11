@@ -3,6 +3,7 @@ package com.mikront.gui;
 import com.mikront.util.debug.Log;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,13 @@ public class Components {
      * @param <T>        any JComponent derivative
      */
     public static <T extends JComponent> void applyDefaults(List<T> components) {
-        components.forEach(c -> c.setFont(FONT_DEFAULT));
+        components.forEach(c -> {
+            //Update component content font
+            c.setFont(FONT_DEFAULT);
+
+            //Update titled borders
+            if (c.getBorder() instanceof TitledBorder b)
+                b.setTitleFont(FONT_DEFAULT);
+        });
     }
 }
