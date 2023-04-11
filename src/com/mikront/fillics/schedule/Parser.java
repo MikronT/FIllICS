@@ -119,14 +119,13 @@ public class Parser {
                 s = s.replace("зав. кафедрою", "(завідувач кафедрою)");
 
             //Get rid of asterisks
-            int index = s.indexOf('*');
-            if (index != -1) //Found!
-                if (index == 0) {
-                    index = s.indexOf("* "); //Check with space
-                    if (index != -1)
-                        s = s.replace("* ", "");
-                    else s = s.replace("*", "");
-                } else s = s.replace("*", "");
+            int i;
+            while ((i = s.indexOf('*')) != -1) { //Redundant asterisks found
+                //Try to find both asterisk and space at the beginning of the string
+                if (i == 0 && s.charAt(i + 1) == ' ')
+                    s = s.replace("* ", "");
+                else s = s.replace("*", "");
+            }
 
             lines.add(s);
         }
