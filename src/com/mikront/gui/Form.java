@@ -9,7 +9,7 @@ import javax.swing.*;
 import java.awt.*;
 
 
-public class Form implements Strings {
+public class Form extends Context {
     private final JFrame frame = new JFrame();
     private final JPanel container = new JPanel();
 
@@ -31,7 +31,7 @@ public class Form implements Strings {
             Log.e("Form::onCreate:   = catching: ", e);
         }
 
-        frame.setTitle(APP_NAME);
+        frame.setTitle(getString(Strings.APP_NAME));
         frame.setLocationByPlatform(true); //Let the system decide
         frame.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
 

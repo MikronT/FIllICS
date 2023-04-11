@@ -2,6 +2,7 @@ package com.mikront.fillics;
 
 import com.mikront.fillics.ics.CalendarData;
 import com.mikront.fillics.resource.Dimens;
+import com.mikront.fillics.resource.Strings;
 import com.mikront.fillics.schedule.*;
 import com.mikront.gui.*;
 import com.mikront.util.Concat;
@@ -57,10 +58,10 @@ public class MainForm extends Form {
         layout.setAutoCreateContainerGaps(true);
 
 
-        var label_teacher = new JLabel(LABEL_TEACHER);
-        var label_group = new JLabel(LABEL_GROUP);
-        var label_from = new JLabel(LABEL_DATE_FROM);
-        var label_to = new JLabel(LABEL_DATE_TO);
+        var label_teacher = new JLabel(getString(Strings.LABEL_TEACHER));
+        var label_group = new JLabel(getString(Strings.LABEL_GROUP));
+        var label_from = new JLabel(getString(Strings.LABEL_DATE_FROM));
+        var label_to = new JLabel(getString(Strings.LABEL_DATE_TO));
 
         combo_teacher = new JAutoComboBox();
         combo_teacher.addItemListener(e -> {
@@ -110,7 +111,7 @@ public class MainForm extends Form {
         progressBar.setStringPainted(true);
         resetProgress();
 
-        button_request = new JButton(BUTTON_REQUEST);
+        button_request = new JButton(getString(Strings.BUTTON_REQUEST));
         button_request.addActionListener(e -> new Thread(() -> {
             button_request.setEnabled(false);
 
@@ -123,9 +124,9 @@ public class MainForm extends Form {
             button_export.setEnabled(true);
         }).start());
 
-        var label_types = new JLabel(LABEL_TYPES);
-        var label_subjects = new JLabel(LABEL_SUBJECTS);
-        var label_groups = new JLabel(LABEL_GROUPS);
+        var label_types = new JLabel(getString(Strings.LABEL_TYPES));
+        var label_subjects = new JLabel(getString(Strings.LABEL_SUBJECTS));
+        var label_groups = new JLabel(getString(Strings.LABEL_GROUPS));
 
         checkBoxes_types = new JCheckBoxList(true);
         checkBoxes_types.setOnItemCheckedListener((title, checked) -> {
@@ -153,7 +154,7 @@ public class MainForm extends Form {
             else preferenceManager.removeFilterGroup(title);
         });
 
-        button_export = new JButton(BUTTON_EXPORT);
+        button_export = new JButton(getString(Strings.BUTTON_EXPORT));
         button_export.setEnabled(false);
         button_export.addActionListener(e -> new Thread(this::exportSchedule).start());
 
@@ -239,12 +240,12 @@ public class MainForm extends Form {
         combo_teacher.setEnabled(false);
         combo_group.setEnabled(false);
 
-        setProgress(50, STEP_GETTING_TEACHERS);
+        setProgress(50, getString(Strings.STEP_GETTING_TEACHERS));
 
         Schedule.getTeachers().forEach(combo_teacher::addItem);
         combo_teacher.setEnabled(true);
 
-        setProgress(PROGRESS_MAX, STEP_GETTING_GROUPS);
+        setProgress(PROGRESS_MAX, getString(Strings.STEP_GETTING_GROUPS));
 
         Schedule.getGroups().forEach(combo_group::addItem);
         combo_group.setEnabled(true);
@@ -294,7 +295,7 @@ public class MainForm extends Form {
         if (Utils.isEmpty(teacher) && Utils.isEmpty(group))
             return;
 
-        setProgress(60, STEP_GETTING_SCHEDULE);
+        setProgress(60, getString(Strings.STEP_GETTING_SCHEDULE));
 
         Document doc = Schedule.getSchedule(
                 teacher,
@@ -302,9 +303,10 @@ public class MainForm extends Form {
                 model_from.getDate(),
                 model_to.getDate());
 
-        setProgress(100, STEP_COMPILING_DATA);
+        setProgress(100, getString(Strings.STEP_COMPILING_DATA));
 
-        schedule = Parser.of(doc)
+        schedule = Parser.init(this)
+                .setDocument(doc)
                 .setDefaultGroup(group)
                 .parse();
 
@@ -397,7 +399,7 @@ public class MainForm extends Form {
     }
 
     private void resetProgress() {
-        setProgress(0, STEP_READY);
+        setProgress(0, getString(Strings.STEP_READY));
     }
 
 

@@ -2,6 +2,7 @@ package com.mikront.fillics.schedule;
 
 import com.mikront.fillics.ics.Event;
 import com.mikront.fillics.resource.Strings;
+import com.mikront.gui.Context;
 import com.mikront.util.Concat;
 import com.mikront.util.Utils;
 
@@ -13,6 +14,12 @@ import java.util.function.Function;
 
 public class Session {
     private String subject, type, group, teacher, teacher_position, teacher2, auditory, link;
+    private final Context context;
+
+
+    public Session(Context context) {
+        this.context = context;
+    }
 
 
     public void setSubject(String subject) {
@@ -86,7 +93,7 @@ public class Session {
     }
 
     public String getTypeOrUnknown() {
-        return Utils.isEmpty(type) ? Strings.UNKNOWN_TYPE : type;
+        return Utils.isEmpty(type) ? context.getString(Strings.UNKNOWN_TYPE) : type;
     }
 
     public String getGroup() {
@@ -94,7 +101,7 @@ public class Session {
     }
 
     public String getGroupOrUnknown() {
-        return Utils.isEmpty(group) ? Strings.UNKNOWN_GROUP : group;
+        return Utils.isEmpty(group) ? context.getString(Strings.UNKNOWN_GROUP) : group;
     }
 
     public boolean isOptional() {

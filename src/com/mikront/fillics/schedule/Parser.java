@@ -1,5 +1,6 @@
 package com.mikront.fillics.schedule;
 
+import com.mikront.gui.Context;
 import com.mikront.util.debug.Log;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
@@ -31,20 +32,26 @@ public class Parser {
             PREFIX_SUBGROUP2 = ".*група.*",
             SUFFIX_SUBGROUP2 = "\\.(\\d).+ \\(.*\\)";
 
+    private Document document;
     private Pattern regex_subgroup2;
     private String defaultGroup = "Наркомани-алкоголіки";
-    private final Document document;
+    private final Context context;
 
 
-    private Parser(Document document) {
-        this.document = document;
+    private Parser(Context context) {
+        this.context = context;
     }
 
     @Contract("_ -> new")
-    public static @NotNull Parser of(Document document) {
-        return new Parser(document);
+    public static @NotNull Parser init(Context context) {
+        return new Parser(context);
     }
 
+
+    public Parser setDocument(Document document) {
+        this.document = document;
+        return this;
+    }
 
     public Parser setDefaultGroup(String group) {
         this.defaultGroup = group;
@@ -169,7 +176,7 @@ public class Parser {
         Matcher matcher = REGEX_TEACHERS_TITLE_TYPE.matcher(s);
         if (matcher.matches()) {
             Log.v("Parser::trySearchingTitleToInitClass: teachers = " + s);
-            Session current = new Session();
+            Session current = new Session(context);
             current.setSubject(matcher.replaceAll("$4"));
             current.setType(matcher.replaceAll("$5"));
             current.setTeacherPosition(matcher.replaceAll("$2"));
@@ -182,7 +189,7 @@ public class Parser {
         matcher = REGEX_TITLE_TYPE.matcher(s);
         if (matcher.matches()) {
             Log.v("Parser::trySearchingTitleToInitClass: title-type = " + s);
-            Session current = new Session();
+            Session current = new Session(context);
             current.setSubject(matcher.replaceAll("$1"));
             current.setType(matcher.replaceAll("$2"));
             return current;
@@ -192,7 +199,7 @@ public class Parser {
         matcher = REGEX_TITLE.matcher(s);
         if (matcher.matches()) {
             Log.v("Parser::trySearchingTitleToInitClass: title = " + s);
-            Session current = new Session();
+            Session current = new Session(context);
             current.setSubject(matcher.replaceAll("$1"));
             return current;
         }
