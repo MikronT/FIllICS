@@ -8,7 +8,7 @@ import java.util.Locale;
 
 
 public class Utils {
-    public static final Collator COLLATOR = Collator.getInstance(new Locale("uk", "UA"));
+    public static final Collator COLLATOR = Collator.getInstance(Locale.forLanguageTag("uk"));
 
 
     public static boolean isEmpty(String s) {
