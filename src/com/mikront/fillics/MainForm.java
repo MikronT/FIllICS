@@ -52,11 +52,91 @@ public class MainForm extends Form {
     @Override
     protected void onCreate() {
         var panel_root = getRootPanel();
-        var layout = new GroupLayout(panel_root);
-        panel_root.setLayout(layout);
-        layout.setAutoCreateGaps(true);
-        layout.setAutoCreateContainerGaps(true);
 
+        var panel_request = createRequestPanel();
+
+        var label_types = new JLabel(getString(Strings.LABEL_TYPES));
+        var label_subjects = new JLabel(getString(Strings.LABEL_SUBJECTS));
+        var label_groups = new JLabel(getString(Strings.LABEL_GROUPS));
+
+        checkBoxes_types = new JCheckBoxList(true);
+        checkBoxes_types.setOnItemCheckedListener((title, checked) -> {
+            filterByTypes();
+            filterBySubjects();
+
+            if (!checked)
+                preferenceManager.addFilterType(title);
+            else preferenceManager.removeFilterType(title);
+        });
+
+        checkBoxes_subjects = new JCheckBoxList(true);
+        checkBoxes_subjects.setOnItemCheckedListener((title, checked) -> {
+            filterBySubjects();
+
+            if (!checked)
+                preferenceManager.addFilterSubject(title);
+            else preferenceManager.removeFilterSubject(title);
+        });
+
+        checkBoxes_groups = new JCheckBoxList(true);
+        checkBoxes_groups.setOnItemCheckedListener((title, checked) -> {
+            if (!checked)
+                preferenceManager.addFilterGroup(title);
+            else preferenceManager.removeFilterGroup(title);
+        });
+
+        button_export = new JButton(getString(Strings.BUTTON_EXPORT));
+        button_export.setEnabled(false);
+        button_export.addActionListener(e -> new Thread(this::exportSchedule).start());
+
+
+        var layout = initGroupLayoutFor(panel_root);
+        layout.setHorizontalGroup(layout.createSequentialGroup()
+                //Request schedule
+                .addGroup(layout.createParallelGroup()
+                        .addComponent(panel_request)
+                        .addComponent(label_types)
+                        .addComponent(checkBoxes_types)
+                )
+                .addGap(Dimens.GAP_BIG)
+                //Filter subjects
+                .addGroup(layout.createParallelGroup()
+                        .addComponent(label_subjects, Dimens.SUBJECTS_WIDTH, Dimens.SUBJECTS_WIDTH, DEFAULT_SIZE)
+                        .addComponent(checkBoxes_subjects)
+                )
+                .addGap(Dimens.GAP_BIG)
+                //Filter groups and types and export
+                .addGroup(layout.createParallelGroup()
+                        .addComponent(label_groups)
+                        .addComponent(checkBoxes_groups, Dimens.GROUPS_WIDTH, Dimens.GROUPS_WIDTH, DEFAULT_SIZE)
+                        .addComponent(button_export, GroupLayout.Alignment.TRAILING)
+                )
+        );
+        layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                //Request schedule
+                .addGroup(layout.createSequentialGroup()
+                        .addComponent(panel_request)
+                        .addGap(Dimens.GAP_BIG)
+                        .addComponent(label_types)
+                        .addComponent(checkBoxes_types, Dimens.TYPES_HEIGHT, Dimens.TYPES_HEIGHT, DEFAULT_SIZE)
+                )
+                //Filter subjects
+                .addGroup(layout.createSequentialGroup()
+                        .addComponent(label_subjects)
+                        .addComponent(checkBoxes_subjects)
+                )
+                //Filter groups and types and export
+                .addGroup(layout.createSequentialGroup()
+                        .addComponent(label_groups)
+                        .addComponent(checkBoxes_groups, Dimens.GROUPS_HEIGHT, Dimens.GROUPS_HEIGHT, DEFAULT_SIZE)
+                        .addComponent(button_export)
+                )
+        );
+    }
+
+    private JPanel createRequestPanel() {
+        var out = new JPanel();
+        out.setBorder(BorderFactory.createTitledBorder(getString(Strings.PANEL_REQUEST)));
 
         var label_teacher = new JLabel(getString(Strings.LABEL_TEACHER));
         var label_group = new JLabel(getString(Strings.LABEL_GROUP));
@@ -124,109 +204,55 @@ public class MainForm extends Form {
             button_export.setEnabled(true);
         }).start());
 
-        var label_types = new JLabel(getString(Strings.LABEL_TYPES));
-        var label_subjects = new JLabel(getString(Strings.LABEL_SUBJECTS));
-        var label_groups = new JLabel(getString(Strings.LABEL_GROUPS));
 
-        checkBoxes_types = new JCheckBoxList(true);
-        checkBoxes_types.setOnItemCheckedListener((title, checked) -> {
-            filterByTypes();
-            filterBySubjects();
-
-            if (!checked)
-                preferenceManager.addFilterType(title);
-            else preferenceManager.removeFilterType(title);
-        });
-
-        checkBoxes_subjects = new JCheckBoxList(true);
-        checkBoxes_subjects.setOnItemCheckedListener((title, checked) -> {
-            filterBySubjects();
-
-            if (!checked)
-                preferenceManager.addFilterSubject(title);
-            else preferenceManager.removeFilterSubject(title);
-        });
-
-        checkBoxes_groups = new JCheckBoxList(true);
-        checkBoxes_groups.setOnItemCheckedListener((title, checked) -> {
-            if (!checked)
-                preferenceManager.addFilterGroup(title);
-            else preferenceManager.removeFilterGroup(title);
-        });
-
-        button_export = new JButton(getString(Strings.BUTTON_EXPORT));
-        button_export.setEnabled(false);
-        button_export.addActionListener(e -> new Thread(this::exportSchedule).start());
-
-
-        layout.setHorizontalGroup(layout.createSequentialGroup()
-                //Request schedule
-                .addGroup(layout.createParallelGroup()
-                        .addComponent(label_teacher)
-                        .addComponent(combo_teacher, Dimens.TEACHER_WIDTH, Dimens.TEACHER_WIDTH, DEFAULT_SIZE)
-                        .addComponent(label_group)
-                        .addComponent(combo_group)
-                        .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup()
-                                        .addComponent(label_from)
-                                        .addComponent(spinner_from))
-                                .addGroup(layout.createParallelGroup()
-                                        .addComponent(label_to)
-                                        .addComponent(spinner_to)))
-                        .addGroup(layout.createSequentialGroup()
-                                .addComponent(progressBar)
-                                .addComponent(button_request))
-                        .addComponent(label_types)
-                        .addComponent(checkBoxes_types)
-                )
-                .addGap(Dimens.GAP_BIG)
-                //Filter subjects
-                .addGroup(layout.createParallelGroup()
-                        .addComponent(label_subjects, Dimens.SUBJECTS_WIDTH, Dimens.SUBJECTS_WIDTH, DEFAULT_SIZE)
-                        .addComponent(checkBoxes_subjects)
-                )
-                .addGap(Dimens.GAP_BIG)
-                //Filter groups and types and export
-                .addGroup(layout.createParallelGroup()
-                        .addComponent(label_groups)
-                        .addComponent(checkBoxes_groups, Dimens.GROUPS_WIDTH, Dimens.GROUPS_WIDTH, DEFAULT_SIZE)
-                        .addComponent(button_export, GroupLayout.Alignment.TRAILING)
-                )
-        );
-        layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                //Request schedule
+        var layout = initGroupLayoutFor(out);
+        layout.setHorizontalGroup(layout.createParallelGroup()
+                .addComponent(label_teacher)
+                .addComponent(combo_teacher, Dimens.TEACHER_WIDTH, Dimens.TEACHER_WIDTH, DEFAULT_SIZE)
+                .addComponent(label_group)
+                .addComponent(combo_group)
                 .addGroup(layout.createSequentialGroup()
-                        .addComponent(label_teacher)
-                        .addComponent(combo_teacher)
-                        .addComponent(label_group)
-                        .addComponent(combo_group)
                         .addGroup(layout.createParallelGroup()
-                                .addGroup(layout.createSequentialGroup()
-                                        .addComponent(label_from)
-                                        .addComponent(spinner_from))
-                                .addGroup(layout.createSequentialGroup()
-                                        .addComponent(label_to)
-                                        .addComponent(spinner_to)))
-                        .addGap(Dimens.GAP_MEDIUM)
-                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
-                                .addComponent(progressBar)
-                                .addComponent(button_request))
-                        .addGap(Dimens.GAP_BIG)
-                        .addComponent(label_types)
-                        .addComponent(checkBoxes_types, Dimens.TYPES_HEIGHT, Dimens.TYPES_HEIGHT, DEFAULT_SIZE)
-                )
-                //Filter subjects
+                                .addComponent(label_from)
+                                .addComponent(spinner_from))
+                        .addGroup(layout.createParallelGroup()
+                                .addComponent(label_to)
+                                .addComponent(spinner_to)))
                 .addGroup(layout.createSequentialGroup()
-                        .addComponent(label_subjects)
-                        .addComponent(checkBoxes_subjects)
-                )
-                //Filter groups and types and export
-                .addGroup(layout.createSequentialGroup()
-                        .addComponent(label_groups)
-                        .addComponent(checkBoxes_groups, Dimens.GROUPS_HEIGHT, Dimens.GROUPS_HEIGHT, DEFAULT_SIZE)
-                        .addComponent(button_export)
-                )
+                        .addComponent(progressBar)
+                        .addComponent(button_request))
         );
+        layout.setVerticalGroup(layout.createSequentialGroup()
+                .addComponent(label_teacher)
+                .addComponent(combo_teacher)
+                .addComponent(label_group)
+                .addComponent(combo_group)
+                .addGroup(layout.createParallelGroup()
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(label_from)
+                                .addComponent(spinner_from))
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(label_to)
+                                .addComponent(spinner_to)))
+                .addGap(Dimens.GAP_MEDIUM)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
+                        .addComponent(progressBar)
+                        .addComponent(button_request))
+        );
+
+        return out;
+    }
+
+    private static GroupLayout initGroupLayoutFor(JComponent component) {
+        var out = new GroupLayout(component);
+
+        //Enable automatic gaps
+        out.setAutoCreateGaps(true);
+        out.setAutoCreateContainerGaps(true);
+
+        //Bind layout to the component
+        component.setLayout(out);
+        return out;
     }
 
 

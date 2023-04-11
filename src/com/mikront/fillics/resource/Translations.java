@@ -10,6 +10,10 @@ public class Translations {
         return switch (id) {
             case APP_NAME -> "FIllICS";
 
+            case PANEL_REQUEST -> switch (lang) {
+                default -> "Request schedule from IFNTUOG server";
+                case UK -> "Отримати розклад із сервера ІФНТУНГ";
+            };
             case LABEL_TEACHER -> switch (lang) {
                 default -> "Teacher";
                 case UK -> "Викладач";

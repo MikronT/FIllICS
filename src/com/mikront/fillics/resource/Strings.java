@@ -3,6 +3,7 @@ package com.mikront.fillics.resource;
 public enum Strings {
     APP_NAME,
 
+    PANEL_REQUEST,
     LABEL_TEACHER,
     LABEL_GROUP,
     LABEL_DATE_FROM,
