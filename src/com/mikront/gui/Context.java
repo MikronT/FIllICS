@@ -77,15 +77,15 @@ public class Context {
             };
             case STEP_GETTING_TEACHERS -> switch (lang) {
                 default -> "Getting teachers";
-                case UK -> "Завантаження викладачів";
+                case UK -> "Отримання викладачів";
             };
             case STEP_GETTING_GROUPS -> switch (lang) {
                 default -> "Getting groups";
-                case UK -> "Завантаження груп";
+                case UK -> "Отримання груп";
             };
             case STEP_GETTING_SCHEDULE -> switch (lang) {
                 default -> "Getting schedule";
-                case UK -> "Завантаження розкладу";
+                case UK -> "Отримання розкладу";
             };
             case STEP_COMPILING_DATA -> switch (lang) {
                 default -> "Compiling data";
