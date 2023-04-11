@@ -10,6 +10,18 @@ public class Translations {
         return switch (id) {
             case APP_NAME -> "FIllICS";
 
+            case PANEL_PERIOD -> switch (lang) {
+                default -> "Adjust schedule period";
+                case UK -> "Встановіть часові рамки розкладу";
+            };
+            case LABEL_DATE_FROM -> switch (lang) {
+                default -> "From date";
+                case UK -> "Від дати";
+            };
+            case LABEL_DATE_TO -> switch (lang) {
+                default -> "To date";
+                case UK -> "По дату";
+            };
             case PANEL_REQUEST -> switch (lang) {
                 default -> "Request schedule from IFNTUOG servers";
                 case UK -> "Отримайте розклад із серверів ІФНТУНГ";
@@ -21,14 +33,6 @@ public class Translations {
             case LABEL_GROUP -> switch (lang) {
                 default -> "Group";
                 case UK -> "Група";
-            };
-            case LABEL_DATE_FROM -> switch (lang) {
-                default -> "From date";
-                case UK -> "Від дати";
-            };
-            case LABEL_DATE_TO -> switch (lang) {
-                default -> "To date";
-                case UK -> "По дату";
             };
             case BUTTON_REQUEST -> switch (lang) {
                 default -> "Request";

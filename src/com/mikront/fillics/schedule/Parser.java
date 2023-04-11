@@ -8,6 +8,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -33,6 +34,7 @@ public class Parser {
             SUFFIX_SUBGROUP2 = "\\.(\\d).+ \\(.*\\)";
 
     private Document document;
+    private LocalDate period_from, period_to;
     private Pattern regex_subgroup2;
     private String defaultGroup = "Наркомани-алкоголіки";
     private final Context context;
@@ -58,6 +60,12 @@ public class Parser {
         return this;
     }
 
+    public Parser setPeriod(LocalDate from, LocalDate to) {
+        this.period_from = from;
+        this.period_to = to;
+        return this;
+    }
+
     private void prepare() {
         regex_subgroup2 = Pattern.compile(PREFIX_SUBGROUP2 + defaultGroup + SUFFIX_SUBGROUP2);
     }
@@ -80,6 +88,14 @@ public class Parser {
 
             String date = div.getElementsByTag("h4").get(0).text();
             Day day = new Day(date);
+            if (period_from != null) { //Filter days if period is set
+                LocalDate d = day.getDate();
+                if (d.isBefore(period_from) || d.isAfter(period_to)) {
+                    Log.v("Parser::parseDays: skipping day " + date);
+                    continue;
+                }
+            }
+
             days.add(day);
 
             for (Element tr : div.getElementsByTag("tr")) {

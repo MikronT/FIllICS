@@ -58,6 +58,7 @@ public class MainForm extends Form {
     protected void onCreate() {
         var panel_root = getRootPanel();
 
+        var panel_period = createPeriodAdjustPanel();
         var panel_request = createScheduleRequestPanel();
         var panel_import = createFileImportPanel();
         var panel_types = createTypesFilterPanel();
@@ -73,6 +74,7 @@ public class MainForm extends Form {
         layout.setHorizontalGroup(layout.createSequentialGroup()
                 //Request schedule and filter types
                 .addGroup(layout.createParallelGroup()
+                        .addComponent(panel_period)
                         .addComponent(panel_request)
                         .addComponent(panel_import)
                         .addComponent(panel_types)
@@ -90,6 +92,8 @@ public class MainForm extends Form {
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                 //Request schedule and filter types
                 .addGroup(layout.createSequentialGroup()
+                        .addComponent(panel_period)
+                        .addGap(Dimens.GAP_MEDIUM)
                         .addComponent(panel_request)
                         .addComponent(panel_import)
                         .addGap(Dimens.GAP_BIG)
@@ -105,34 +109,12 @@ public class MainForm extends Form {
         );
     }
 
-    private JPanel createScheduleRequestPanel() {
+    private JPanel createPeriodAdjustPanel() {
         var out = new JPanel();
-        out.setBorder(BorderFactory.createTitledBorder(getString(Strings.PANEL_REQUEST)));
+        out.setBorder(BorderFactory.createTitledBorder(getString(Strings.PANEL_PERIOD)));
 
-        var label_teacher = new JLabel(getString(Strings.LABEL_TEACHER));
-        var label_group = new JLabel(getString(Strings.LABEL_GROUP));
         var label_from = new JLabel(getString(Strings.LABEL_DATE_FROM));
         var label_to = new JLabel(getString(Strings.LABEL_DATE_TO));
-
-        combo_teacher = new JAutoComboBox();
-        combo_teacher.addItemListener(e -> {
-            //Update preference state
-            preferenceManager.setTeacher(e.getItem().toString());
-
-            //Unset group filter
-            if (!JAutoComboBox.ITEM_UNSET.equals(combo_group.getSelectedItem()))
-                combo_group.setSelectedItem(JAutoComboBox.ITEM_UNSET);
-        });
-
-        combo_group = new JAutoComboBox();
-        combo_group.addItemListener(e -> {
-            //Update preference state
-            preferenceManager.setGroup(e.getItem().toString());
-
-            //Unset teacher filter
-            if (!JAutoComboBox.ITEM_UNSET.equals(combo_teacher.getSelectedItem()))
-                combo_teacher.setSelectedItem(JAutoComboBox.ITEM_UNSET);
-        });
 
         model_from = new XSpinnerDateModel();
         model_to = new XSpinnerDateModel();
@@ -156,6 +138,55 @@ public class MainForm extends Form {
             //Reset if date out of bounds
             if (date1.isAfter(date2))
                 model_from.setValue(date2);
+        });
+
+
+        var layout = initGroupLayoutFor(out);
+        layout.setHorizontalGroup(layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup()
+                        .addComponent(label_from)
+                        .addComponent(spinner_from))
+                .addGroup(layout.createParallelGroup()
+                        .addComponent(label_to)
+                        .addComponent(spinner_to))
+        );
+        layout.setVerticalGroup(layout.createParallelGroup()
+                .addGroup(layout.createSequentialGroup()
+                        .addComponent(label_from)
+                        .addComponent(spinner_from))
+                .addGroup(layout.createSequentialGroup()
+                        .addComponent(label_to)
+                        .addComponent(spinner_to))
+        );
+
+        return out;
+    }
+
+    private JPanel createScheduleRequestPanel() {
+        var out = new JPanel();
+        out.setBorder(BorderFactory.createTitledBorder(getString(Strings.PANEL_REQUEST)));
+
+        var label_teacher = new JLabel(getString(Strings.LABEL_TEACHER));
+        var label_group = new JLabel(getString(Strings.LABEL_GROUP));
+
+        combo_teacher = new JAutoComboBox();
+        combo_teacher.addItemListener(e -> {
+            //Update preference state
+            preferenceManager.setTeacher(e.getItem().toString());
+
+            //Unset group filter
+            if (!JAutoComboBox.ITEM_UNSET.equals(combo_group.getSelectedItem()))
+                combo_group.setSelectedItem(JAutoComboBox.ITEM_UNSET);
+        });
+
+        combo_group = new JAutoComboBox();
+        combo_group.addItemListener(e -> {
+            //Update preference state
+            preferenceManager.setGroup(e.getItem().toString());
+
+            //Unset teacher filter
+            if (!JAutoComboBox.ITEM_UNSET.equals(combo_teacher.getSelectedItem()))
+                combo_teacher.setSelectedItem(JAutoComboBox.ITEM_UNSET);
         });
 
         progressBar = new JProgressBar();
@@ -184,13 +215,6 @@ public class MainForm extends Form {
                 .addComponent(label_group)
                 .addComponent(combo_group)
                 .addGroup(layout.createSequentialGroup()
-                        .addGroup(layout.createParallelGroup()
-                                .addComponent(label_from)
-                                .addComponent(spinner_from))
-                        .addGroup(layout.createParallelGroup()
-                                .addComponent(label_to)
-                                .addComponent(spinner_to)))
-                .addGroup(layout.createSequentialGroup()
                         .addComponent(progressBar)
                         .addComponent(button_request))
         );
@@ -199,13 +223,6 @@ public class MainForm extends Form {
                 .addComponent(combo_teacher)
                 .addComponent(label_group)
                 .addComponent(combo_group)
-                .addGroup(layout.createParallelGroup()
-                        .addGroup(layout.createSequentialGroup()
-                                .addComponent(label_from)
-                                .addComponent(spinner_from))
-                        .addGroup(layout.createSequentialGroup()
-                                .addComponent(label_to)
-                                .addComponent(spinner_to)))
                 .addGap(Dimens.GAP_MEDIUM)
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.CENTER)
                         .addComponent(progressBar)
@@ -445,6 +462,7 @@ public class MainForm extends Form {
         schedule = Parser.init(this)
                 .setDocument(doc)
                 .setDefaultGroup(group)
+                .setPeriod(model_from.getValue(), model_to.getValue())
                 .parse();
     }
 
