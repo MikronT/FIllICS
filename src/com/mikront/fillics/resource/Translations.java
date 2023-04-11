@@ -34,6 +34,18 @@ public class Translations {
                 default -> "Request";
                 case UK -> "Отримати";
             };
+            case PANEL_IMPORT -> switch (lang) {
+                default -> "Import downloaded schedule webpage";
+                case UK -> "Імпортуйте завантажену сторінку розкладу";
+            };
+            case LABEL_PLACEHOLDER_GROUP -> switch (lang) {
+                default -> "Your group name";
+                case UK -> "Назва групи";
+            };
+            case BUTTON_OPEN -> switch (lang) {
+                default -> "Select file";
+                case UK -> "Вибрати файл";
+            };
             case PANEL_TYPES -> switch (lang) {
                 default -> "Filter session types";
                 case UK -> "Виберіть необхідні типи занять";

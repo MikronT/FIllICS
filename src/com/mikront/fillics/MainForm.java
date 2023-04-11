@@ -9,14 +9,18 @@ import com.mikront.util.Concat;
 import com.mikront.util.Utils;
 import com.mikront.util.debug.Build;
 import com.mikront.util.debug.Log;
+import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileFilter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.function.Function;
@@ -34,6 +38,7 @@ public class MainForm extends Form {
     private JCheckBoxList checkBoxes_types, checkBoxes_subjects, checkBoxes_groups;
     private JComboBox<String> combo_group, combo_teacher;
     private JProgressBar progressBar;
+    private JTextField input_group;
     private List<Day> schedule;
     private XSpinnerDateModel model_from, model_to;
     private final HashMap<String, String> map_subjects = new HashMap<>();
@@ -54,6 +59,7 @@ public class MainForm extends Form {
         var panel_root = getRootPanel();
 
         var panel_request = createRequestPanel();
+        var panel_import = createImportFilePanel();
         var panel_types = createTypesFilterPanel();
         var panel_subjects = createSubjectsFilterPanel();
         var panel_groups = createGroupsFilterPanel();
@@ -68,6 +74,7 @@ public class MainForm extends Form {
                 //Request schedule and filter types
                 .addGroup(layout.createParallelGroup()
                         .addComponent(panel_request)
+                        .addComponent(panel_import)
                         .addComponent(panel_types)
                 )
                 .addGap(Dimens.GAP_BIG)
@@ -84,6 +91,7 @@ public class MainForm extends Form {
                 //Request schedule and filter types
                 .addGroup(layout.createSequentialGroup()
                         .addComponent(panel_request)
+                        .addComponent(panel_import)
                         .addGap(Dimens.GAP_BIG)
                         .addComponent(panel_types, Dimens.TYPES_HEIGHT, Dimens.TYPES_HEIGHT, DEFAULT_SIZE)
                 )
@@ -206,6 +214,85 @@ public class MainForm extends Form {
         return out;
     }
 
+    private JPanel createImportFilePanel() {
+        var out = new JPanel();
+        out.setBorder(BorderFactory.createTitledBorder(getString(Strings.PANEL_IMPORT)));
+
+        var label_group = new JLabel(getString(Strings.LABEL_PLACEHOLDER_GROUP));
+
+        input_group = new JTextField();
+        input_group.setText(preferenceManager.getGroup());
+
+        var button_open = new JButton(getString(Strings.BUTTON_OPEN));
+        button_open.addActionListener(e -> {
+            JFileChooser picker = new JFileChooser();
+            //Set current executable path
+            picker.setCurrentDirectory(FileSystems.getDefault().getPath(".").toFile());
+
+            //Filter file system objects
+            picker.setFileSelectionMode(JFileChooser.FILES_ONLY);
+            picker.setFileFilter(new FileFilter() {
+                @Override
+                public boolean accept(File f) {
+                    var name = f.toString();
+
+                    int i = name.lastIndexOf('.'); //Find extension
+                    if (i == -1)
+                        return false; //The file has no extension
+                    var extension = name.substring(i + 1);
+
+                    //Show only webpages
+                    return extension.contains("htm");
+                }
+
+                @Override
+                public String getDescription() {
+                    return null;
+                }
+            });
+
+            //Ask user to choose a file
+            picker.showOpenDialog(out);
+            var selectedFile = picker.getSelectedFile();
+
+            if (selectedFile == null)
+                return; //Dialog closed
+
+            try {
+                if (Files.size(selectedFile.toPath()) == 0)
+                    return; //File is empty or invalid
+            } catch (IOException ex) {
+                Log.w("MainForm::createImportFilePanel: file reading error");
+                Log.w("MainForm::createImportFilePanel:   - selectedFile = " + selectedFile);
+                Log.w("MainForm::createImportFilePanel:   = catching: ", e);
+                return;
+            }
+
+            Log.i("MainForm::createImportFilePanel: user picked a file to read");
+            Log.i("MainForm::createImportFilePanel:   - selectedFile = " + selectedFile);
+
+            importScheduleFrom(selectedFile);
+            presetFilters();
+            filterByTypes();
+            filterBySubjects();
+        });
+
+
+        var layout = initGroupLayoutFor(out);
+        layout.setHorizontalGroup(layout.createParallelGroup()
+                .addComponent(label_group)
+                .addComponent(input_group)
+                .addComponent(button_open, GroupLayout.Alignment.TRAILING)
+        );
+        layout.setVerticalGroup(layout.createSequentialGroup()
+                .addComponent(label_group)
+                .addComponent(input_group)
+                .addComponent(button_open)
+        );
+
+        return out;
+    }
+
     private JCheckBoxList createTypesFilterPanel() {
         checkBoxes_types = new JCheckBoxList(true);
         checkBoxes_types.setBorder(BorderFactory.createTitledBorder(getString(Strings.PANEL_TYPES)));
@@ -318,7 +405,6 @@ public class MainForm extends Form {
     private void requestSchedule() {
         var teacher = (String) combo_teacher.getSelectedItem();
         var group = (String) combo_group.getSelectedItem();
-
         if (Utils.isEmpty(teacher) && Utils.isEmpty(group))
             return;
 
@@ -338,6 +424,27 @@ public class MainForm extends Form {
                 .parse();
 
         resetProgress();
+    }
+
+    private void importScheduleFrom(File file) {
+        var group = input_group.getText();
+        if (Utils.isEmpty(group))
+            return;
+
+        Document doc;
+        try {
+            doc = Jsoup.parse(file, "UTF-8");
+        } catch (IOException e) {
+            Log.e("MainForm::importScheduleFrom: file parsing failed");
+            Log.e("MainForm::importScheduleFrom:   - file = " + file);
+            Log.e("MainForm::importScheduleFrom:   = catching: ", e);
+            return;
+        }
+
+        schedule = Parser.init(this)
+                .setDocument(doc)
+                .setDefaultGroup(group)
+                .parse();
     }
 
     private void presetFilters() {
