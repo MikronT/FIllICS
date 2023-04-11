@@ -72,7 +72,10 @@ public class Session {
                 .when(Utils.notEmpty(teacher2))
                 .line(teacher2).words(" замість ", teacher)
                 .otherwise(Utils.notEmpty(teacher))
-                .line(teacher).words(" (", teacher_position, ")")
+                .line(teacher)
+                .then()
+                .when(Utils.notEmpty(teacher_position))
+                .words(" (", teacher_position, ")")
                 .then()
 
                 .when(Utils.notEmpty(auditory))

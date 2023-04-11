@@ -20,8 +20,9 @@ public class Parser {
     private static final Pattern
             REGEX_AUDITORY = Pattern.compile(".*(\\d+\\.\\d+)\\.ауд\\."),
             REGEX_LINK = Pattern.compile(".*(http\\S+).*"),
-            REGEX_TEACHER1 = Pattern.compile("^ (\\S+) (\\S+ \\S+ \\S+).*"),
-            REGEX_TEACHER2 = Pattern.compile("^ \\((\\S+ \\S+)\\) (\\S+ \\S+ \\S+).*"),
+            REGEX_TEACHER1 = Pattern.compile("^ +(\\S+ \\S+ \\S+).*"),
+            REGEX_TEACHER2 = Pattern.compile("^ +(\\S+) (\\S+ \\S+ \\S+).*"),
+            REGEX_TEACHER3 = Pattern.compile("^ +\\((\\S+ \\S+)\\) (\\S+ \\S+ \\S+).*"),
             REGEX_TEACHERS_TITLE_TYPE = Pattern.compile("^Увага! Заміна! (.+) замість: (\\S+) (\\S+ \\S+ \\S+) (.+) \\((.+)\\)$"),
             REGEX_TITLE = Pattern.compile("^([^h\\s].+)$"),
             REGEX_TITLE_TYPE = Pattern.compile("^([^h\\s].+) \\((.+)\\)$"),
@@ -270,8 +271,8 @@ public class Parser {
     }
 
     private boolean trySearchingTeacher(@NotNull Session current, String s) {
-        //Get teacher
-        for (Pattern p : List.of(REGEX_TEACHER2, REGEX_TEACHER1)) {
+        //Get teacher with position
+        for (Pattern p : List.of(REGEX_TEACHER3, REGEX_TEACHER2)) {
             Matcher matcher = p.matcher(s);
             if (matcher.matches()) {
                 Log.v("Parser::trySearchingTeacher: teacher = " + s);
@@ -279,6 +280,13 @@ public class Parser {
                 current.setTeacher(matcher.replaceAll("$2"));
                 return true;
             }
+        }
+        //Get teacher without position
+        Matcher matcher = REGEX_TEACHER1.matcher(s);
+        if (matcher.matches()) {
+            Log.v("Parser::trySearchingTeacher: teacher = " + s);
+            current.setTeacher(matcher.replaceAll("$1"));
+            return true;
         }
         return false;
     }
