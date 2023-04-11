@@ -49,7 +49,7 @@ public class MainForm extends Form {
     public static void main(String[] args) {
         Build.debug(false);
         Log.ging(true);
-        Log.level(Log.LEVEL_DEBUG);
+        Log.level(Log.LEVEL_WARN);
 
         Form.load(MainForm.class);
     }
@@ -58,8 +58,8 @@ public class MainForm extends Form {
     protected void onCreate() {
         var panel_root = getRootPanel();
 
-        var panel_request = createRequestPanel();
-        var panel_import = createImportFilePanel();
+        var panel_request = createScheduleRequestPanel();
+        var panel_import = createFileImportPanel();
         var panel_types = createTypesFilterPanel();
         var panel_subjects = createSubjectsFilterPanel();
         var panel_groups = createGroupsFilterPanel();
@@ -105,7 +105,7 @@ public class MainForm extends Form {
         );
     }
 
-    private JPanel createRequestPanel() {
+    private JPanel createScheduleRequestPanel() {
         var out = new JPanel();
         out.setBorder(BorderFactory.createTitledBorder(getString(Strings.PANEL_REQUEST)));
 
@@ -136,12 +136,13 @@ public class MainForm extends Form {
 
         model_from = new XSpinnerDateModel();
         model_to = new XSpinnerDateModel();
+        model_to.setValue(model_to.getValue().plusDays(6));
 
         var spinner_from = new JDateSpinner(model_from);
         spinner_from.addChangeListener(e -> {
             LocalDate
-                    date1 = model_from.getDate(),
-                    date2 = model_to.getDate();
+                    date1 = model_from.getValue(),
+                    date2 = model_to.getValue();
             //Reset if date out of bounds
             if (date1.isAfter(date2))
                 model_to.setValue(date1);
@@ -150,8 +151,8 @@ public class MainForm extends Form {
         var spinner_to = new JDateSpinner(model_to);
         spinner_to.addChangeListener(e -> {
             LocalDate
-                    date1 = model_from.getDate(),
-                    date2 = model_to.getDate();
+                    date1 = model_from.getValue(),
+                    date2 = model_to.getValue();
             //Reset if date out of bounds
             if (date1.isAfter(date2))
                 model_from.setValue(date2);
@@ -214,7 +215,7 @@ public class MainForm extends Form {
         return out;
     }
 
-    private JPanel createImportFilePanel() {
+    private JPanel createFileImportPanel() {
         var out = new JPanel();
         out.setBorder(BorderFactory.createTitledBorder(getString(Strings.PANEL_IMPORT)));
 
@@ -262,14 +263,14 @@ public class MainForm extends Form {
                 if (Files.size(selectedFile.toPath()) == 0)
                     return; //File is empty or invalid
             } catch (IOException ex) {
-                Log.w("MainForm::createImportFilePanel: file reading error");
-                Log.w("MainForm::createImportFilePanel:   - selectedFile = " + selectedFile);
-                Log.w("MainForm::createImportFilePanel:   = catching: ", e);
+                Log.w("MainForm::createFileImportPanel: file reading error");
+                Log.w("MainForm::createFileImportPanel:   - selectedFile = " + selectedFile);
+                Log.w("MainForm::createFileImportPanel:   = catching: ", e);
                 return;
             }
 
-            Log.i("MainForm::createImportFilePanel: user picked a file to read");
-            Log.i("MainForm::createImportFilePanel:   - selectedFile = " + selectedFile);
+            Log.i("MainForm::createFileImportPanel: user picked a file to read");
+            Log.i("MainForm::createFileImportPanel:   - selectedFile = " + selectedFile);
 
             importScheduleFrom(selectedFile);
             presetFilters();
@@ -413,8 +414,8 @@ public class MainForm extends Form {
         Document doc = Schedule.getSchedule(
                 teacher,
                 group,
-                model_from.getDate(),
-                model_to.getDate());
+                model_from.getValue(),
+                model_to.getValue());
 
         setProgress(100, getString(Strings.STEP_COMPILING_DATA));
 

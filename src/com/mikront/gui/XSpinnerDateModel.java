@@ -52,13 +52,9 @@ public class XSpinnerDateModel extends AbstractSpinnerModel implements Serializa
     }
 
 
-    public LocalDate getDate() {
-        return value;
-    }
-
     @Override
-    public Object getValue() {
-        return getDate();
+    public LocalDate getValue() {
+        return value;
     }
 
     @Override
