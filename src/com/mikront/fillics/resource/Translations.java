@@ -11,8 +11,8 @@ public class Translations {
             case APP_NAME -> "FIllICS";
 
             case PANEL_REQUEST -> switch (lang) {
-                default -> "Request schedule from IFNTUOG server";
-                case UK -> "Отримати розклад із сервера ІФНТУНГ";
+                default -> "Request schedule from IFNTUOG servers";
+                case UK -> "Отримайте розклад із серверів ІФНТУНГ";
             };
             case LABEL_TEACHER -> switch (lang) {
                 default -> "Teacher";
@@ -30,21 +30,21 @@ public class Translations {
                 default -> "To date";
                 case UK -> "По дату";
             };
-            case PANEL_TYPES -> switch (lang) {
-                default -> "Session types";
-                case UK -> "Типи занять";
-            };
-            case PANEL_SUBJECTS -> switch (lang) {
-                default -> "Subjects";
-                case UK -> "Предмети";
-            };
-            case PANEL_GROUPS -> switch (lang) {
-                default -> "Student groups";
-                case UK -> "Студентські групи";
-            };
             case BUTTON_REQUEST -> switch (lang) {
                 default -> "Request";
                 case UK -> "Отримати";
+            };
+            case PANEL_TYPES -> switch (lang) {
+                default -> "Filter session types";
+                case UK -> "Виберіть необхідні типи занять";
+            };
+            case PANEL_SUBJECTS -> switch (lang) {
+                default -> "Choose your subjects";
+                case UK -> "Оберіть свої дисципліни";
+            };
+            case PANEL_GROUPS -> switch (lang) {
+                default -> "Select student groups you belong to";
+                case UK -> "Позначте групи, до яких належите";
             };
             case BUTTON_EXPORT -> switch (lang) {
                 default -> "Export";

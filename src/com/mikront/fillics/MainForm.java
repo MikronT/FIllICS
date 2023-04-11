@@ -235,7 +235,7 @@ public class MainForm extends Form {
 
     private JCheckBoxList createGroupsFilterPanel() {
         checkBoxes_groups = new JCheckBoxList(true);
-        checkBoxes_groups.setBorder(BorderFactory.createTitledBorder(getString(Strings.PANEL_SUBJECTS)));
+        checkBoxes_groups.setBorder(BorderFactory.createTitledBorder(getString(Strings.PANEL_GROUPS)));
         checkBoxes_groups.setOnItemCheckedListener((title, checked) -> {
             if (!checked)
                 preferenceManager.addFilterGroup(title);
