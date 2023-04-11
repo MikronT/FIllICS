@@ -199,9 +199,7 @@ public class MainForm extends Form {
             button_request.setEnabled(false);
 
             requestSchedule();
-            presetFilters();
-            filterByTypes();
-            filterBySubjects();
+            updateFilters(3);
 
             button_request.setEnabled(true);
             button_export.setEnabled(true);
@@ -290,9 +288,7 @@ public class MainForm extends Form {
             Log.i("MainForm::createFileImportPanel:   - selectedFile = " + selectedFile);
 
             importScheduleFrom(selectedFile);
-            presetFilters();
-            filterByTypes();
-            filterBySubjects();
+            updateFilters(3);
 
             button_export.setEnabled(true);
         });
@@ -317,8 +313,7 @@ public class MainForm extends Form {
         checkBoxes_types = new JCheckBoxList(true);
         checkBoxes_types.setBorder(BorderFactory.createTitledBorder(getString(Strings.PANEL_TYPES)));
         checkBoxes_types.setOnItemCheckedListener((title, checked) -> {
-            filterByTypes();
-            filterBySubjects();
+            updateFilters(2);
 
             if (!checked)
                 preferenceManager.addFilterType(title);
@@ -331,7 +326,7 @@ public class MainForm extends Form {
         checkBoxes_subjects = new JCheckBoxList(true);
         checkBoxes_subjects.setBorder(BorderFactory.createTitledBorder(getString(Strings.PANEL_SUBJECTS)));
         checkBoxes_subjects.setOnItemCheckedListener((title, checked) -> {
-            filterBySubjects();
+            updateFilters(1);
 
             if (!checked)
                 preferenceManager.addFilterSubject(title);
@@ -468,45 +463,45 @@ public class MainForm extends Form {
                 .parse();
     }
 
-    private void presetFilters() {
-        var sessions = getSessions();
-        checkBoxes_types.replaceWith(getSessionData(sessions, Session::getTypeOrUnknown));
-        checkBoxes_subjects.replaceWith(getSessionData(sessions, Session::getSubject));
-        checkBoxes_groups.replaceWith(getSessionData(sessions, Session::getGroupOrUnknown));
+    private void updateFilters(int amount) {
+        switch (amount) {
+            case 3:
+                //Update types, subjects, and groups filters
+                var sessions3 = getSessions();
+                var newTypes = getSessionData(sessions3, Session::getTypeOrUnknown);
 
-        preferenceManager.getFilterTypes().forEach(s -> checkBoxes_types.setChecked(s, false));
-        preferenceManager.getFilterSubjects().forEach(s -> checkBoxes_subjects.setChecked(s, false));
-        preferenceManager.getFilterGroups().forEach(s -> checkBoxes_groups.setChecked(s, false));
-    }
+                checkBoxes_types.replaceWith(newTypes);
+                preferenceManager.getFilterTypes().forEach(s -> checkBoxes_types.setChecked(s, false));
 
-    private void filterByTypes() {
-        var newSessions = getSessions().stream()
-                .filter(session -> checkBoxes_types.isChecked(session.getTypeOrUnknown()))
-                .toList();
-        var newSubjects = getSessionData(newSessions, Session::getSubject);
-        var newGroups = getSessionData(newSessions, Session::getGroupOrUnknown);
+            case 2:
+                //Update only subjects and groups filters
+                var sessions2 = getSessions().stream()
+                        .filter(session -> checkBoxes_types.isChecked(session.getTypeOrUnknown()))
+                        .toList();
+                var newSubjects = getSessionData(sessions2, Session::getSubject);
 
-        checkBoxes_subjects.replaceWith(newSubjects);
-        checkBoxes_groups.replaceWith(newGroups);
-    }
+                checkBoxes_subjects.replaceWith(newSubjects);
+                preferenceManager.getFilterSubjects().forEach(s -> checkBoxes_subjects.setChecked(s, false));
 
-    private void filterBySubjects() {
-        var newSessions = getSessions().stream()
-                .filter(session -> checkBoxes_types.isChecked(session.getTypeOrUnknown()))
-                .filter(session -> {
-                    var subject = session.getSubject();
-                    if (Utils.isEmpty(subject)) {
-                        Log.i("MainForm::filterBySubjects: Predicate-> subject is empty");
-                        Log.i("MainForm::filterBySubjects: Predicate->   - session = " + session);
-                        Log.i("MainForm::filterBySubjects: Predicate->   - subject = " + subject);
-                    }
+            case 1:
+                //Update only groups filters
+                var sessions1 = getSessions().stream()
+                        .filter(session -> checkBoxes_types.isChecked(session.getTypeOrUnknown()))
+                        .filter(session -> {
+                            var subject = session.getSubject();
+                            if (Utils.isEmpty(subject)) {
+                                Log.i("MainForm::updateFilters: Predicate-> subject is empty");
+                                Log.i("MainForm::updateFilters: Predicate->   - session = " + session);
+                                Log.i("MainForm::updateFilters: Predicate->   - subject = " + subject);
+                            }
+                            return checkBoxes_subjects.isChecked(subject);
+                        })
+                        .toList();
+                var newGroups = getSessionData(sessions1, Session::getGroupOrUnknown);
 
-                    return checkBoxes_subjects.isChecked(subject);
-                })
-                .toList();
-        var newGroups = getSessionData(newSessions, Session::getGroupOrUnknown);
-
-        checkBoxes_groups.replaceWith(newGroups);
+                checkBoxes_groups.replaceWith(newGroups);
+                preferenceManager.getFilterGroups().forEach(s -> checkBoxes_groups.setChecked(s, false));
+        }
     }
 
     private void exportSchedule() {
