@@ -4,22 +4,23 @@
 
 A Java program that fetches IFNTUOG schedule and converts it into an ICS file (iCal file format)
 
-Version: **2.2.3**
+Version: **2.3**
 
 ## Dependencies
 
-- Java 18.0.2.1
+- Java 20\
+  Language version
 
-- Jsoup 1.15.3\
-    HTML format parser\
-    Maven: `org.jsoup:jsoup`
+- Jsoup 1.15.4\
+  HTML format parser\
+  Maven: `org.jsoup:jsoup`
 
-- JSON 20220924\
-    JSON format parser\
-    Maven: `org.json:json`
+- JSON 20230227\
+  JSON format parser\
+  Maven: `org.json:json`
 
 - JComboBox AutoCompletion by [Thomas Bierhance](mailto:thomas@orbital-computer.de)\
-    [Source](http://www.orbital-computer.de/JComboBox) | [Download](http://www.orbital-computer.de/JComboBox/source/AutoCompletion.java)
+  [Source](http://www.orbital-computer.de/JComboBox) | [Download](http://www.orbital-computer.de/JComboBox/source/AutoCompletion.java)
 
 ---
 
@@ -27,16 +28,22 @@ Version: **2.2.3**
 
 To use the program just open it
 
-1. Set your teacher or group and time limits
-2. Request schedule from the server
-3. Filter results
-4. Export schedule
+1. Adjust time period you want your schedule for
+2. Get the schedule
+    - Set your teacher or group and request the schedule from the server
+    - Set your group name and import from a previously downloaded webpage
+3. Filter results by
+    1. Session types
+    2. Subjects
+    3. Groups
+4. Export your schedule
 5. Import a generated ICS file into your calendar app
 
-You can also set up some exclude patterns adding `map_subjects.txt` and `map_types.txt` near the JAR. Use the following syntax
+You can also set up some rename patterns by adding `map_subjects.txt` and `map_types.txt` near the JAR. Use the
+following syntax
 
 ```txt
-Text to replace;what to replace it with
+Original subject name;New subject name
 ```
 
 Here are some examples
@@ -44,8 +51,8 @@ Here are some examples
 - `map_subjects.txt`
 
     ```txt
-    Паралельне програмування;Intimate Dev
     Іноземна мова (анг) (за професійним спрямуванням);English
+    Німецька мова (за професійним спрямуванням);Deutsch
     ```
 
 - `map_types.txt`
