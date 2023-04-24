@@ -36,6 +36,7 @@ public class MainForm extends Form {
     private JButton button_request, button_export;
     private JCheckBoxList checkBoxes_types, checkBoxes_subjects, checkBoxes_groups;
     private JComboBox<String> combo_group, combo_teacher;
+    private JDateSpinner spinner_from, spinner_to;
     private JProgressBar progressBar;
     private JTextField input_group;
     private List<Day> schedule;
@@ -168,6 +169,8 @@ public class MainForm extends Form {
             updateFilters(3);
 
             button_request.setEnabled(true);
+            spinner_from.setEnabled(true);
+            spinner_to.setEnabled(true);
             button_export.setEnabled(true);
         }).start());
 
@@ -261,6 +264,8 @@ public class MainForm extends Form {
             importScheduleFrom(selectedFile);
             updateFilters(3);
 
+            spinner_from.setEnabled(true);
+            spinner_to.setEnabled(true);
             button_export.setEnabled(true);
         });
 
@@ -295,7 +300,8 @@ public class MainForm extends Form {
                 Schedule.DATE_TO::compareTo,
                 model_from.getValue().plusDays(6)); //Default period of a week
 
-        var spinner_from = new JDateSpinner(model_from);
+        spinner_from = new JDateSpinner(model_from);
+        spinner_from.setEnabled(false);
         spinner_from.addChangeListener(e -> {
             LocalDate
                     date1 = model_from.getValue(),
@@ -309,7 +315,8 @@ public class MainForm extends Form {
             updateFilters(3);
         });
 
-        var spinner_to = new JDateSpinner(model_to);
+        spinner_to = new JDateSpinner(model_to);
+        spinner_to.setEnabled(false);
         spinner_to.addChangeListener(e -> {
             LocalDate
                     date1 = model_from.getValue(),
