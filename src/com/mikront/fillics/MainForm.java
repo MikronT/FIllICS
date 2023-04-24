@@ -57,10 +57,9 @@ public class MainForm extends Form {
     @Override
     protected void onCreate() {
         var panel_root = getRootPanel();
-
-        var panel_period = createPeriodAdjustPanel();
         var panel_request = createScheduleRequestPanel();
         var panel_import = createFileImportPanel();
+        var panel_period = createPeriodAdjustPanel();
         var panel_types = createTypesFilterPanel();
         var panel_subjects = createSubjectsFilterPanel();
         var panel_groups = createGroupsFilterPanel();
@@ -72,39 +71,61 @@ public class MainForm extends Form {
 
         var layout = initGroupLayoutFor(panel_root);
         layout.setHorizontalGroup(layout.createSequentialGroup()
-                //Request schedule and filter types
-                .addGroup(layout.createParallelGroup()
-                        .addComponent(panel_period)
-                        .addComponent(panel_request)
-                        .addComponent(panel_import)
-                        .addComponent(panel_types)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                        .addComponent(panel_request) //Request schedule
+                        .addComponent(panel_import) //Import schedule
                 )
                 .addGap(Dimens.GAP_BIG)
-                //Filter subjects
-                .addComponent(panel_subjects, Dimens.SUBJECTS_WIDTH, Dimens.SUBJECTS_WIDTH, DEFAULT_SIZE)
-                .addGap(Dimens.GAP_BIG)
-                //Filter groups and export button
                 .addGroup(layout.createParallelGroup()
-                        .addComponent(panel_groups, Dimens.GROUPS_WIDTH, Dimens.GROUPS_WIDTH, DEFAULT_SIZE)
-                        .addComponent(button_export, GroupLayout.Alignment.TRAILING)
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(panel_period, //Filter period
+                                        Dimens.PERIOD_WIDTH,
+                                        Dimens.PERIOD_WIDTH,
+                                        Dimens.PERIOD_WIDTH)
+                                .addComponent(panel_types) //Filter types
+                        )
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(panel_subjects, //Filter subjects
+                                        Dimens.SUBJECTS_WIDTH,
+                                        Dimens.SUBJECTS_WIDTH,
+                                        DEFAULT_SIZE)
+                                .addGroup(layout.createParallelGroup()
+                                        .addComponent(panel_groups, //Filter groups
+                                                Dimens.GROUPS_WIDTH,
+                                                Dimens.GROUPS_WIDTH,
+                                                DEFAULT_SIZE)
+                                        .addGroup(GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                                .addComponent(button_export) //Export button
+                                        )
+                                )
+                        )
                 )
         );
         layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                //Request schedule and filter types
-                .addGroup(layout.createSequentialGroup()
-                        .addComponent(panel_period)
-                        .addGap(Dimens.GAP_MEDIUM)
-                        .addComponent(panel_request)
-                        .addComponent(panel_import)
-                        .addGap(Dimens.GAP_BIG)
-                        .addComponent(panel_types, Dimens.TYPES_HEIGHT, Dimens.TYPES_HEIGHT, DEFAULT_SIZE)
+                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                        .addGroup(layout.createSequentialGroup()
+                                .addComponent(panel_request)
+                                .addGap(Dimens.GAP_MEDIUM)
+                                .addComponent(panel_import)
+                        )
                 )
-                //Filter subjects
-                .addComponent(panel_subjects)
-                //Filter groups and export button
                 .addGroup(layout.createSequentialGroup()
-                        .addComponent(panel_groups, Dimens.GROUPS_HEIGHT, Dimens.GROUPS_HEIGHT, DEFAULT_SIZE)
-                        .addComponent(button_export)
+                        .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING, false)
+                                .addComponent(panel_period)
+                                .addComponent(panel_types)
+                        )
+                        .addGroup(layout.createParallelGroup()
+                                .addComponent(panel_subjects,
+                                        Dimens.SUBJECTS_HEIGHT,
+                                        Dimens.SUBJECTS_HEIGHT,
+                                        DEFAULT_SIZE)
+                                .addGroup(layout.createSequentialGroup()
+                                        .addComponent(panel_groups)
+                                        .addGroup(layout.createParallelGroup()
+                                                .addComponent(button_export)
+                                        )
+                                )
+                        )
                 )
         );
     }
@@ -143,20 +164,19 @@ public class MainForm extends Form {
 
         var layout = initGroupLayoutFor(out);
         layout.setHorizontalGroup(layout.createSequentialGroup()
-                .addGroup(layout.createParallelGroup()
-                        .addComponent(label_from)
-                        .addComponent(spinner_from))
-                .addGroup(layout.createParallelGroup()
-                        .addComponent(label_to)
-                        .addComponent(spinner_to))
+                .addComponent(label_from)
+                .addGap(Dimens.GAP_SMALL)
+                .addComponent(spinner_from)
+                .addGap(Dimens.GAP_MEDIUM)
+                .addComponent(label_to)
+                .addGap(Dimens.GAP_SMALL)
+                .addComponent(spinner_to)
         );
-        layout.setVerticalGroup(layout.createParallelGroup()
-                .addGroup(layout.createSequentialGroup()
-                        .addComponent(label_from)
-                        .addComponent(spinner_from))
-                .addGroup(layout.createSequentialGroup()
-                        .addComponent(label_to)
-                        .addComponent(spinner_to))
+        layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                .addComponent(label_from)
+                .addComponent(spinner_from)
+                .addComponent(label_to)
+                .addComponent(spinner_to)
         );
 
         return out;
@@ -209,7 +229,10 @@ public class MainForm extends Form {
         var layout = initGroupLayoutFor(out);
         layout.setHorizontalGroup(layout.createParallelGroup()
                 .addComponent(label_teacher)
-                .addComponent(combo_teacher, Dimens.TEACHER_WIDTH, Dimens.TEACHER_WIDTH, DEFAULT_SIZE)
+                .addComponent(combo_teacher,
+                        Dimens.TEACHER_WIDTH,
+                        Dimens.TEACHER_WIDTH,
+                        DEFAULT_SIZE)
                 .addComponent(label_group)
                 .addComponent(combo_group)
                 .addGroup(layout.createSequentialGroup()
@@ -311,6 +334,7 @@ public class MainForm extends Form {
 
     private JCheckBoxList createTypesFilterPanel() {
         checkBoxes_types = new JCheckBoxList(true);
+        checkBoxes_types.setOrientation(JCheckBoxList.ORIENTATION_HORIZONTAL);
         checkBoxes_types.setBorder(BorderFactory.createTitledBorder(getString(Strings.PANEL_TYPES)));
         checkBoxes_types.setOnItemCheckedListener((title, checked) -> {
             updateFilters(2);

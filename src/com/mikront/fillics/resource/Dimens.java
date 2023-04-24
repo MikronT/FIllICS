@@ -8,9 +8,9 @@ public interface Dimens {
     int GAP_BIG = GAP_SMALL * 3;
 
 
-    int TEACHER_WIDTH = 240;
-    int SUBJECTS_WIDTH = 420;
+    int TEACHER_WIDTH = 220;
+    int PERIOD_WIDTH = 340;
+    int SUBJECTS_WIDTH = 400;
+    int SUBJECTS_HEIGHT = 400;
     int GROUPS_WIDTH = 240;
-    int GROUPS_HEIGHT = 160;
-    int TYPES_HEIGHT = 120;
 }
