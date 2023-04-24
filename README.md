@@ -4,7 +4,7 @@
 
 A Java program that fetches IFNTUOG schedule and converts it into an ICS file (iCal file format)
 
-Version: **2.3**
+Version: **2.4**
 
 ## Dependencies
 
@@ -28,16 +28,16 @@ Version: **2.3**
 
 To use the program just open it
 
-1. Adjust time period you want your schedule for
-2. Get the schedule
+1. Get the schedule
     - Set your teacher or group and request the schedule from the server
     - Set your group name and import from a previously downloaded webpage
-3. Filter results by
-    1. Session types
-    2. Subjects
-    3. Groups
-4. Export your schedule
-5. Import a generated ICS file into your calendar app
+2. Filter results by
+    1. Time period
+    2. Session types
+    3. Subjects
+    4. Groups
+3. Export your schedule
+4. Import a generated ICS file into your calendar app
 
 You can also set up some rename patterns by adding `map_subjects.txt` and `map_types.txt` near the JAR. Use the
 following syntax
