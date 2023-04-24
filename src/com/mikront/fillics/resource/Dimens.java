@@ -10,7 +10,7 @@ public interface Dimens {
 
     int TEACHER_WIDTH = 220;
     int PERIOD_WIDTH = 340;
-    int SUBJECTS_WIDTH = 400;
+    int SUBJECTS_WIDTH = 410;
     int SUBJECTS_HEIGHT = 400;
     int GROUPS_WIDTH = 240;
 }
