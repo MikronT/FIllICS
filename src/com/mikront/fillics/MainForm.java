@@ -57,7 +57,7 @@ public class MainForm extends Form {
         var panel_root = getRootPanel();
         var panel_request = createScheduleRequestPanel();
         var panel_import = createFileImportPanel();
-        var panel_period = createPeriodAdjustPanel();
+        var panel_period = createPeriodFilterPanel();
         var panel_types = createTypesFilterPanel();
         var panel_subjects = createSubjectsFilterPanel();
         var panel_groups = createGroupsFilterPanel();
@@ -126,60 +126,6 @@ public class MainForm extends Form {
                         )
                 )
         );
-    }
-
-    private JPanel createPeriodAdjustPanel() {
-        var out = new JPanel();
-        out.setBorder(BorderFactory.createTitledBorder(getString(Strings.PANEL_PERIOD)));
-
-        var label_from = new JLabel(getString(Strings.LABEL_DATE_FROM));
-        var label_to = new JLabel(getString(Strings.LABEL_DATE_TO));
-
-        model_from = new XSpinnerDateModel(
-                Schedule.DATE_FROM::compareTo,
-                Schedule.DATE_TO::compareTo);
-        model_to = new XSpinnerDateModel(
-                Schedule.DATE_FROM::compareTo,
-                Schedule.DATE_TO::compareTo,
-                model_from.getValue().plusDays(6)); //Default period of a week
-
-        var spinner_from = new JDateSpinner(model_from);
-        spinner_from.addChangeListener(e -> {
-            LocalDate
-                    date1 = model_from.getValue(),
-                    date2 = model_to.getValue();
-            if (date1.isAfter(date2))
-                model_to.setValue(date1); //Move 2nd bound forward
-        });
-
-        var spinner_to = new JDateSpinner(model_to);
-        spinner_to.addChangeListener(e -> {
-            LocalDate
-                    date1 = model_from.getValue(),
-                    date2 = model_to.getValue();
-            if (date1.isAfter(date2))
-                model_from.setValue(date2); //Move 1st bound back
-        });
-
-
-        var layout = initGroupLayoutFor(out);
-        layout.setHorizontalGroup(layout.createSequentialGroup()
-                .addComponent(label_from)
-                .addGap(Dimens.GAP_SMALL)
-                .addComponent(spinner_from)
-                .addGap(Dimens.GAP_MEDIUM)
-                .addComponent(label_to)
-                .addGap(Dimens.GAP_SMALL)
-                .addComponent(spinner_to)
-        );
-        layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                .addComponent(label_from)
-                .addComponent(spinner_from)
-                .addComponent(label_to)
-                .addComponent(spinner_to)
-        );
-
-        return out;
     }
 
     private JPanel createScheduleRequestPanel() {
@@ -327,6 +273,70 @@ public class MainForm extends Form {
                 .addComponent(label_group)
                 .addComponent(input_group)
                 .addComponent(button_open)
+        );
+
+        return out;
+    }
+
+    private JPanel createPeriodFilterPanel() {
+        var out = new JPanel();
+        out.setBorder(BorderFactory.createTitledBorder(getString(Strings.PANEL_PERIOD)));
+
+        var label_from = new JLabel(getString(Strings.LABEL_DATE_FROM));
+        var label_to = new JLabel(getString(Strings.LABEL_DATE_TO));
+
+        model_from = new XSpinnerDateModel(
+                Schedule.DATE_FROM::compareTo,
+                Schedule.DATE_TO::compareTo);
+        model_to = new XSpinnerDateModel(
+                Schedule.DATE_FROM::compareTo,
+                Schedule.DATE_TO::compareTo,
+                model_from.getValue().plusDays(6)); //Default period of a week
+
+        var spinner_from = new JDateSpinner(model_from);
+        spinner_from.addChangeListener(e -> {
+            LocalDate
+                    date1 = model_from.getValue(),
+                    date2 = model_to.getValue();
+
+            if (date1.isAfter(date2)) {
+                model_to.setValue(date1); //Move 2nd bound forward
+                return;
+            }
+
+            updateFilters(3);
+        });
+
+        var spinner_to = new JDateSpinner(model_to);
+        spinner_to.addChangeListener(e -> {
+            LocalDate
+                    date1 = model_from.getValue(),
+                    date2 = model_to.getValue();
+
+            if (date1.isAfter(date2)) {
+                model_from.setValue(date2); //Move 1st bound back
+                return;
+            }
+
+            updateFilters(3);
+        });
+
+
+        var layout = initGroupLayoutFor(out);
+        layout.setHorizontalGroup(layout.createSequentialGroup()
+                .addComponent(label_from)
+                .addGap(Dimens.GAP_SMALL)
+                .addComponent(spinner_from)
+                .addGap(Dimens.GAP_MEDIUM)
+                .addComponent(label_to)
+                .addGap(Dimens.GAP_SMALL)
+                .addComponent(spinner_to)
+        );
+        layout.setVerticalGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                .addComponent(label_from)
+                .addComponent(spinner_from)
+                .addComponent(label_to)
+                .addComponent(spinner_to)
         );
 
         return out;
@@ -576,10 +586,18 @@ public class MainForm extends Form {
 
     private List<Session> getSessions() {
         List<Session> out = new ArrayList<>();
-        for (Day day : schedule)
+        var start = model_from.getValue();
+        var end = model_to.getValue();
+
+        for (Day day : schedule) {
+            var date = day.getDate();
+            if (date.isBefore(start) || date.isAfter(end))
+                continue;
+
             for (Cell cell : day)
                 for (Session session : cell)
                     out.add(session);
+        }
         return out;
     }
 
