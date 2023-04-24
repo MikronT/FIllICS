@@ -449,17 +449,14 @@ public class MainForm extends Form {
 
         setProgress(60, getString(Strings.STEP_GETTING_SCHEDULE));
 
-        Document doc = Schedule.getSchedule(
-                teacher,
-                group,
-                model_from.getValue(),
-                model_to.getValue());
+        Document doc = Schedule.getSchedule(teacher, group);
 
         setProgress(100, getString(Strings.STEP_COMPILING_DATA));
 
         schedule = Parser.init(this)
                 .setDocument(doc)
                 .setDefaultGroup(group)
+                .setPeriod(model_from.getValue(), model_to.getValue())
                 .parse();
 
         resetProgress();

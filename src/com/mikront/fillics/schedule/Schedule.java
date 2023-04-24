@@ -67,18 +67,13 @@ public class Schedule {
     }
 
     @Nullable
-    public static Document getSchedule(String teacher, String group, LocalDate from, LocalDate to) {
+    public static Document getSchedule(String teacher, String group) {
+        var connection = Jsoup.connect(URL + "?n=700")
+                .data("sdate", DATE_FROM.format(FORMATTER))
+                .data("edate", DATE_TO.format(FORMATTER));
 
-        var connection = Jsoup.connect(URL + "?n=700");
-
-        if (Utils.notEmpty(teacher))
-            connection = connection.data("teacher", teacher);
-        if (Utils.notEmpty(group))
-            connection = connection.data("group", group);
-        if (from != null)
-            connection = connection.data("sdate", from.format(FORMATTER));
-        if (to != null)
-            connection = connection.data("edate", to.format(FORMATTER));
+        if (Utils.notEmpty(teacher)) connection = connection.data("teacher", teacher);
+        if (Utils.notEmpty(group)) connection = connection.data("group", group);
 
         try {
             return connection
