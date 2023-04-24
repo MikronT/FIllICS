@@ -7,7 +7,6 @@ import com.mikront.fillics.schedule.*;
 import com.mikront.gui.*;
 import com.mikront.util.Concat;
 import com.mikront.util.Utils;
-import com.mikront.util.debug.Build;
 import com.mikront.util.debug.Log;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -47,7 +46,6 @@ public class MainForm extends Form {
 
 
     public static void main(String[] args) {
-        Build.debug(false);
         Log.ging(true);
         Log.level(Log.LEVEL_WARN);
 
