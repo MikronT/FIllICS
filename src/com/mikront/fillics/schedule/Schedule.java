@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
+import java.io.File;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -15,6 +16,7 @@ import java.util.List;
 
 
 public class Schedule {
+    public static final File CACHE_DIR = new File("cache");
     public static final LocalDate DATE_TO = LocalDate.now().withMonth(8).withDayOfMonth(1);
     public static final LocalDate DATE_FROM = DATE_TO.minusYears(1);
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");

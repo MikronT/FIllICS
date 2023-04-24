@@ -211,8 +211,10 @@ public class MainForm extends Form {
         var button_open = new JButton(getString(Strings.BUTTON_OPEN));
         button_open.addActionListener(e -> {
             JFileChooser picker = new JFileChooser();
-            //Set current executable path
-            picker.setCurrentDirectory(FileSystems.getDefault().getPath(".").toFile());
+            if (Schedule.CACHE_DIR.exists()) //Use cache dir if possible
+                picker.setCurrentDirectory(Schedule.CACHE_DIR);
+            else //Set current executable path
+                picker.setCurrentDirectory(FileSystems.getDefault().getPath(".").toFile());
 
             //Filter file system objects
             picker.setFileSelectionMode(JFileChooser.FILES_ONLY);
