@@ -32,6 +32,7 @@ public class Parser {
     private static final String
             PREFIX_SUBGROUP2 = ".*група.*",
             SUFFIX_SUBGROUP2 = "\\.(\\d).+ \\(.*\\)";
+    private static final String CACHE_INDENT = " ".repeat(13);
 
     private Document document;
     private Pattern regex_subgroup2;
@@ -119,6 +120,10 @@ public class Parser {
                 s = s.replace("старший викладач", "(старший викладач)");
             if (s.contains("зав. кафедрою"))
                 s = s.replace("зав. кафедрою", "(завідувач кафедрою)");
+
+            //Fix cache indentation
+            if (s.contains(CACHE_INDENT))
+                s = s.substring(CACHE_INDENT.length());
 
             //Get rid of asterisks
             int i;
