@@ -466,7 +466,6 @@ public class MainForm extends Form {
         schedule = Parser.init(this)
                 .setDocument(doc)
                 .setDefaultGroup(group)
-                .setPeriod(model_from.getValue(), model_to.getValue())
                 .parse();
 
         resetProgress();
@@ -490,7 +489,6 @@ public class MainForm extends Form {
         schedule = Parser.init(this)
                 .setDocument(doc)
                 .setDefaultGroup(group)
-                .setPeriod(model_from.getValue(), model_to.getValue())
                 .parse();
     }
 
@@ -554,11 +552,15 @@ public class MainForm extends Form {
                     var type_final = map_types.getOrDefault(type.toLowerCase(), type);
                     var subject_final = map_subjects.getOrDefault(subject.toLowerCase(), subject);
 
-                    data.addEvent(session.toEvent(day, cell, session1 -> Concat.me()
-                            .word(subject_final)
-                            .when(Utils.notEmpty(type_final))
-                            .words(" (", type_final, ")")
-                            .enate(), Session::getDescription));
+                    data.addEvent(session.toEvent(
+                            day,
+                            cell,
+                            session1 -> Concat.me()
+                                    .word(subject_final)
+                                    .when(Utils.notEmpty(type_final))
+                                    .words(" (", type_final, ")")
+                                    .enate(),
+                            Session::getDescription));
                 }
 
         try (var stream = new FileOutputStream(FILE_ICS)) {
