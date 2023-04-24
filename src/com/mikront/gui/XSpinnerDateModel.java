@@ -42,34 +42,39 @@ public class XSpinnerDateModel extends AbstractSpinnerModel implements Serializa
 
     @Override
     public void setValue(Object value) {
-        if (!(value instanceof LocalDate)) {
-            throw new IllegalArgumentException("LocalDate instance expected");
-        }
-        if (!value.equals(this.value)) {
-            this.value = (LocalDate) value;
-            fireStateChanged();
-        }
+        if (value instanceof LocalDate v) {
+            if (!v.equals(this.value)) {
+                this.value = v;
+                fireStateChanged();
+            }
+        } else throw new IllegalArgumentException("LocalDate instance expected");
     }
 
 
     @Override
-    public LocalDate getValue() {
-        return value;
-    }
+    public LocalDate getValue() {return value;}
 
     @Override
-    public Object getNextValue() {
-        LocalDate next = value.plusDays(1);
-        if (end == null)
-            return next;
-        return end.compareTo(next) >= 0 ? next : null;
-    }
-
-    @Override
-    public Object getPreviousValue() {
+    public LocalDate getPreviousValue() {
         LocalDate prev = value.minusDays(1);
-        if (start == null)
+        if (start == null) //No limits
             return prev;
-        return start.compareTo(prev) >= 0 ? prev : null;
+
+        if (start.compareTo(prev) > 0)
+            return null; //Prevent going out of borders
+
+        return prev;
+    }
+
+    @Override
+    public LocalDate getNextValue() {
+        LocalDate next = value.plusDays(1);
+        if (end == null) //No limits
+            return next;
+
+        if (end.compareTo(next) < 0)
+            return null; //Prevent going out of borders
+
+        return next;
     }
 }

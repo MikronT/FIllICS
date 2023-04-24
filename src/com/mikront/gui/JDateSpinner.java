@@ -13,9 +13,12 @@ public class JDateSpinner extends JSpinner {
             if (!isEnabled())
                 return;
 
-            model.setValue(event.getWheelRotation() < 0 ?
+            var newDate = event.getWheelRotation() < 0 ?
                     model.getNextValue() :
-                    model.getPreviousValue());
+                    model.getPreviousValue();
+
+            if (newDate != null)
+                model.setValue(newDate);
         });
 
         //Fix background color

@@ -135,18 +135,21 @@ public class MainForm extends Form {
         var label_from = new JLabel(getString(Strings.LABEL_DATE_FROM));
         var label_to = new JLabel(getString(Strings.LABEL_DATE_TO));
 
-        model_from = new XSpinnerDateModel();
-        model_to = new XSpinnerDateModel();
-        model_to.setValue(model_to.getValue().plusDays(6));
+        model_from = new XSpinnerDateModel(
+                Schedule.DATE_FROM::compareTo,
+                Schedule.DATE_TO::compareTo);
+        model_to = new XSpinnerDateModel(
+                Schedule.DATE_FROM::compareTo,
+                Schedule.DATE_TO::compareTo,
+                model_from.getValue().plusDays(6)); //Default period of a week
 
         var spinner_from = new JDateSpinner(model_from);
         spinner_from.addChangeListener(e -> {
             LocalDate
                     date1 = model_from.getValue(),
                     date2 = model_to.getValue();
-            //Reset if date out of bounds
             if (date1.isAfter(date2))
-                model_to.setValue(date1);
+                model_to.setValue(date1); //Move 2nd bound forward
         });
 
         var spinner_to = new JDateSpinner(model_to);
@@ -154,9 +157,8 @@ public class MainForm extends Form {
             LocalDate
                     date1 = model_from.getValue(),
                     date2 = model_to.getValue();
-            //Reset if date out of bounds
             if (date1.isAfter(date2))
-                model_from.setValue(date2);
+                model_from.setValue(date2); //Move 1st bound back
         });
 
 
