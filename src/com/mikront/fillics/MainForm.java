@@ -547,7 +547,14 @@ public class MainForm extends Form {
         button_export.setEnabled(false);
 
         CalendarData data = new CalendarData();
-        for (Day day : schedule)
+        var start = model_from.getValue();
+        var end = model_to.getValue();
+
+        for (Day day : schedule) {
+            var date = day.getDate();
+            if (date.isBefore(start) || date.isAfter(end))
+                continue;
+
             for (Cell cell : day)
                 for (Session session : cell) {
                     if (!checkBoxes_types.isChecked(session.getTypeOrUnknown())) continue;
@@ -571,6 +578,7 @@ public class MainForm extends Form {
                                     .enate(),
                             Session::getDescription));
                 }
+        }
 
         try (var stream = new FileOutputStream(FILE_ICS)) {
             stream.write(data.compile().getBytes(StandardCharsets.UTF_8));
