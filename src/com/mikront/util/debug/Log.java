@@ -44,7 +44,10 @@ public class Log {
         if (!LOGGING || level < LEVEL)
             return;
 
-        System.out.printf(msg.toString() + System.lineSeparator(), args);
+        String text = msg.toString() + System.lineSeparator();
+        if (args.length == 0)
+            System.out.print(text);
+        else System.out.printf(text, args);
     }
 
 
