@@ -21,8 +21,8 @@ import java.util.List;
 
 public class Schedule {
     public static final File CACHE_DIR = new File("cache");
-    public static final LocalDate DATE_TO = LocalDate.now().withMonth(8).withDayOfMonth(1);
-    public static final LocalDate DATE_FROM = DATE_TO.minusYears(1);
+    public static final LocalDate DATE_FROM = LocalDate.now().withMonth(8).withDayOfMonth(1);
+    public static final LocalDate DATE_TO = DATE_FROM.plusYears(1);
     private static final Charset CHARSET = Charset.forName("windows-1251");
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final String URL = "https://dekanat.nung.edu.ua/cgi-bin/timetable.cgi";
