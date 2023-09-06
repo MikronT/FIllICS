@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
 public class Parser {
     public static final Pattern REGEX_NEWLINE = Pattern.compile("[\r\n]+");
     private static final Pattern
-            REGEX_AUDITORY = Pattern.compile(".*(\\d+\\.\\d+)\\.ауд\\."),
+            REGEX_ROOM = Pattern.compile(".*(\\d+\\..+)\\.ауд\\."),
             REGEX_LINK = Pattern.compile(".*(http\\S+).*"),
             REGEX_TEACHER1 = Pattern.compile("^ +(\\S+ \\S+ \\S+).*"),
             REGEX_TEACHER2 = Pattern.compile("^ +(\\S+) (\\S+ \\S+ \\S+).*"),
@@ -164,8 +164,8 @@ public class Parser {
             if (trySearchingLink(current, s)) continue;
             if (trySearchingSubgroup(current, s)) continue;
             if (trySearchingStreamGroup(current, s)) continue;
-            if (trySearchingAuditory(current, s)) {
-                //If there's an auditory specified, try looking for a teacher
+            if (trySearchingRoom(current, s)) {
+                //If there's a room specified, try looking for a teacher
                 trySearchingTeacher(current, s); //Result doesn't really matter; the line is processed otherwise
                 continue;
             }
@@ -248,12 +248,12 @@ public class Parser {
         return false;
     }
 
-    private boolean trySearchingAuditory(@NotNull Session current, String s) {
-        //Get auditory
-        Matcher matcher = REGEX_AUDITORY.matcher(s);
+    private boolean trySearchingRoom(@NotNull Session current, String s) {
+        //Get room
+        Matcher matcher = REGEX_ROOM.matcher(s);
         if (matcher.matches()) {
-            Log.v("Parser::trySearchingAuditory: auditory = " + s);
-            current.setAuditory(matcher.replaceAll("$1"));
+            Log.v("Parser::trySearchingRoom: room = " + s);
+            current.setRoom(matcher.replaceAll("$1"));
             return true;
         }
         return false;

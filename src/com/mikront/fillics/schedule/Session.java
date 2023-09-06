@@ -13,7 +13,7 @@ import java.util.function.Function;
 
 
 public class Session {
-    private String subject, type, group, teacher, teacher_position, teacher2, auditory, link;
+    private String subject, type, group, teacher, teacher_position, teacher2, room, link;
     private final Context context;
 
 
@@ -46,8 +46,8 @@ public class Session {
         this.teacher2 = teacher2;
     }
 
-    public void setAuditory(String auditory) {
-        this.auditory = auditory;
+    public void setRoom(String room) {
+        this.room = room;
     }
 
     public void setLink(String link) {
@@ -78,8 +78,8 @@ public class Session {
                 .words(" (", teacher_position, ")")
                 .then()
 
-                .when(Utils.notEmpty(auditory))
-                .line("Аудиторія ").word(auditory)
+                .when(Utils.notEmpty(room))
+                .line("Аудиторія ").word(room)
                 .then()
 
                 .when(Utils.notEmpty(link))
