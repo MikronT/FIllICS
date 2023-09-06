@@ -8,20 +8,17 @@ import java.util.*;
 
 
 public class Cell implements Iterable<Session> {
-    public static final int
-            DURATION_DEFAULT_MINUTES = 80,
-            DURATION_FULL_HOURS = 12;
+    public static final int DURATION_DEFAULT_PAIR = 80;
+    private static final HashMap<Integer, LocalTime> TIMETABLE_DEFAULT = new HashMap<>(Map.of(
+            1, LocalTime.of(8, 0),
+            2, LocalTime.of(9, 30),
+            3, LocalTime.of(11, 0),
+            4, LocalTime.of(12, 50),
+            5, LocalTime.of(14, 20),
+            6, LocalTime.of(15, 50),
+            7, LocalTime.of(17, 20),
+            8, LocalTime.of(18, 50)));
     private static final String DELIM = " | ";
-    private static final HashMap<Integer, LocalTime> TIMETABLE = new HashMap<>(Map.of(
-            0, LocalTime.of(9, 0),
-            1, LocalTime.of(9, 0),
-            2, LocalTime.of(10, 30),
-            3, LocalTime.of(12, 0),
-            4, LocalTime.of(13, 40),
-            5, LocalTime.of(15, 10),
-            6, LocalTime.of(16, 40),
-            7, LocalTime.of(18, 10),
-            8, LocalTime.of(19, 40)));
 
     private final int number;
 
@@ -39,7 +36,7 @@ public class Cell implements Iterable<Session> {
 
 
     public LocalTime getTime() {
-        return TIMETABLE.get(number);
+        return TIMETABLE_DEFAULT.get(number);
     }
 
     public boolean isEmpty() {
@@ -59,7 +56,7 @@ public class Cell implements Iterable<Session> {
 
         return Concat.me()
                 .word(number).word(DELIM)
-                .word(time).word('-').word(time.plusMinutes(DURATION_DEFAULT_MINUTES))
+                .word(time).word('-').word(time.plusMinutes(DURATION_DEFAULT_PAIR))
                 .lines(sessions, item -> item.toString().indent(2))
                 .enate();
     }

@@ -121,7 +121,7 @@ public class Session {
         LocalDate date = day.getDate();
         LocalTime time = cell.getTime();
         LocalDateTime from = LocalDateTime.of(date, time);
-        LocalDateTime to = from.plusMinutes(Cell.DURATION_DEFAULT_MINUTES);
+        LocalDateTime to = from.plusMinutes(Cell.DURATION_DEFAULT_PAIR);
 
         return Event.begin()
                 .setTimeFrom(from)
