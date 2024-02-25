@@ -21,11 +21,26 @@ import java.util.List;
 
 public class Schedule {
     public static final File CACHE_DIR = new File("cache");
-    public static final LocalDate DATE_FROM = LocalDate.now().withMonth(8).withDayOfMonth(1);
-    public static final LocalDate DATE_TO = DATE_FROM.plusYears(1);
+    public static final LocalDate DATE_FROM;
+    public static final LocalDate DATE_TO;
     private static final Charset CHARSET = Charset.forName("windows-1251");
     private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("dd.MM.yyyy");
     private static final String URL = "https://dekanat.nung.edu.ua/cgi-bin/timetable.cgi";
+
+
+    static {
+        var now = LocalDate.now();
+
+        var from = now.withMonth(8).withDayOfMonth(1);
+        if (from.isAfter(now))
+            from = from.minusYears(1);
+
+        var to = from.plusYears(1);
+
+        DATE_FROM = from;
+        DATE_TO = to;
+        Log.i("Schedule::static: setting date range as " + from + " to " + to);
+    }
 
 
     public static List<String> getTeachers() {
