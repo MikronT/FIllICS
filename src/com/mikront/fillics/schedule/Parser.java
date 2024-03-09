@@ -68,7 +68,7 @@ public class Parser {
         prepare();
 
         Elements htmlDays = document.body()
-                .getElementsByClass("col-md-6");
+                .getElementsByClass("col-print-6");
 
         return parseDays(htmlDays);
     }
@@ -77,9 +77,6 @@ public class Parser {
         List<Day> days = new ArrayList<>();
 
         for (Element div : blocks) {
-            if (div.hasClass("col-xs-12"))
-                continue;
-
             String date = div.getElementsByTag("h4").get(0).text();
             Day day = new Day(date);
             days.add(day);
