@@ -4,23 +4,27 @@
 
 A Java program that fetches IFNTUOG schedule and converts it into an ICS file (iCal file format)
 
-Version: **2.4**
+Version: **2.4.1**
 
 ## Dependencies
 
-- Java 20\
+- Java 21\
   Language version
 
-- Jsoup 1.15.4\
+- Jsoup 1.17.2\
   HTML format parser\
   Maven: `org.jsoup:jsoup`
 
-- JSON 20230227\
+- JSON 20230303\
   JSON format parser\
   Maven: `org.json:json`
 
 - JComboBox AutoCompletion by [Thomas Bierhance](mailto:thomas@orbital-computer.de)\
   [Source](http://www.orbital-computer.de/JComboBox) | [Download](http://www.orbital-computer.de/JComboBox/source/AutoCompletion.java)
+
+Dev
+
+- JetBrains Annotations 24.1.0
 
 ---
 
