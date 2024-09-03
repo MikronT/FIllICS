@@ -98,6 +98,11 @@ public class Parser {
     private Cell parseCell(int number, Element block) {
         String wholeText = block.wholeText();
 
+        var blockChildren = block.getElementsByAttribute("href");
+        String link = "";
+        if (!blockChildren.isEmpty())
+            link = blockChildren.getFirst().attribute("href").getValue();
+
         //No info
         if (wholeText.isBlank())
             return null;
@@ -158,7 +163,10 @@ public class Parser {
             }
             assert current != null;
 
-            if (trySearchingLink(current, s)) continue;
+            if (trySearchingLink(current, s)) {
+                current.setLink(link);
+                continue;
+            }
             if (trySearchingSubgroup(current, s)) continue;
             if (trySearchingStreamGroup(current, s)) continue;
             if (trySearchingRoom(current, s)) {
@@ -213,7 +221,7 @@ public class Parser {
         //Get link
         Matcher matcher = REGEX_LINK.matcher(s);
         if (matcher.matches()) {
-            current.setLink(matcher.replaceAll("$1"));
+            //current.setLink(matcher.replaceAll("$1"));
             return true;
         }
         return false;
