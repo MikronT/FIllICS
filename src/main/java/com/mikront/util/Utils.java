@@ -12,7 +12,7 @@ public class Utils {
     private static final Logger log = LogManager.getLogger();
 
     private static final Locale HOME_LOCALE = Locale.forLanguageTag("uk");
-    public static final Collator COLLATOR = Collator.getInstance(HOME_LOCALE);
+    public static final Collator HOME_COLLATOR = Collator.getInstance(HOME_LOCALE);
 
 
     public static boolean isEmpty(String s) {

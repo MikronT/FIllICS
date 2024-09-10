@@ -1,6 +1,6 @@
 package com.mikront.gui;
 
-import com.mikront.fillics.resource.Dimens;
+import com.mikront.fillics.Dimens;
 import com.mikront.util.Utils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;

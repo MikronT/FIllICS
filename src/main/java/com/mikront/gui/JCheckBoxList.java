@@ -79,7 +79,7 @@ public class JCheckBoxList extends JScrollPane {
     }
 
     private void sort() {
-        boxes.sort((o1, o2) -> Utils.COLLATOR.compare(o1.getText(), o2.getText()));
+        boxes.sort((o1, o2) -> Utils.HOME_COLLATOR.compare(o1.getText(), o2.getText()));
     }
 
     @SuppressWarnings("unused")

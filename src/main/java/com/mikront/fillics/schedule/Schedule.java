@@ -65,7 +65,7 @@ public class Schedule {
                 .filter(s -> !s.contains("!")) //Get rid of fired teachers
                 .filter(s -> !s.contains("Вакансія")) //Get rid of vacancies
                 .map(s -> s.replace("*", "")) //Get rid of asterisks
-                .sorted(Utils.COLLATOR)
+                .sorted(Utils.HOME_COLLATOR)
                 .toList();
     }
 
@@ -85,7 +85,7 @@ public class Schedule {
                 .toList()
                 .stream()
                 .map(Object::toString)
-                .sorted(Utils.COLLATOR)
+                .sorted(Utils.HOME_COLLATOR)
                 .toList();
     }
 

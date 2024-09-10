@@ -1,4 +1,4 @@
-package com.mikront.fillics.resource;
+package com.mikront.fillics;
 
 public interface Dimens {
     int FORM_PADDING = 4;

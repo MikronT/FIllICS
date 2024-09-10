@@ -1,7 +1,6 @@
 package com.mikront.fillics;
 
 import com.mikront.fillics.ics.CalendarData;
-import com.mikront.fillics.resource.Dimens;
 import com.mikront.fillics.schedule.*;
 import com.mikront.gui.*;
 import com.mikront.util.Concat;
