@@ -1,6 +1,5 @@
 package com.mikront.fillics.schedule;
 
-import com.mikront.gui.Context;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Contract;
@@ -40,16 +39,13 @@ public class Parser {
     private Document document;
     private Pattern regex_subgroup2;
     private String defaultGroup = "Наркомани-алкоголіки";
-    private final Context context;
 
 
-    private Parser(Context context) {
-        this.context = context;
-    }
+    private Parser() {}
 
-    @Contract("_ -> new")
-    public static @NotNull Parser init(Context context) {
-        return new Parser(context);
+    @Contract(" -> new")
+    public static @NotNull Parser init() {
+        return new Parser();
     }
 
 
@@ -187,7 +183,7 @@ public class Parser {
         Matcher matcher = REGEX_TEACHERS_TITLE_TYPE.matcher(s);
         if (matcher.matches()) {
             log.trace("Matched teachers '{}'", s);
-            Session current = new Session(context);
+            var current = new Session();
             current.setSubject(matcher.replaceAll("$4"));
             current.setType(matcher.replaceAll("$5"));
             current.setTeacherPosition(matcher.replaceAll("$2"));
@@ -200,7 +196,7 @@ public class Parser {
         matcher = REGEX_TITLE_TYPE.matcher(s);
         if (matcher.matches()) {
             log.trace("Matched title-type '{}'", s);
-            Session current = new Session(context);
+            var current = new Session();
             current.setSubject(matcher.replaceAll("$1"));
             current.setType(matcher.replaceAll("$2"));
             return current;
@@ -210,7 +206,7 @@ public class Parser {
         matcher = REGEX_TITLE.matcher(s);
         if (matcher.matches()) {
             log.trace("Matched title '{}'", s);
-            Session current = new Session(context);
+            var current = new Session();
             current.setSubject(matcher.replaceAll("$1"));
             return current;
         }

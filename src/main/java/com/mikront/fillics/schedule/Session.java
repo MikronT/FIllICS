@@ -1,8 +1,6 @@
 package com.mikront.fillics.schedule;
 
 import com.mikront.fillics.ics.Event;
-import com.mikront.fillics.resource.Strings;
-import com.mikront.gui.Context;
 import com.mikront.util.Concat;
 import com.mikront.util.Utils;
 
@@ -14,12 +12,6 @@ import java.util.function.Function;
 
 public class Session {
     private String subject, type, group, teacher, teacher_position, teacher2, room, link;
-    private final Context context;
-
-
-    public Session(Context context) {
-        this.context = context;
-    }
 
 
     public void setSubject(String subject) {
@@ -95,16 +87,8 @@ public class Session {
         return Utils.isEmpty(type) ? "" : type;
     }
 
-    public String getTypeOrUnknown() {
-        return Utils.isEmpty(type) ? context.getString(Strings.UNKNOWN_TYPE) : type;
-    }
-
     public String getGroup() {
         return Utils.isEmpty(group) ? "" : group;
-    }
-
-    public String getGroupOrUnknown() {
-        return Utils.isEmpty(group) ? context.getString(Strings.UNKNOWN_GROUP) : group;
     }
 
     public boolean isOptional() {

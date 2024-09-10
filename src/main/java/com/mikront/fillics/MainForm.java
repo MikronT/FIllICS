@@ -2,7 +2,6 @@ package com.mikront.fillics;
 
 import com.mikront.fillics.ics.CalendarData;
 import com.mikront.fillics.resource.Dimens;
-import com.mikront.fillics.resource.Strings;
 import com.mikront.fillics.schedule.*;
 import com.mikront.gui.*;
 import com.mikront.util.Concat;
@@ -63,7 +62,7 @@ public class MainForm extends Form {
         var panel_subjects = createSubjectsFilterPanel();
         var panel_groups = createGroupsFilterPanel();
 
-        button_export = new JButton(getString(Strings.BUTTON_EXPORT));
+        button_export = new JButton(lang.getString("button_export"));
         button_export.setEnabled(false);
         button_export.addActionListener(_ -> new Thread(this::exportSchedule).start());
 
@@ -131,10 +130,10 @@ public class MainForm extends Form {
 
     private JPanel createScheduleRequestPanel() {
         var out = new JPanel();
-        out.setBorder(BorderFactory.createTitledBorder(getString(Strings.PANEL_REQUEST)));
+        out.setBorder(BorderFactory.createTitledBorder(lang.getString("panel_request")));
 
-        var label_teacher = new JLabel(getString(Strings.LABEL_TEACHER));
-        var label_group = new JLabel(getString(Strings.LABEL_GROUP));
+        var label_teacher = new JLabel(lang.getString("label_teacher"));
+        var label_group = new JLabel(lang.getString("label_group"));
 
         combo_teacher = new JAutoComboBox();
         combo_teacher.addItemListener(e -> {
@@ -161,7 +160,7 @@ public class MainForm extends Form {
         progressBar.setStringPainted(true);
         resetProgress();
 
-        button_request = new JButton(getString(Strings.BUTTON_REQUEST));
+        button_request = new JButton(lang.getString("button_request"));
         button_request.addActionListener(_ -> new Thread(() -> {
             button_request.setEnabled(false);
 
@@ -204,14 +203,14 @@ public class MainForm extends Form {
 
     private JPanel createFileImportPanel() {
         var out = new JPanel();
-        out.setBorder(BorderFactory.createTitledBorder(getString(Strings.PANEL_IMPORT)));
+        out.setBorder(BorderFactory.createTitledBorder(lang.getString("panel_import")));
 
-        var label_group = new JLabel(getString(Strings.LABEL_PLACEHOLDER_GROUP));
+        var label_group = new JLabel(lang.getString("label_placeholder_group"));
 
         input_group = new JTextField();
         input_group.setText(preferenceManager.getGroup());
 
-        var button_open = new JButton(getString(Strings.BUTTON_OPEN));
+        var button_open = new JButton(lang.getString("button_open"));
         button_open.addActionListener(_ -> {
             JFileChooser picker = new JFileChooser();
             if (Schedule.CACHE_DIR.exists()) //Use cache dir if possible
@@ -284,10 +283,10 @@ public class MainForm extends Form {
 
     private JPanel createPeriodFilterPanel() {
         var out = new JPanel();
-        out.setBorder(BorderFactory.createTitledBorder(getString(Strings.PANEL_PERIOD)));
+        out.setBorder(BorderFactory.createTitledBorder(lang.getString("panel_period")));
 
-        var label_from = new JLabel(getString(Strings.LABEL_DATE_FROM));
-        var label_to = new JLabel(getString(Strings.LABEL_DATE_TO));
+        var label_from = new JLabel(lang.getString("label_date_from"));
+        var label_to = new JLabel(lang.getString("label_date_to"));
 
         model_from = new XSpinnerDateModel(
                 Schedule.DATE_FROM::compareTo,
@@ -351,7 +350,7 @@ public class MainForm extends Form {
     private JCheckBoxList createTypesFilterPanel() {
         checkBoxes_types = new JCheckBoxList(true);
         checkBoxes_types.setOrientation(JCheckBoxList.ORIENTATION_HORIZONTAL);
-        checkBoxes_types.setBorder(BorderFactory.createTitledBorder(getString(Strings.PANEL_TYPES)));
+        checkBoxes_types.setBorder(BorderFactory.createTitledBorder(lang.getString("panel_types")));
         checkBoxes_types.setOnItemCheckedListener((title, checked) -> {
             updateFilters(2);
 
@@ -364,7 +363,7 @@ public class MainForm extends Form {
 
     private JCheckBoxList createSubjectsFilterPanel() {
         checkBoxes_subjects = new JCheckBoxList(true);
-        checkBoxes_subjects.setBorder(BorderFactory.createTitledBorder(getString(Strings.PANEL_SUBJECTS)));
+        checkBoxes_subjects.setBorder(BorderFactory.createTitledBorder(lang.getString("panel_subjects")));
         checkBoxes_subjects.setOnItemCheckedListener((title, checked) -> {
             updateFilters(1);
 
@@ -377,7 +376,7 @@ public class MainForm extends Form {
 
     private JCheckBoxList createGroupsFilterPanel() {
         checkBoxes_groups = new JCheckBoxList(true);
-        checkBoxes_groups.setBorder(BorderFactory.createTitledBorder(getString(Strings.PANEL_GROUPS)));
+        checkBoxes_groups.setBorder(BorderFactory.createTitledBorder(lang.getString("panel_groups")));
         checkBoxes_groups.setOnItemCheckedListener((title, checked) -> {
             if (!checked)
                 preferenceManager.addFilterGroup(title);
@@ -409,12 +408,12 @@ public class MainForm extends Form {
         combo_teacher.setEnabled(false);
         combo_group.setEnabled(false);
 
-        setProgress(50, getString(Strings.STEP_GETTING_TEACHERS));
+        setProgress(50, lang.getString("step_getting_teachers"));
 
         Schedule.getTeachers().forEach(combo_teacher::addItem);
         combo_teacher.setEnabled(true);
 
-        setProgress(PROGRESS_MAX, getString(Strings.STEP_GETTING_GROUPS));
+        setProgress(PROGRESS_MAX, lang.getString("step_getting_groups"));
 
         Schedule.getGroups().forEach(combo_group::addItem);
         combo_group.setEnabled(true);
@@ -459,13 +458,13 @@ public class MainForm extends Form {
         if (Utils.isEmpty(teacher) && Utils.isEmpty(group))
             return;
 
-        setProgress(60, getString(Strings.STEP_GETTING_SCHEDULE));
+        setProgress(60, lang.getString("step_getting_schedule"));
 
         Document doc = Schedule.getSchedule(teacher, group);
 
-        setProgress(100, getString(Strings.STEP_COMPILING_DATA));
+        setProgress(100, lang.getString("step_compiling_data"));
 
-        schedule = Parser.init(this)
+        schedule = Parser.init()
                 .setDocument(doc)
                 .setDefaultGroup(group)
                 .parse();
@@ -486,7 +485,7 @@ public class MainForm extends Form {
             return;
         }
 
-        schedule = Parser.init(this)
+        schedule = Parser.init()
                 .setDocument(doc)
                 .setDefaultGroup(group)
                 .parse();
@@ -497,7 +496,7 @@ public class MainForm extends Form {
             case 3:
                 //Update types, subjects, and groups filters
                 var sessions3 = getSessions();
-                var newTypes = getSessionData(sessions3, Session::getTypeOrUnknown);
+                var newTypes = getSessionData(sessions3, MainForm::getSessionTypeOrUnknown);
 
                 checkBoxes_types.replaceWith(newTypes);
                 preferenceManager.getFilterTypes().forEach(s -> checkBoxes_types.setChecked(s, false));
@@ -505,7 +504,7 @@ public class MainForm extends Form {
             case 2:
                 //Update only subjects and groups filters
                 var sessions2 = getSessions().stream()
-                        .filter(session -> checkBoxes_types.isChecked(session.getTypeOrUnknown()))
+                        .filter(session -> checkBoxes_types.isChecked(getSessionTypeOrUnknown(session)))
                         .toList();
                 var newSubjects = getSessionData(sessions2, Session::getSubject);
 
@@ -515,7 +514,7 @@ public class MainForm extends Form {
             case 1:
                 //Update only groups filters
                 var sessions1 = getSessions().stream()
-                        .filter(session -> checkBoxes_types.isChecked(session.getTypeOrUnknown()))
+                        .filter(session -> checkBoxes_types.isChecked(getSessionTypeOrUnknown(session)))
                         .filter(session -> {
                             var subject = session.getSubject();
                             if (Utils.isEmpty(subject))
@@ -524,7 +523,7 @@ public class MainForm extends Form {
                             return checkBoxes_subjects.isChecked(subject);
                         })
                         .toList();
-                var newGroups = getSessionData(sessions1, Session::getGroupOrUnknown);
+                var newGroups = getSessionData(sessions1, MainForm::getSessionGroupOrUnknown);
 
                 checkBoxes_groups.replaceWith(newGroups);
                 preferenceManager.getFilterGroups().forEach(s -> checkBoxes_groups.setChecked(s, false));
@@ -546,12 +545,12 @@ public class MainForm extends Form {
 
             for (Cell cell : day)
                 for (Session session : cell) {
-                    if (!checkBoxes_types.isChecked(session.getTypeOrUnknown())) continue;
+                    if (!checkBoxes_types.isChecked(getSessionTypeOrUnknown(session))) continue;
 
                     var subject = session.getSubject();
                     if (!checkBoxes_subjects.isChecked(subject)) continue;
 
-                    if (!checkBoxes_groups.isChecked(session.getGroupOrUnknown())) continue;
+                    if (!checkBoxes_groups.isChecked(getSessionGroupOrUnknown(session))) continue;
 
                     var type = session.getType();
                     var type_final = map_types.getOrDefault(type.toLowerCase(), type);
@@ -586,7 +585,7 @@ public class MainForm extends Form {
     }
 
     private void resetProgress() {
-        setProgress(0, getString(Strings.STEP_READY));
+        setProgress(0, lang.getString("step_ready"));
     }
 
 
@@ -612,5 +611,19 @@ public class MainForm extends Form {
                 .map(mapper)
                 .distinct()
                 .toList();
+    }
+
+    private static String getSessionTypeOrUnknown(Session session) {
+        String type = session.getType();
+        return Utils.isEmpty(type) ?
+                lang.getString("unknown_type") :
+                type;
+    }
+
+    private static String getSessionGroupOrUnknown(Session session) {
+        String group = session.getGroup();
+        return Utils.isEmpty(group) ?
+                lang.getString("unknown_group") :
+                group;
     }
 }

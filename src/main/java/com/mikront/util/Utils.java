@@ -1,6 +1,5 @@
 package com.mikront.util;
 
-import com.mikront.fillics.resource.Translations;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -12,7 +11,8 @@ import java.util.Locale;
 public class Utils {
     private static final Logger log = LogManager.getLogger();
 
-    public static final Collator COLLATOR = Collator.getInstance(Locale.forLanguageTag(Translations.UK));
+    private static final Locale HOME_LOCALE = Locale.forLanguageTag("uk");
+    public static final Collator COLLATOR = Collator.getInstance(HOME_LOCALE);
 
 
     public static boolean isEmpty(String s) {
