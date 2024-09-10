@@ -11,5 +11,7 @@
     <orderEntry type="library" exported="" name="jsoup" level="project" />
     <orderEntry type="library" exported="" name="json" level="project" />
     <orderEntry type="library" name="jetbrains.annotations" level="project" />
+    <orderEntry type="library" name="apache.logging.log4j.api" level="project" />
+    <orderEntry type="library" name="apache.logging.log4j.core" level="project" />
   </component>
 </module>
