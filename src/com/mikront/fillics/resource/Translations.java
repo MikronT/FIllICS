@@ -11,90 +11,90 @@ public class Translations {
             case APP_NAME -> "FIllICS";
 
             case PANEL_PERIOD -> switch (lang) {
-                default -> "Adjust schedule period";
                 case UK -> "Встановіть часові рамки розкладу";
+                default -> "Adjust schedule period";
             };
             case LABEL_DATE_FROM -> switch (lang) {
-                default -> "From date";
                 case UK -> "Від дати";
+                default -> "From date";
             };
             case LABEL_DATE_TO -> switch (lang) {
-                default -> "To date";
                 case UK -> "По дату";
+                default -> "To date";
             };
             case PANEL_REQUEST -> switch (lang) {
-                default -> "Request schedule from IFNTUOG servers";
                 case UK -> "Отримайте розклад із серверів ІФНТУНГ";
+                default -> "Request schedule from IFNTUOG servers";
             };
             case LABEL_TEACHER -> switch (lang) {
-                default -> "Teacher";
                 case UK -> "Викладач";
+                default -> "Teacher";
             };
             case LABEL_GROUP -> switch (lang) {
-                default -> "Group";
                 case UK -> "Група";
+                default -> "Group";
             };
             case BUTTON_REQUEST -> switch (lang) {
-                default -> "Request";
                 case UK -> "Отримати";
+                default -> "Request";
             };
             case PANEL_IMPORT -> switch (lang) {
-                default -> "Import downloaded schedule webpage";
                 case UK -> "Імпортуйте завантажену сторінку розкладу";
+                default -> "Import downloaded schedule webpage";
             };
             case LABEL_PLACEHOLDER_GROUP -> switch (lang) {
-                default -> "Your group name";
                 case UK -> "Назва групи";
+                default -> "Your group name";
             };
             case BUTTON_OPEN -> switch (lang) {
-                default -> "Select file";
                 case UK -> "Вибрати файл";
+                default -> "Select file";
             };
             case PANEL_TYPES -> switch (lang) {
-                default -> "Filter session types";
                 case UK -> "Виберіть необхідні типи занять";
+                default -> "Filter session types";
             };
             case PANEL_SUBJECTS -> switch (lang) {
-                default -> "Choose your subjects";
                 case UK -> "Оберіть свої дисципліни";
+                default -> "Choose your subjects";
             };
             case PANEL_GROUPS -> switch (lang) {
-                default -> "Select student groups you belong to";
                 case UK -> "Позначте групи, до яких належите";
+                default -> "Select student groups you belong to";
             };
             case BUTTON_EXPORT -> switch (lang) {
-                default -> "Export";
                 case UK -> "Експортувати";
+                default -> "Export";
             };
 
             case UNKNOWN_TYPE -> switch (lang) {
-                default -> "Unknown session type";
                 case UK -> "Невідомий тип заняття";
+                default -> "Unknown session type";
             };
             case UNKNOWN_GROUP -> switch (lang) {
-                default -> "Unknown group";
                 case UK -> "Невідома група";
+                default -> "Unknown group";
             };
 
             case STEP_READY -> switch (lang) {
-                default -> "Ready";
                 case UK -> "Готово";
+                default -> "Ready";
             };
             case STEP_GETTING_TEACHERS -> switch (lang) {
-                default -> "Getting teachers";
                 case UK -> "Отримання викладачів";
+                default -> "Getting teachers";
             };
             case STEP_GETTING_GROUPS -> switch (lang) {
-                default -> "Getting groups";
                 case UK -> "Отримання груп";
+                default -> "Getting groups";
             };
             case STEP_GETTING_SCHEDULE -> switch (lang) {
-                default -> "Getting schedule";
                 case UK -> "Отримання розкладу";
+                default -> "Getting schedule";
             };
             case STEP_COMPILING_DATA -> switch (lang) {
-                default -> "Compiling data";
                 case UK -> "Компіляція даних";
+                default -> "Compiling data";
             };
         };
     }

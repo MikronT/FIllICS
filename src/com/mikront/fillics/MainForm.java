@@ -65,7 +65,7 @@ public class MainForm extends Form {
 
         button_export = new JButton(getString(Strings.BUTTON_EXPORT));
         button_export.setEnabled(false);
-        button_export.addActionListener(e -> new Thread(this::exportSchedule).start());
+        button_export.addActionListener(_ -> new Thread(this::exportSchedule).start());
 
 
         var layout = initGroupLayoutFor(panel_root);
@@ -162,7 +162,7 @@ public class MainForm extends Form {
         resetProgress();
 
         button_request = new JButton(getString(Strings.BUTTON_REQUEST));
-        button_request.addActionListener(e -> new Thread(() -> {
+        button_request.addActionListener(_ -> new Thread(() -> {
             button_request.setEnabled(false);
 
             requestSchedule();
@@ -302,7 +302,7 @@ public class MainForm extends Form {
 
         spinner_from = new JDateSpinner(model_from);
         spinner_from.setEnabled(false);
-        spinner_from.addChangeListener(e -> {
+        spinner_from.addChangeListener(_ -> {
             LocalDate
                     date1 = model_from.getValue(),
                     date2 = model_to.getValue();
@@ -317,7 +317,7 @@ public class MainForm extends Form {
 
         spinner_to = new JDateSpinner(model_to);
         spinner_to.setEnabled(false);
-        spinner_to.addChangeListener(e -> {
+        spinner_to.addChangeListener(_ -> {
             LocalDate
                     date1 = model_from.getValue(),
                     date2 = model_to.getValue();
@@ -571,7 +571,7 @@ public class MainForm extends Form {
                     data.addEvent(session.toEvent(
                             day,
                             cell,
-                            session1 -> Concat.me()
+                            _ -> Concat.me()
                                     .word(subject_final)
                                     .when(Utils.notEmpty(type_final))
                                     .words(" (", type_final, ")")

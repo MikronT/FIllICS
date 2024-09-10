@@ -77,7 +77,7 @@ public class Parser {
         List<Day> days = new ArrayList<>();
 
         for (Element div : blocks) {
-            String date = div.getElementsByTag("h4").get(0).text();
+            String date = div.getElementsByTag("h4").getFirst().text();
             Day day = new Day(date);
             days.add(day);
 
@@ -85,7 +85,7 @@ public class Parser {
                 Elements td = tr.getElementsByTag("td");
 
                 Cell cell = parseCell(
-                        Integer.parseInt(td.get(0).text()),
+                        Integer.parseInt(td.getFirst().text()),
                         td.get(2));
                 if (cell != null)
                     day.add(cell);

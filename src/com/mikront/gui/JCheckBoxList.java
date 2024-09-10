@@ -71,7 +71,7 @@ public class JCheckBoxList extends JScrollPane {
         boxes.add(box);
 
         if (onItemCheckedListener != null)
-            box.addActionListener(e -> onItemCheckedListener.itemChecked(box.getText(), box.isSelected()));
+            box.addActionListener(_ -> onItemCheckedListener.itemChecked(box.getText(), box.isSelected()));
         return true;
     }
 

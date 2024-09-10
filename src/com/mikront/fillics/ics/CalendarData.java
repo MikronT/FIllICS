@@ -10,7 +10,6 @@ import java.util.List;
 
 
 public class CalendarData {
-    @SuppressWarnings("SpellCheckingInspection")
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("'TZID=Europe/Kiev:'yyyyMMdd'T'HHmmss");
 
     private final List<Event> events = new ArrayList<>();
