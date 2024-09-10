@@ -64,10 +64,6 @@ public class Form extends Context {
     protected void onPostShow() {}
 
 
-    public JFrame getFrame() {
-        return frame;
-    }
-
     public JPanel getRootPanel() {
         return rootPanel;
     }

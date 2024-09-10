@@ -217,6 +217,7 @@ public class Parser {
         return null;
     }
 
+    @SuppressWarnings("unused")
     private boolean trySearchingLink(@NotNull Session current, String s) {
         //Get link
         Matcher matcher = REGEX_LINK.matcher(s);

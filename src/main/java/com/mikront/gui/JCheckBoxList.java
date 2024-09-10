@@ -82,11 +82,13 @@ public class JCheckBoxList extends JScrollPane {
         boxes.sort((o1, o2) -> Utils.COLLATOR.compare(o1.getText(), o2.getText()));
     }
 
+    @SuppressWarnings("unused")
     public void remove(String title) {
         if (destroy(title))
             buildUI();
     }
 
+    @SuppressWarnings("unused")
     public void remove(List<String> titles) {
         boolean shouldRebuildUI = false;
 
@@ -102,6 +104,7 @@ public class JCheckBoxList extends JScrollPane {
         return boxes.remove(get(title));
     }
 
+    @SuppressWarnings("unused")
     public void clear() {
         boxes.clear();
         buildUI();

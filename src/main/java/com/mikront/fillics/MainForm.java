@@ -212,7 +212,7 @@ public class MainForm extends Form {
         input_group.setText(preferenceManager.getGroup());
 
         var button_open = new JButton(getString(Strings.BUTTON_OPEN));
-        button_open.addActionListener(e -> {
+        button_open.addActionListener(_ -> {
             JFileChooser picker = new JFileChooser();
             if (Schedule.CACHE_DIR.exists()) //Use cache dir if possible
                 picker.setCurrentDirectory(Schedule.CACHE_DIR);
