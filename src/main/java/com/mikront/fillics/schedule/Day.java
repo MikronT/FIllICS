@@ -60,7 +60,7 @@ public class Day implements Iterable<Cell> {
         return new CellIterator();
     }
 
-    private class CellIterator implements Iterator<Cell> {
+    public class CellIterator implements Iterator<Cell> {
         private int cursor = 0;
 
 

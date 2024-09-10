@@ -14,18 +14,18 @@ import java.awt.event.*;
  */
 @SuppressWarnings("rawtypes")
 public class JComboBoxAutoCompletion extends PlainDocument {
-    JComboBox comboBox;
+    final JComboBox comboBox;
     ComboBoxModel model;
     JTextComponent editor;
     // flag to indicate if setSelectedItem has been called
     // subsequent calls to remove/insertString should be ignored
     boolean selecting = false;
-    boolean hidePopupOnFocusLoss;
+    final boolean hidePopupOnFocusLoss;
     boolean hitBackspace = false;
     boolean hitBackspaceOnSelection;
 
-    KeyListener editorKeyListener;
-    FocusListener editorFocusListener;
+    final KeyListener editorKeyListener;
+    final FocusListener editorFocusListener;
 
     public JComboBoxAutoCompletion(final JComboBox comboBox) {
         this.comboBox = comboBox;
@@ -134,7 +134,7 @@ public class JComboBoxAutoCompletion extends PlainDocument {
             // provide feedback to the user that his input has been received but can not be accepted
             comboBox.getToolkit().beep(); // when available use: UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
         }
-        setText(item.toString());
+        setText(item == null ? "" : item.toString());
         // select the completed part
         highlightCompletedText(offs + str.length());
     }
@@ -186,7 +186,7 @@ public class JComboBoxAutoCompletion extends PlainDocument {
 
     private static void createAndShowGUI() {
         // the combo box (add/modify items if you like to)
-        final JComboBox comboBox = new JComboBox(new Object[]{"Ester", "Jordi", "Jordi", "Jorge", "Sergi"});
+        final JComboBox comboBox = new JComboBox<>(new Object[]{"Ester", "Jordi", "Jordi", "Jorge", "Sergi"});
         enable(comboBox);
 
         // create and show a window containing the combo box
