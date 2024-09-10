@@ -7,7 +7,8 @@ import com.mikront.fillics.schedule.*;
 import com.mikront.gui.*;
 import com.mikront.util.Concat;
 import com.mikront.util.Utils;
-import com.mikront.util.debug.Log;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
@@ -28,6 +29,8 @@ import static javax.swing.GroupLayout.DEFAULT_SIZE;
 
 
 public class MainForm extends Form {
+    private static final Logger log = LogManager.getLogger();
+
     private static final File FILE_ICS = new File("import.ics");
     private static final File FILE_MAP_SUBJECTS = new File("map_subjects.txt");
     private static final File FILE_MAP_TYPES = new File("map_types.txt");
@@ -47,9 +50,6 @@ public class MainForm extends Form {
 
 
     public static void main(String[] args) {
-        Log.ging(true);
-        Log.level(Log.LEVEL_WARN);
-
         Form.load(MainForm.class);
     }
 
@@ -252,14 +252,11 @@ public class MainForm extends Form {
                 if (Files.size(selectedFile.toPath()) == 0)
                     return; //File is empty or invalid
             } catch (IOException ex) {
-                Log.w("MainForm::createFileImportPanel: file reading error");
-                Log.w("MainForm::createFileImportPanel:   - selectedFile = " + selectedFile);
-                Log.w("MainForm::createFileImportPanel:   = catching: ", e);
+                log.warn("Failed to read file '{}'", selectedFile, ex);
                 return;
             }
 
-            Log.i("MainForm::createFileImportPanel: user picked a file to read");
-            Log.i("MainForm::createFileImportPanel:   - selectedFile = " + selectedFile);
+            log.info("User picked file '{}' to read", selectedFile);
 
             importScheduleFrom(selectedFile);
             updateFilters(3);
@@ -432,9 +429,7 @@ public class MainForm extends Form {
                 map_subjects.put(strings[0].toLowerCase(Locale.ROOT), strings[1]);
             }
         } catch (IOException e) {
-            Log.w("MainForm::presetRequestOptions: unable to load subjects map");
-            Log.w("MainForm::presetRequestOptions:   - file = " + FILE_MAP_SUBJECTS);
-            Log.w("MainForm::presetRequestOptions:   = catching: ", e);
+            log.warn("Unable to load subjects map from file '{}'", FILE_MAP_SUBJECTS, e);
         }
 
         try (var stream = new FileInputStream(FILE_MAP_TYPES);
@@ -447,9 +442,7 @@ public class MainForm extends Form {
                 map_types.put(strings[0].toLowerCase(Locale.ROOT), strings[1]);
             }
         } catch (IOException e) {
-            Log.w("MainForm::presetRequestOptions: unable to load types map");
-            Log.w("MainForm::presetRequestOptions:   - file = " + FILE_MAP_TYPES);
-            Log.w("MainForm::presetRequestOptions:   = catching: ", e);
+            log.warn("Unable to load types map from file '{}'", FILE_MAP_TYPES, e);
         }
 
         combo_teacher.setSelectedItem(preferenceManager.getTeacher());
@@ -489,9 +482,7 @@ public class MainForm extends Form {
         try {
             doc = Jsoup.parse(file);
         } catch (IOException e) {
-            Log.e("MainForm::importScheduleFrom: file parsing failed");
-            Log.e("MainForm::importScheduleFrom:   - file = " + file);
-            Log.e("MainForm::importScheduleFrom:   = catching: ", e);
+            log.error("Parsing file '{}' failed", file, e);
             return;
         }
 
@@ -527,11 +518,9 @@ public class MainForm extends Form {
                         .filter(session -> checkBoxes_types.isChecked(session.getTypeOrUnknown()))
                         .filter(session -> {
                             var subject = session.getSubject();
-                            if (Utils.isEmpty(subject)) {
-                                Log.i("MainForm::updateFilters: Predicate-> subject is empty");
-                                Log.i("MainForm::updateFilters: Predicate->   - session = " + session);
-                                Log.i("MainForm::updateFilters: Predicate->   - subject = " + subject);
-                            }
+                            if (Utils.isEmpty(subject))
+                                log.info("Session '{}' subject '{}' is empty", session, subject);
+
                             return checkBoxes_subjects.isChecked(subject);
                         })
                         .toList();
@@ -583,9 +572,7 @@ public class MainForm extends Form {
         try (var stream = new FileOutputStream(FILE_ICS)) {
             stream.write(data.compile().getBytes(StandardCharsets.UTF_8));
         } catch (IOException e) {
-            Log.e("MainForm::exportSchedule: unable to write file");
-            Log.e("MainForm::exportSchedule:   - file = " + FILE_ICS);
-            Log.e("MainForm::exportSchedule:   = catching: ", e);
+            log.error("Unable to write file '{}'", FILE_ICS, e);
         }
 
         button_request.setEnabled(true);

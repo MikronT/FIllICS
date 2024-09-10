@@ -1,7 +1,8 @@
 package com.mikront.fillics.schedule;
 
 import com.mikront.gui.Context;
-import com.mikront.util.debug.Log;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jsoup.nodes.Document;
@@ -15,6 +16,8 @@ import java.util.regex.Pattern;
 
 
 public class Parser {
+    private static final Logger log = LogManager.getLogger();
+
     public static final Pattern REGEX_NEWLINE = Pattern.compile("[\r\n]+");
     private static final Pattern
             REGEX_ROOM = Pattern.compile(".*(\\d+\\..+)\\.ауд\\."),
@@ -139,9 +142,7 @@ public class Parser {
             lines.add(s);
         }
 
-        Log.v("Parser::parseCell: lines = [");
-        lines.forEach(s -> Log.v("Parser::parseCell:     '" + s + "'"));
-        Log.v("Parser::parseCell: ]");
+        log.trace("Reading cell lines '{}'", lines);
 
 
         Cell cell = new Cell(number);
@@ -153,8 +154,7 @@ public class Parser {
                 current = temp;
 
                 if (current.getTitle().contains("Увага! Заняття відмінено!")) {
-                    Log.i("Parser::parseCell: found cancelled class");
-                    Log.i("Parser::parseCell:   - s = " + s);
+                    log.info("Found cancelled class '{}'", s);
                     continue; //Not add to the cell but continue filling with info
                 }
 
@@ -176,7 +176,7 @@ public class Parser {
             }
             if (trySearchingTeacher(current, s)) continue;
 
-            Log.w("Parser::parseCell: passed checks = " + s);
+            log.warn("Entry '{}' was able to pass all checks", s);
         }
 
         return cell;
@@ -186,7 +186,7 @@ public class Parser {
         //Get teachers, title, and type first
         Matcher matcher = REGEX_TEACHERS_TITLE_TYPE.matcher(s);
         if (matcher.matches()) {
-            Log.v("Parser::trySearchingTitleToInitClass: teachers = " + s);
+            log.trace("Matched teachers '{}'", s);
             Session current = new Session(context);
             current.setSubject(matcher.replaceAll("$4"));
             current.setType(matcher.replaceAll("$5"));
@@ -199,7 +199,7 @@ public class Parser {
         //Get title and type first
         matcher = REGEX_TITLE_TYPE.matcher(s);
         if (matcher.matches()) {
-            Log.v("Parser::trySearchingTitleToInitClass: title-type = " + s);
+            log.trace("Matched title-type '{}'", s);
             Session current = new Session(context);
             current.setSubject(matcher.replaceAll("$1"));
             current.setType(matcher.replaceAll("$2"));
@@ -209,7 +209,7 @@ public class Parser {
         //Get title first
         matcher = REGEX_TITLE.matcher(s);
         if (matcher.matches()) {
-            Log.v("Parser::trySearchingTitleToInitClass: title = " + s);
+            log.trace("Matched title '{}'", s);
             Session current = new Session(context);
             current.setSubject(matcher.replaceAll("$1"));
             return current;
@@ -221,6 +221,7 @@ public class Parser {
         //Get link
         Matcher matcher = REGEX_LINK.matcher(s);
         if (matcher.matches()) {
+            log.trace("Matched link '{}'", s);
             //current.setLink(matcher.replaceAll("$1"));
             return true;
         }
@@ -232,7 +233,7 @@ public class Parser {
         for (Pattern p : List.of(REGEX_STREAM1, REGEX_STREAM2, REGEX_STREAM3)) {
             Matcher matcher = p.matcher(s);
             if (matcher.matches()) {
-                Log.v("Parser::trySearchingStreamGroup: stream = " + s);
+                log.trace("Matched stream '{}'", s);
                 current.setGroup(matcher.replaceAll("$1"));
                 return true;
             }
@@ -245,7 +246,7 @@ public class Parser {
         for (Pattern p : List.of(REGEX_SUBGROUP1, regex_subgroup2)) {
             Matcher matcher = p.matcher(s);
             if (matcher.matches()) {
-                Log.v("Parser::trySearchingSubgroup: subgroup = " + s);
+                log.trace("Matched subgroup '{}'", s);
                 current.setGroup(defaultGroup + "." + matcher.replaceAll("$1"));
                 return true;
             }
@@ -257,7 +258,7 @@ public class Parser {
         //Get room
         Matcher matcher = REGEX_ROOM.matcher(s);
         if (matcher.matches()) {
-            Log.v("Parser::trySearchingRoom: room = " + s);
+            log.trace("Matched room '{}'", s);
             current.setRoom(matcher.replaceAll("$1"));
             return true;
         }
@@ -269,7 +270,7 @@ public class Parser {
         for (Pattern p : List.of(REGEX_TEACHER3, REGEX_TEACHER2)) {
             Matcher matcher = p.matcher(s);
             if (matcher.matches()) {
-                Log.v("Parser::trySearchingTeacher: teacher = " + s);
+                log.trace("Matched teacher-position '{}'", s);
                 current.setTeacherPosition(matcher.replaceAll("$1"));
                 current.setTeacher(matcher.replaceAll("$2"));
                 return true;
@@ -278,7 +279,7 @@ public class Parser {
         //Get teacher without position
         Matcher matcher = REGEX_TEACHER1.matcher(s);
         if (matcher.matches()) {
-            Log.v("Parser::trySearchingTeacher: teacher = " + s);
+            log.trace("Matched teacher '{}'", s);
             current.setTeacher(matcher.replaceAll("$1"));
             return true;
         }

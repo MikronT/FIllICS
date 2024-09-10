@@ -2,7 +2,8 @@ package com.mikront.fillics.schedule;
 
 import com.mikront.util.Concat;
 import com.mikront.util.Utils;
-import com.mikront.util.debug.Log;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.jetbrains.annotations.Nullable;
 import org.json.JSONObject;
 import org.jsoup.Jsoup;
@@ -20,6 +21,8 @@ import java.util.List;
 
 
 public class Schedule {
+    private static final Logger log = LogManager.getLogger();
+
     public static final File CACHE_DIR = new File("cache");
     public static final LocalDate DATE_FROM;
     public static final LocalDate DATE_TO;
@@ -39,7 +42,7 @@ public class Schedule {
 
         DATE_FROM = from;
         DATE_TO = to;
-        Log.i("Schedule::static: setting date range as " + from + " to " + to);
+        log.info("Setting date range from '{}' to '{}'", from, to);
     }
 
 
@@ -50,8 +53,7 @@ public class Schedule {
         try {
             doc = Jsoup.connect(URL + "?n=701&lev=141").get();
         } catch (IOException e) {
-            Log.e("Schedule::getTeachers: unable to get teachers list");
-            Log.e("Schedule::getTeachers:   = catching: ", e);
+            log.error("Unable to get the teachers list", e);
             return out;
         }
 
@@ -74,8 +76,7 @@ public class Schedule {
         try {
             doc = Jsoup.connect(URL + "?n=701&lev=142").get();
         } catch (IOException e) {
-            Log.e("Schedule::getGroups: unable to get groups list");
-            Log.e("Schedule::getGroups:   = catching: ", e);
+            log.error("Unable to get the groups list", e);
             return out;
         }
 
@@ -109,8 +110,7 @@ public class Schedule {
                     .postDataCharset(CHARSET.name())
                     .post();
         } catch (IOException e) {
-            Log.e("Schedule::getSchedule: unable to get schedule");
-            Log.e("Schedule::getSchedule:   = catching: ", e);
+            log.error("Unable to get the requested schedule", e);
             return null;
         }
 
@@ -129,22 +129,19 @@ public class Schedule {
                 .enate());
 
         if (!CACHE_DIR.exists() && !CACHE_DIR.mkdirs()) {
-            Log.w("Schedule::getSchedule: can't create cache directory");
-            Log.w("Schedule::getSchedule:   - CACHE_DIR = " + CACHE_DIR.getAbsolutePath());
+            log.warn("Can't create cache dir '{}'", CACHE_DIR.getAbsolutePath());
         }
 
         try (var stream = new FileOutputStream(cacheFile)) {
             stream.write(doc
-                    .filter((node, depth) ->
+                    .filter((node, _) ->
                             node.toString().contains("charset") ?
                                     NodeFilter.FilterResult.REMOVE :
                                     NodeFilter.FilterResult.CONTINUE)
                     .outerHtml()
                     .getBytes(CHARSET));
         } catch (IOException e) {
-            Log.w("Schedule::getSchedule: unable to save cache file");
-            Log.w("Schedule::getSchedule:   - cacheFile = " + cacheFile);
-            Log.w("Schedule::getSchedule:   = catching: ", e);
+            log.warn("Unable to save cache file '{}'", cacheFile, e);
         }
 
         return doc;

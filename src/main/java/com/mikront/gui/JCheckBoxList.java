@@ -1,7 +1,8 @@
 package com.mikront.gui;
 
 import com.mikront.util.Utils;
-import com.mikront.util.debug.Log;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
@@ -10,6 +11,8 @@ import java.util.List;
 
 
 public class JCheckBoxList extends JScrollPane {
+    private static final Logger log = LogManager.getLogger();
+
     public static final int ORIENTATION_VERTICAL = 0, ORIENTATION_HORIZONTAL = 1;
 
     private boolean newItemChecked = false;
@@ -133,12 +136,12 @@ public class JCheckBoxList extends JScrollPane {
         public void applyChanges() {
             List<String> removed = new ArrayList<>(oldList);
             removed.removeAll(newList);
-            Log.v("JCheckBoxList.DiffUtil::applyChanges: removed = " + removed);
+            log.trace("Removed entries '{}'", removed);
             removed.forEach(checkBoxes::destroy);
 
             List<String> added = new ArrayList<>(newList);
             added.removeAll(oldList);
-            Log.v("JCheckBoxList.DiffUtil::applyChanges: added = " + added);
+            log.trace("Added entries '{}'", added);
             added.forEach(checkBoxes::create);
 
             //Sort list

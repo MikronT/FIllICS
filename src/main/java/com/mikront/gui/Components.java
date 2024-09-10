@@ -1,6 +1,7 @@
 package com.mikront.gui;
 
-import com.mikront.util.debug.Log;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -10,6 +11,8 @@ import java.util.List;
 
 
 public class Components {
+    private static final Logger log = LogManager.getLogger();
+
     private static final Font FONT_DEFAULT = Font.decode("Segoe UI");
 
 
@@ -23,7 +26,7 @@ public class Components {
         List<JComponent> out = new ArrayList<>();
         for (Component c : root.getComponents())
             if (c instanceof JComponent j) {
-                Log.v("Components::getWholeTree: component found = " + j.getUIClassID());
+                log.trace("Getting component '{}'", j.getUIClassID());
                 out.add(j);
                 out.addAll(getWholeTree(j));
             }

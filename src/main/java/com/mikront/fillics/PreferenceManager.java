@@ -1,6 +1,7 @@
 package com.mikront.fillics;
 
-import com.mikront.util.debug.Log;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.util.HashSet;
@@ -9,6 +10,8 @@ import java.util.Set;
 
 
 public class PreferenceManager {
+    private static final Logger log = LogManager.getLogger();
+
     private static final File FILE_PREFERENCES = new File("preferences.ini");
     private static final String SEPARATOR = "=";
     private static final String
@@ -26,9 +29,11 @@ public class PreferenceManager {
     private final Set<String> filter_subjects = new HashSet<>();
     private final Set<String> filter_groups = new HashSet<>();
 
+
     static {
         DEFAULT_TEACHER = DEFAULT_GROUP = "";
     }
+
 
     public PreferenceManager() {
         read();
@@ -40,8 +45,7 @@ public class PreferenceManager {
         try {
             stream = new FileInputStream(FILE_PREFERENCES);
         } catch (FileNotFoundException e) {
-            Log.e("PreferenceManager::read: unable to open the input steam");
-            Log.e("PreferenceManager::read:   = catching: ", e);
+            log.error("Unable to open input steam for file '{}'", FILE_PREFERENCES, e);
             return;
         }
 
@@ -65,8 +69,7 @@ public class PreferenceManager {
         try {
             stream.close();
         } catch (IOException e) {
-            Log.e("PreferenceManager::read: unable to close the input stream");
-            Log.e("PreferenceManager::read:   = catching: ", e);
+            log.error("Unable to close input steam for file '{}'", FILE_PREFERENCES, e);
         }
     }
 
@@ -75,9 +78,7 @@ public class PreferenceManager {
         try {
             stream = new FileOutputStream(FILE_PREFERENCES, false);
         } catch (FileNotFoundException e) {
-            Log.e("PreferenceManager::commit: unable to open file output stream");
-            Log.e("PreferenceManager::commit:   - file = " + FILE_PREFERENCES);
-            Log.e("PreferenceManager::commit:   = catching: ", e);
+            log.error("Unable to open output steam for file '{}'", FILE_PREFERENCES, e);
             return;
         }
 

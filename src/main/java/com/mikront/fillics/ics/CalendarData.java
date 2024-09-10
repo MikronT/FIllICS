@@ -1,7 +1,8 @@
 package com.mikront.fillics.ics;
 
 import com.mikront.util.Concat;
-import com.mikront.util.debug.Log;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -10,6 +11,8 @@ import java.util.List;
 
 
 public class CalendarData {
+    private static final Logger log = LogManager.getLogger();
+
     public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("'TZID=Europe/Kiev:'yyyyMMdd'T'HHmmss");
 
     private final List<Event> events = new ArrayList<>();
@@ -22,7 +25,7 @@ public class CalendarData {
     @SuppressWarnings("SpellCheckingInspection")
     public String compile() {
         String createdAt = FORMATTER.format(LocalDateTime.now());
-        Log.v("CalendarData::compile: createdAt = " + createdAt);
+        log.trace("Compiling CalendarData structure at '{}'", createdAt);
 
         return Concat.me()
                 .lines("BEGIN:VCALENDAR",

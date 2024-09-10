@@ -3,13 +3,16 @@ package com.mikront.gui;
 import com.mikront.fillics.resource.Dimens;
 import com.mikront.fillics.resource.Strings;
 import com.mikront.util.Utils;
-import com.mikront.util.debug.Log;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.swing.*;
 import java.awt.*;
 
 
 public class Form extends Context {
+    private static final Logger log = LogManager.getLogger();
+
     private final JFrame frame = new JFrame();
     private final JPanel rootPanel = new JPanel();
 
@@ -27,8 +30,7 @@ public class Form extends Context {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         } catch (ClassNotFoundException | InstantiationException | IllegalAccessException |
                  UnsupportedLookAndFeelException e) {
-            Log.e("Form::onCreate: unable to set system default look and feel");
-            Log.e("Form::onCreate:   = catching: ", e);
+            log.error("Unable to set system default look and feel", e);
         }
 
         frame.setTitle(getString(Strings.APP_NAME));
