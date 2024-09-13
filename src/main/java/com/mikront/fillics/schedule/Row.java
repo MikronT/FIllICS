@@ -7,7 +7,7 @@ import java.time.LocalTime;
 import java.util.*;
 
 
-public class Cell implements Iterable<Session> {
+public class Row implements Iterable<Session> {
     public static final int DURATION_DEFAULT_PAIR = 80;
     private static final HashMap<Integer, LocalTime> TIMETABLE_DEFAULT = new HashMap<>(Map.of(
             1, LocalTime.of(8, 0),
@@ -25,7 +25,7 @@ public class Cell implements Iterable<Session> {
     private final List<Session> sessions = new ArrayList<>();
 
 
-    public Cell(int number) {
+    public Row(int number) {
         this.number = number;
     }
 

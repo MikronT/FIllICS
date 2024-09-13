@@ -83,18 +83,18 @@ public class Parser {
             for (Element tr : div.getElementsByTag("tr")) {
                 Elements td = tr.getElementsByTag("td");
 
-                Cell cell = parseCell(
+                Row row = parseRow(
                         Integer.parseInt(td.getFirst().text()),
                         td.get(2));
-                if (cell != null)
-                    day.add(cell);
+                if (row != null)
+                    day.add(row);
             }
         }
 
         return days;
     }
 
-    private Cell parseCell(int number, Element block) {
+    private Row parseRow(int number, Element block) {
         String wholeText = block.wholeText();
 
         var blockChildren = block.getElementsByAttribute("href");
@@ -138,10 +138,10 @@ public class Parser {
             lines.add(s);
         }
 
-        log.trace("Reading cell lines '{}'", lines);
+        log.trace("Reading row lines '{}'", lines);
 
 
-        Cell cell = new Cell(number);
+        Row row = new Row(number);
         Session current = null;
 
         for (String s : lines) {
@@ -151,10 +151,10 @@ public class Parser {
 
                 if (current.getTitle().contains("Увага! Заняття відмінено!")) {
                     log.info("Found cancelled class '{}'", s);
-                    continue; //Not add to the cell but continue filling with info
+                    continue; //Not add to the row but continue filling with info
                 }
 
-                cell.add(current);
+                row.add(current);
                 continue;
             }
             assert current != null;
@@ -175,7 +175,7 @@ public class Parser {
             log.warn("Entry '{}' was able to pass all checks", s);
         }
 
-        return cell;
+        return row;
     }
 
     private Session trySearchingTitleToInitClass(String s) {

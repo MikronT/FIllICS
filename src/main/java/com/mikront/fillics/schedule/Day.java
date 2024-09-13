@@ -10,10 +10,10 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 
-public class Day implements Iterable<Cell> {
+public class Day implements Iterable<Row> {
     private static final Pattern REGEX_DATE_WEEKDAY = Pattern.compile("(\\d{2})\\.(\\d{2})\\.(\\d{4}).*");
 
-    private final List<Cell> cells = new ArrayList<>();
+    private final List<Row> rows = new ArrayList<>();
     private final LocalDate date;
 
 
@@ -25,8 +25,8 @@ public class Day implements Iterable<Cell> {
         this.date = date;
     }
 
-    public void add(Cell cell) {
-        cells.add(cell);
+    public void add(Row row) {
+        rows.add(row);
     }
 
 
@@ -35,11 +35,11 @@ public class Day implements Iterable<Cell> {
     }
 
     public boolean isEmpty() {
-        return cells.isEmpty();
+        return rows.isEmpty();
     }
 
     public int size() {
-        return cells.size();
+        return rows.size();
     }
 
     @Override
@@ -49,18 +49,18 @@ public class Day implements Iterable<Cell> {
 
         return Concat.me()
                 .word(date)
-                .lines(cells, item -> item.toString().indent(2))
+                .lines(rows, item -> item.toString().indent(2))
                 .enate();
     }
 
 
     @NotNull
     @Override
-    public CellIterator iterator() {
-        return new CellIterator();
+    public RowIterator iterator() {
+        return new RowIterator();
     }
 
-    public class CellIterator implements Iterator<Cell> {
+    public class RowIterator implements Iterator<Row> {
         private int cursor = 0;
 
 
@@ -70,8 +70,8 @@ public class Day implements Iterable<Cell> {
         }
 
         @Override
-        public Cell next() {
-            return cells.get(cursor++);
+        public Row next() {
+            return rows.get(cursor++);
         }
     }
 }

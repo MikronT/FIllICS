@@ -542,8 +542,8 @@ public class MainForm extends Form {
             if (date.isBefore(start) || date.isAfter(end))
                 continue;
 
-            for (Cell cell : day)
-                for (Session session : cell) {
+            for (Row row : day)
+                for (Session session : row) {
                     if (!checkBoxes_types.isChecked(getSessionTypeOrUnknown(session))) continue;
 
                     var subject = session.getSubject();
@@ -557,7 +557,7 @@ public class MainForm extends Form {
 
                     data.addEvent(session.toEvent(
                             day,
-                            cell,
+                            row,
                             _ -> Concat.me()
                                     .word(subject_final)
                                     .when(Utils.notEmpty(type_final))
@@ -598,8 +598,8 @@ public class MainForm extends Form {
             if (date.isBefore(start) || date.isAfter(end))
                 continue;
 
-            for (Cell cell : day)
-                for (Session session : cell)
+            for (Row row : day)
+                for (Session session : row)
                     out.add(session);
         }
         return out;

@@ -95,17 +95,17 @@ public class Session {
         return subject.contains("(в)");
     }
 
-    public Event toEvent(Day day, Cell cell) {
-        return toEvent(day, cell, Session::getTitle, Session::getDescription);
+    public Event toEvent(Day day, Row row) {
+        return toEvent(day, row, Session::getTitle, Session::getDescription);
     }
 
-    public Event toEvent(Day day, Cell cell,
+    public Event toEvent(Day day, Row row,
                          Function<Session, String> titleProvider,
                          Function<Session, String> descriptionProvider) {
         LocalDate date = day.getDate();
-        LocalTime time = cell.getTime();
+        LocalTime time = row.getTime();
         LocalDateTime from = LocalDateTime.of(date, time);
-        LocalDateTime to = from.plusMinutes(Cell.DURATION_DEFAULT_PAIR);
+        LocalDateTime to = from.plusMinutes(Row.DURATION_DEFAULT_PAIR);
 
         return Event.begin()
                 .setTimeFrom(from)
