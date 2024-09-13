@@ -16,7 +16,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -47,14 +47,12 @@ public class Schedule {
 
 
     public static List<String> getTeachers() {
-        List<String> out = new ArrayList<>();
-
         Document doc;
         try {
             doc = Jsoup.connect(URL + "?n=701&lev=141").get();
         } catch (IOException e) {
             log.error("Unable to get the teachers list", e);
-            return out;
+            return Collections.emptyList();
         }
 
         JSONObject root = new JSONObject(doc.wholeText());
@@ -64,23 +62,22 @@ public class Schedule {
                 .map(Object::toString)
                 .filter(s -> !s.contains("!")) //Get rid of fired teachers
                 .filter(s -> !s.contains("Вакансія")) //Get rid of vacancies
-                .map(s -> s.replace("*", "")) //Get rid of asterisks
+                //FIXME 2024-09-11: Potentially problematic
+                //.map(s -> s.replace("*", "")) //Get rid of asterisks
                 .sorted(Utils.HOME_COLLATOR)
                 .toList();
     }
 
     public static List<String> getGroups() {
-        List<String> out = new ArrayList<>();
-
         Document doc;
         try {
             doc = Jsoup.connect(URL + "?n=701&lev=142").get();
         } catch (IOException e) {
             log.error("Unable to get the groups list", e);
-            return out;
+            return Collections.emptyList();
         }
 
-        JSONObject root = new JSONObject(doc.wholeText());
+        var root = new JSONObject(doc.wholeText());
         return root.getJSONArray("suggestions")
                 .toList()
                 .stream()
