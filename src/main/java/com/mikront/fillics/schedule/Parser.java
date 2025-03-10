@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 
 public class Parser {
@@ -96,11 +97,6 @@ public class Parser {
     private Row parseRow(int number, Element block) {
         String wholeText = block.wholeText();
 
-        var blockChildren = block.getElementsByAttribute("href");
-        String link = "";
-        if (!blockChildren.isEmpty())
-            link = blockChildren.getFirst().attribute("href").getValue();
-
         //No info
         if (wholeText.isBlank())
             return null;
@@ -143,6 +139,11 @@ public class Parser {
         Row row = new Row(number);
         Session current = null;
 
+        List<String> links = block.getElementsByAttribute("href")
+                .stream()
+                .map(element -> element.attribute("href").getValue())
+                .collect(Collectors.toList());
+
         for (String s : lines) {
             Session temp = trySearchingTitleToInitClass(s);
             if (temp != null) {
@@ -159,6 +160,8 @@ public class Parser {
             assert current != null;
 
             if (trySearchingLink(current, s)) {
+                String link = links.isEmpty() ? "" : links.removeFirst();
+                log.trace("Setting link '{}'", link);
                 current.setLink(link);
                 continue;
             }
