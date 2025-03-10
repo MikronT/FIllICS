@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Main-Class: com.mikront.fillics.MainForm
 Name: FIllICS
 Specification-Title: IFNTUOG schedule parser
-Specification-Version: 2.4
+Specification-Version: 2.4.2
 Specification-Vendor: MikronT
 Implementation-Title: com.mikront.fillics
 Implementation-Version: 2
