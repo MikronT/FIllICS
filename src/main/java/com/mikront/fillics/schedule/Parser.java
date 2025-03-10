@@ -27,10 +27,9 @@ public class Parser {
             REGEX_TEACHERS_TITLE_TYPE = Pattern.compile("^Увага! Заміна! (.+) замість: (\\S+) (\\S+ \\S+ \\S+) (.+) \\((.+)\\)$"),
             REGEX_TITLE = Pattern.compile("^([^h\\s].+)$"),
             REGEX_TITLE_TYPE = Pattern.compile("^([^h\\s].+) \\((.+)\\)$"),
-            REGEX_STREAM1 = Pattern.compile(".+Спец\\.потік.+\\((.*)\\)"),
-            REGEX_STREAM2 = Pattern.compile(".+Потік\\s+(.*)"),
-            REGEX_STREAM3 = Pattern.compile(".*Збірна група.+\\((.*)\\)"),
-            REGEX_SUBGROUP1 = Pattern.compile(".*підгр.*(\\d).*");
+            REGEX_STREAM1 = Pattern.compile(".*[Пп]отік.+\\((.*)\\)"),
+            REGEX_STREAM2 = Pattern.compile(".*[Гг]рупа.+\\((.*)\\)"),
+            REGEX_SUBGROUP1 = Pattern.compile(".*[Пп]ідгр.*(\\d).*");
     private static final String
             PREFIX_SUBGROUP2 = ".*група.*",
             SUFFIX_SUBGROUP2 = "\\.(\\d).+ \\(.*\\)";
@@ -227,7 +226,7 @@ public class Parser {
 
     private boolean trySearchingStreamGroup(@NotNull Session current, String s) {
         //Get stream group
-        for (Pattern p : List.of(REGEX_STREAM1, REGEX_STREAM2, REGEX_STREAM3)) {
+        for (Pattern p : List.of(REGEX_STREAM1, REGEX_STREAM2)) {
             Matcher matcher = p.matcher(s);
             if (matcher.matches()) {
                 log.trace("Matched stream '{}'", s);
