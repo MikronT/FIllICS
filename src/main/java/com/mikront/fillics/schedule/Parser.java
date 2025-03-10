@@ -119,14 +119,9 @@ public class Parser {
             if (s.contains(CACHE_INDENT))
                 s = s.substring(CACHE_INDENT.length());
 
-            //Get rid of asterisks
-            int i;
-            while ((i = s.indexOf('*')) != -1) { //Redundant asterisks found
-                //Try to find both asterisk and space at the beginning of the string
-                if (i == 0 && s.charAt(i + 1) == ' ')
-                    s = s.replace("* ", "");
-                else s = s.replace("*", "");
-            }
+            //Get rid of asterisks at the beginning and in the middle of title
+            s = s.replaceFirst("^\\*\\s?", "");
+            s = s.replace("*", "");
 
             lines.add(s);
         }
