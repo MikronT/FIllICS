@@ -109,13 +109,11 @@ public class Parser {
             if (s.contains("Лекція")) continue;
             if (s.contains("Meeting")) continue;
 
-            //Multiword titles
-            if (s.contains("ст. викладач"))
-                s = s.replace("ст. викладач", "(старший викладач)");
-            if (s.contains("старший викладач"))
-                s = s.replace("старший викладач", "(старший викладач)");
-            if (s.contains("зав. кафедрою"))
-                s = s.replace("зав. кафедрою", "(завідувач кафедрою)");
+            //Handle multiword titles
+            if (s.contains("ст. викладач") || s.contains("старший викладач"))
+                s = s.replaceFirst("ст.+викладач", "(старший викладач)");
+            if (s.contains("зав. каф"))
+                s = s.replaceFirst("зав.+каф\\w+", "(завідувач кафедрою)");
 
             //Fix cache indentation
             if (s.contains(CACHE_INDENT))
