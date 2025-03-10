@@ -27,9 +27,9 @@ public class Parser {
             REGEX_TEACHERS_TITLE_TYPE = Pattern.compile("^Увага! Заміна! (.+) замість: (\\S+) (\\S+ \\S+ \\S+) (.+) \\((.+)\\)$"),
             REGEX_TITLE = Pattern.compile("^([^h\\s].+)$"),
             REGEX_TITLE_TYPE = Pattern.compile("^([^h\\s].+) \\((.+)\\)$"),
-            REGEX_STREAM1 = Pattern.compile(".*[Пп]отік.+\\((.*)\\)"),
-            REGEX_STREAM2 = Pattern.compile(".*[Гг]рупа.+\\((.*)\\)"),
-            REGEX_SUBGROUP1 = Pattern.compile(".*[Пп]ідгр.*(\\d).*");
+            REGEX_STREAM1 = Pattern.compile(".*[Пп]отік\\s*(.*)"),
+            REGEX_STREAM2 = Pattern.compile(".*[Гг]рупа\\s*(.*)"),
+            REGEX_SUBGROUP1 = Pattern.compile(".*[Пп]ідгр.+(\\d).*");
     private static final String
             PREFIX_SUBGROUP2 = ".*група.*",
             SUFFIX_SUBGROUP2 = "\\.(\\d).+ \\(.*\\)";
